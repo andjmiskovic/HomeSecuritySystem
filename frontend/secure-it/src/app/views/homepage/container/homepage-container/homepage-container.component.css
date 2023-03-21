@@ -34,17 +34,17 @@ button {
 }
 
 .cta-green {
-  background: var(--yellow);
+  background: var(--blue);
   color: #fff;
 }
 
 .cta-green:hover {
   color: #E1E8EB;
-  background: var(--yellow-hover);
+  background: var(--blue);
 }
 
 .cta-blue {
-  background: var(--yellow-hover);
+  background: var(--blue);
   color: #fff;
 }
 
@@ -83,11 +83,11 @@ button {
 }
 
 #feature-first {
-  background: linear-gradient(168deg, #FFF 55%, var(--yellow) 0);
+  background: linear-gradient(168deg, #FFF 55%, var(--blue) 0);
 }
 
 #feature-last {
-  background: var(--yellow);
+  background: var(--blue);
 }
 
 /********** price table **********/
@@ -115,19 +115,19 @@ button {
 }
 
 #contact form {
-  color: var(--yellow);
+  color: var(--blue);
 }
 
 #contact form input,
 #contact form textarea {
   background: transparent;
-  border: 1px solid var(--yellow);
+  border: 1px solid var(--blue);
   color: #E1E8EB;
 }
 
 /********** copyright **********/
 #copyright {
-  background: var(--blue);
+  background: var(--dark-gray);
   padding: 2rem 3rem;
 }
 
@@ -146,7 +146,7 @@ button {
 }
 
 #copyright #social-media a:hover {
-  background: var(--yellow);
+  background: var(--blue);
 }
 
 #copyright #social-media a:hover i {
