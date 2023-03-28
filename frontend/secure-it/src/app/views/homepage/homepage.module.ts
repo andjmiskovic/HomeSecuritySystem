@@ -12,12 +12,14 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {CommonModule} from "@angular/common";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatMenuModule} from "@angular/material/menu";
+import { VerificationCodeComponent } from './components/verification-code/verification-code.component';
 
 @NgModule({
   declarations: [
     HomepageContainerComponent,
     LoginComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    VerificationCodeComponent,
   ],
   imports: [
     MatFormFieldModule,

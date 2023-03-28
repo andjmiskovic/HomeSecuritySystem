@@ -1,0 +1,60 @@
+#wrapper {
+  font-size: 1.2rem;
+  text-align: center;
+  box-sizing: border-box;
+  color: #333;
+}
+
+#wrapper #dialog {
+  margin: 10px auto;
+  padding: 10px;
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+  max-width: 650px;
+}
+
+#wrapper #dialog h3 {
+  margin: 0 0 10px;
+  padding: 0;
+  line-height: 1.25;
+}
+
+#wrapper #dialog span {
+  font-size: 90%;
+}
+
+#wrapper #dialog #form {
+  max-width: 600px;
+  margin: 5px auto 0;
+}
+
+#wrapper #dialog #form input {
+  margin: 0 5px;
+  text-align: center;
+  line-height: 50px;
+  font-size: 30px;
+  border: solid 1px #ccc;
+  box-shadow: 0 0 5px #ccc inset;
+  outline: none;
+  width: 13%;
+  border-radius: 3px;
+}
+
+#wrapper #dialog #form input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 5px var(--blue) inset;
+}
+
+#wrapper #dialog #form input::-moz-selection {
+  background: transparent;
+}
+
+#wrapper #dialog #form input::selection {
+  background: transparent;
+}
+
+#wrapper #dialog div {
+  position: relative;
+  z-index: 1;
+}

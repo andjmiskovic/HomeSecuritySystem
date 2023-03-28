@@ -31,9 +31,11 @@
           </mat-error>
         </mat-form-field>
       </p>
+      <p>Enter 6-digit verification code:</p>
+      <app-verification-code></app-verification-code>
       <button mat-raised-button type="submit" id="loginBtn" [disabled]="formGroup.invalid"
               color="primary"
-              style="width: 100%; margin-top: -20px;" (click)="login()">Login
+              style="width: 100%; margin-top: 20px;" (click)="login()">Login
       </button>
     </form>
     <a mat-button style="width: 100%" (click)="switchToRegisterForm()">Don't have an account? Create one <i
