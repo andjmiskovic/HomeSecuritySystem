@@ -53,8 +53,5 @@ app:
     allowedOrigins: http://localhost:4200, http://127.0.0.1:4200
   mailing:
     templatesLocation: 'templates'
-logging:
-  pattern:
-    console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'
 server:
   port: '8000'
