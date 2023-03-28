@@ -1,10 +1,5 @@
-<h1>Welcome to Secure IT, {{ name }}!</h1>
-
-<p>We noticed that you recently attempted to use your Google account to log in to Secure IT.
-    Please verify that it's you by pasting the code below:</p>
-
-<h1>{{ verificationCode }}</h1>
-
-<hr>
-
-<p>This message was sent to you by Secure IT team</p>
+<p>Dear {{ firstName }},</p>
+<p>To start using our services and obtain your digital certificate, we need to verify your ownership of the email address {{ email }}. Please click on the following link to verify your email address:</p>
+<h1><a href="https://localhost:4200/registration/verification?token={{ token }}" target="_blank">Click to verify</a></h1>
+<p>Thank you for your cooperation.</p>
+<p>Best regards,<br>Secure IT</p>
