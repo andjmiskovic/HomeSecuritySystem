@@ -1,5 +1,5 @@
 .fb {
-  background-color: #3B5998 !important;
+  background-color: var(--blue) !important;
   color: white !important;
   width: 100%;
 }
