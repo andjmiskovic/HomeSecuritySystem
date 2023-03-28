@@ -53,5 +53,6 @@ app:
     allowedOrigins: http://localhost:4200, http://127.0.0.1:4200
   mailing:
     templatesLocation: 'templates'
+    senderAddress: ${EMAIL_SENDER_ADDRESS}
 server:
   port: '8000'

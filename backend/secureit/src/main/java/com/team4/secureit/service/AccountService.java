@@ -43,6 +43,9 @@ public class AccountService {
     @Autowired
     private AppProperties appProperties;
 
+    @Autowired
+    private MailingService mailingService;
+
     public TokenResponse login(LoginRequest loginRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(),
@@ -77,9 +80,15 @@ public class AccountService {
         propertyOwner.setEmail(registrationRequest.getEmail());
         propertyOwner.setFirstName(registrationRequest.getFirstName());
         propertyOwner.setLastName(registrationRequest.getLastName());
-        propertyOwner.setEmailVerified(true); // TODO: Implement email verification
+        propertyOwner.setEmailVerified(false);
 
         userRepository.save(propertyOwner);
+
+        mailingService.sendEmailVerificationMail(propertyOwner, "1234");
+    }
+
+    public void verifyEmail(String token) {
+
     }
 
     private void checkEmailAvailability(String email) {
