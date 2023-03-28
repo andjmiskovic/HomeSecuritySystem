@@ -9,7 +9,7 @@
       </div>
     </header>
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-5">
         <h2 class="text-white font-weight-bold my-5" style="text-shadow: 2px 2px 4px #000000; line-height: 50px">Digital
           safety
           <br> Starts here!</h2>
@@ -17,9 +17,9 @@
            class="btn my-4 font-weight-bold atlas-cta cta-green">
           Secure your home with our Secure IT systems</a>
       </div>
-      <div class="col-md-6">
-        <app-login id="login-form" (switchForm)="showForms()"></app-login>
-        <app-registration id="registation-form" (switchForm)="showForms()" class="fade"></app-registration>
+      <div class="col-md-7">
+        <app-login id="login-form" class="change-form" (switchForm)="showForms()"></app-login>
+        <app-registration id="registation-form" class="change-form fade" (switchForm)="showForms()"></app-registration>
       </div>
     </div>
   </div>
