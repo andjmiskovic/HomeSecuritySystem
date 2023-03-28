@@ -2,26 +2,6 @@
 <div style="margin-left: 90px; margin-right: 10px">
   <div class="filter-container">
     <h1 style="font-weight: 400; margin-top: 20px">All certificates</h1>
-
-    <!--    <mat-form-field appearance="outline" color="primary">-->
-    <!--      <mat-label>Driver</mat-label>-->
-    <!--      <mat-select [(ngModel)]="driverEmail" (ngModelChange)="loadRides()">-->
-    <!--        <mat-option *ngFor="let type of driversEmails" [value]="type">{{type}}</mat-option>-->
-    <!--      </mat-select>-->
-    <!--      <button *ngIf="driverEmail" matSuffix mat-icon-button aria-label="Clear" (click)="driverEmail=''; loadRides()">-->
-    <!--        <mat-icon>close</mat-icon>-->
-    <!--      </button>-->
-    <!--    </mat-form-field>-->
-
-    <!--    <mat-form-field appearance="outline" color="primary">-->
-    <!--      <mat-label>Customer</mat-label>-->
-    <!--      <mat-select [(ngModel)]="customerEmail" (ngModelChange)="loadRides()">-->
-    <!--        <mat-option *ngFor="let type of customersEmails" [value]="type">{{type}}</mat-option>-->
-    <!--      </mat-select>-->
-    <!--      <button *ngIf="customerEmail" matSuffix mat-icon-button aria-label="Clear" (click)="customerEmail=''; loadRides()">-->
-    <!--        <mat-icon>close</mat-icon>-->
-    <!--      </button>-->
-    <!--    </mat-form-field>-->
   </div>
 
   <mat-table [dataSource]="dataSource" matSort matSortActive="start" matSortDirection="desc" matSortDisableClear>
