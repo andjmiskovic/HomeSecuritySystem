@@ -1,5 +1,6 @@
-package com.team4.secureit.certificates;
+package com.team4.secureit.service;
 
+import com.team4.secureit.model.CertificateSigningRequest;
 import com.team4.secureit.model.IssuerData;
 import com.team4.secureit.model.SubjectData;
 import lombok.AllArgsConstructor;
@@ -10,15 +11,17 @@ import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+@Service
 @AllArgsConstructor
-public class CertificateGenerator {
+public class CertificateService {
 
-    public X509Certificate generateCertificate(SubjectData subjectData, IssuerData issuerData) {
+    public X509Certificate generateCertificate(SubjectData subjectData, IssuerData issuerData, CertificateSigningRequest request) {
         try {
             // Posto klasa za generisanje sertifikata ne moze da primi direktno privatni kljuc pravi se builder za objekat
             // Ovaj objekat sadrzi privatni kljuc izdavaoca sertifikata i koristiti se za potpisivanje sertifikata
