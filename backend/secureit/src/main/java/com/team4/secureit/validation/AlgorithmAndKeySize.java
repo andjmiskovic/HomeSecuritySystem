@@ -2,9 +2,9 @@ package com.team4.secureit.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
@@ -13,10 +13,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({TYPE, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = PasswordsMatchValidator.class)
+@Constraint(validatedBy = AlgorithmAndKeySizeValidator.class)
 @Documented
-public @interface PasswordsMatch {
-    String message() default "Passwords do not match.";
+public @interface AlgorithmAndKeySize {
+    String message() default "Invalid algorithm or key size";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

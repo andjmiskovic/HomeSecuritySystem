@@ -1,12 +1,15 @@
 package com.team4.secureit.controller;
 
 import com.team4.secureit.api.ResponseOk;
+import com.team4.secureit.dto.request.CSRCreationRequest;
 import com.team4.secureit.dto.response.CSRResponse;
 import com.team4.secureit.model.CertificateSigningRequest;
 import com.team4.secureit.service.CSRService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,11 +20,12 @@ import java.util.UUID;
 @RequestMapping(path = "/csr")
 public class CSRController {
 
-    private final CSRService csrService;
+    @Autowired
+    private CSRService csrService;
 
     @PostMapping()
-    public ResponseOk create(@RequestBody @Valid final CertificateSigningRequest csrRequest) {
-        this.csrService.createCSR(csrRequest);
+    public ResponseOk create(@RequestBody @Valid final CSRCreationRequest csrCreationRequest) throws OperatorCreationException {
+        csrService.generateAndPersistCSR(csrCreationRequest);
         return new ResponseOk("Successfully created CSR.");
     }
 

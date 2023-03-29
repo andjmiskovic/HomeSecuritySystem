@@ -2,6 +2,7 @@ package com.team4.secureit.dto.response;
 
 import com.team4.secureit.model.CertificateSigningRequest;
 import com.team4.secureit.model.Extension;
+import com.team4.secureit.model.PersistedCSR;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class CSRResponse {
     private LocalDateTime validUntil;
 
     public CSRResponse(CertificateSigningRequest request) {
+        // TODO: Remove
         this.id = request.getId();
         this.algorithm = request.getAlgorithm();
         this.alias = request.getAlias();
@@ -41,5 +43,9 @@ public class CSRResponse {
         this.processed = request.getProcessed();
         this.validUntil = request.getValidUntil();
         this.status = request.getStatus().toString();
+    }
+
+    public CSRResponse(PersistedCSR request) {
+        // TODO
     }
 }

@@ -8,9 +8,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -45,10 +45,10 @@ public abstract class User implements UserDetails {
     private Role role;
 
     @CreationTimestamp
-    private Date created;
+    private Instant created;
 
     @UpdateTimestamp
-    private Date modified;
+    private Instant modified;
 
     @Override
     public String getUsername() {
