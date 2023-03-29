@@ -19,7 +19,7 @@ public class CertificateReader {
         System.out.println("\n\nCita sertifikat iz binarnog formata");
         readFromBinEncFile();
     }
-    
+
     private void readFromBase64EncFile() {
         try {
             FileInputStream fis = new FileInputStream(BASE64_ENC_CERT_FILE);
