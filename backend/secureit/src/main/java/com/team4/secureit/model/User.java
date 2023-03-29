@@ -34,9 +34,12 @@ public abstract class User implements UserDetails {
     private String email;
 
     @Column(nullable = false)
-    private Boolean emailVerified = false;
+    private boolean emailVerified = false;
 
     private String password;
+
+    @Column(unique = true)
+    private String verificationCode;
 
     @Enumerated(EnumType.STRING)
     private Role role;

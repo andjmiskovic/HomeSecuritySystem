@@ -1,6 +1,8 @@
 package com.team4.secureit.api;
 
 import com.team4.secureit.exception.EmailAlreadyInUseException;
+import com.team4.secureit.exception.EmailAlreadyVerifiedException;
+import com.team4.secureit.exception.InvalidVerificationCodeException;
 import com.team4.secureit.exception.UserNotFoundException;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,18 @@ public class ControllerAdvisor {
     @ExceptionHandler(EmailAlreadyInUseException.class)
     public ResponseError handleEmailAlreadyInUseException(EmailAlreadyInUseException e) {
         return new ResponseError(HttpStatus.CONFLICT, "Email address is used by another user.");
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(EmailAlreadyVerifiedException.class)
+    public ResponseError handleEmailAlreadyVerifiedException(EmailAlreadyVerifiedException e) {
+        return new ResponseError(HttpStatus.CONFLICT, "Email address is already verified.");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidVerificationCodeException.class)
+    public ResponseError handleInvalidVerificationCodeException(InvalidVerificationCodeException e) {
+        return new ResponseError(HttpStatus.BAD_REQUEST, "Invalid verification code.");
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
