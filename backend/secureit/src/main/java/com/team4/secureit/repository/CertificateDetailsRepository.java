@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface CertificateDetailsRepository extends JpaRepository<CertificateDetails, BigInteger> {
-    Optional<CertificateDetails> findByKeystoreAlias(String alias);
+    Optional<CertificateDetails> findByAlias(String alias);
 
     Optional<CertificateDetails> findBySerialNumber(BigInteger serialNumber);
 

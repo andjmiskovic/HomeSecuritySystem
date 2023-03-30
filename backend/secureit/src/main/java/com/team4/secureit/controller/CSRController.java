@@ -50,15 +50,15 @@ public class CSRController {
 
     @PostMapping("/{id}/certificate")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseOk issueCertificate(@PathVariable final UUID id, @RequestBody final CertificateCreationOptions options) throws EntityNotFoundException, IOException {
-        csrService.approve(id, options);
+    public ResponseOk issueCertificate(@PathVariable final UUID id, @RequestBody final CertificateCreationOptions options) throws Exception {
+        csrService.issueCertificate(id, options);
         return new ResponseOk("CSR approved successfully.");
     }
 
     @PutMapping("/{id}/reject")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseOk reject(@PathVariable final UUID id, @RequestBody final CSRRejectionRequest request) throws EntityNotFoundException {
-        csrService.reject(id, request.getRejectionReason());
+    public ResponseOk rejectRequest(@PathVariable final UUID id, @RequestBody final CSRRejectionRequest request) throws EntityNotFoundException {
+        csrService.rejectRequest(id, request.getRejectionReason());
         return new ResponseOk("CSR rejected successfully.");
     }
 }

@@ -21,7 +21,7 @@ public class CertificateDetails {
     private BigInteger serialNumber;
 
     @Column(unique = true)
-    private String keystoreAlias;
+    private String alias;
 
     @Column(nullable = false)
     private String subject;

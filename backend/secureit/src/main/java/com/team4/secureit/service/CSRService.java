@@ -4,7 +4,9 @@ import com.team4.secureit.dto.request.CSRCreationRequest;
 import com.team4.secureit.dto.request.CertificateCreationOptions;
 import com.team4.secureit.model.PersistedCSR;
 import com.team4.secureit.model.RequestStatus;
+import com.team4.secureit.repository.CertificateDetailsRepository;
 import com.team4.secureit.repository.PersistedCSRRepository;
+import com.team4.secureit.util.CertificateUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -24,10 +26,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.Security;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
@@ -40,10 +41,18 @@ public class CSRService {
     private CertificateService certificateService;
 
     @Autowired
+    private KeyStoreService keyStoreService;
+
+    @Autowired
     private PersistedCSRRepository persistedCSRRepository;
 
+    @Autowired
+    private CertificateDetailsRepository certificateDetailsRepository;
+
+    @SuppressWarnings("ConstantConditions")
     public PersistedCSR generateAndPersistCSR(CSRCreationRequest request) throws OperatorCreationException, IOException {
-        PKCS10CertificationRequest csr = generateCSR(request);
+        KeyPair keyPair = generateKeyPair(request.getAlgorithm(), request.getKeySize()); // TODO: Store private key somewhere/somehow
+        PKCS10CertificationRequest csr = generateCSR(request, keyPair);
         PersistedCSR persistedCSR = convertToPersistedCSR(request, csr);
         return persistedCSRRepository.save(persistedCSR);
     }
@@ -64,18 +73,21 @@ public class CSRService {
         }
     }
 
-    public void approve(UUID id, CertificateCreationOptions options) throws IOException {
+    public void issueCertificate(UUID id, CertificateCreationOptions options) throws IOException, CertificateException, KeyStoreException, OperatorCreationException {
         PersistedCSR persistedCSR = getById(id);
+        PKCS10CertificationRequest csr = convertToPKCS10CR(persistedCSR);
+        String alias = persistedCSR.getAlias();
 
         persistedCSR.setStatus(RequestStatus.APPROVED);
         persistedCSR.setProcessed(Instant.now());
         persistedCSRRepository.save(persistedCSR);
 
-        PKCS10CertificationRequest csr = convertToPKCS10CR(persistedCSR);
-        certificateService.generateCertificate(csr, options, null);
+        X509Certificate cert = certificateService.generateCertificate(csr, options);
+        keyStoreService.storeCertificate(cert, alias);
+        certificateDetailsRepository.save(CertificateUtils.convertToDetails(cert, alias));
     }
 
-    public void reject(UUID id, String reason) {
+    public void rejectRequest(UUID id, String reason) {
         PersistedCSR request = getById(id);
 
         request.setStatus(RequestStatus.REJECTED);
@@ -85,10 +97,8 @@ public class CSRService {
         persistedCSRRepository.save(request);
     }
 
-    @SuppressWarnings("ConstantConditions")
-    private PKCS10CertificationRequest generateCSR(CSRCreationRequest request) throws OperatorCreationException {
+    private PKCS10CertificationRequest generateCSR(CSRCreationRequest request, KeyPair keyPair) throws OperatorCreationException {
         Security.addProvider(new BouncyCastleProvider());
-        KeyPair keyPair = generateKeyPair(request.getAlgorithm(), request.getKeySize());
 
         X500Name x500Name = new X500NameBuilder()
                 .addRDN(BCStyle.CN, request.getCommonName())
@@ -147,7 +157,7 @@ public class CSRService {
             if (object instanceof PKCS10CertificationRequest) {
                 return (PKCS10CertificationRequest) object;
             } else {
-                throw new IllegalArgumentException("PEM content is not a CSR");
+                throw new IllegalArgumentException("PEM content is not a CSR.");
             }
         }
     }

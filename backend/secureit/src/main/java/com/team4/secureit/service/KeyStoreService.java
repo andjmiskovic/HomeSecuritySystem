@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
@@ -20,6 +21,9 @@ import java.util.Objects;
 @Service
 public class KeyStoreService {
 
+    private final String KEYSTORE_PATH = "./keystore/main.keystore";
+    private final char[] KEYSTORE_PASS = "example".toCharArray();
+
     private KeyStore keyStore;
 
     @Autowired
@@ -30,9 +34,9 @@ public class KeyStoreService {
 
     public void init() {
         try {
-            FileInputStream fis = new FileInputStream("./keystore/main.keystore");
+            FileInputStream fis = new FileInputStream(KEYSTORE_PATH);
             keyStore = KeyStore.getInstance("JKS");
-            keyStore.load(fis, "example".toCharArray());
+            keyStore.load(fis, KEYSTORE_PASS);
 
             syncDatabaseWithKeyStore(keyStore);
         } catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException e) {
@@ -44,7 +48,7 @@ public class KeyStoreService {
     public KeyPair getKeyPair(String alias, char[] keyPass) {
         try {
             PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, keyPass);
-            PublicKey publicKey = keyStore.getCertificate(alias).getPublicKey();
+            PublicKey publicKey = getCertificate(alias).getPublicKey();
 
             return new KeyPair(publicKey, privateKey);
         } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
@@ -52,8 +56,27 @@ public class KeyStoreService {
         }
     }
 
-    public KeyPair getKeyPair(CertificateDetails certificateDetails, char[] keyPass) {
-        return getKeyPair(certificateDetails.getKeystoreAlias(), keyPass);
+    public X509Certificate getCertificate(String alias) throws KeyStoreException {
+        return (X509Certificate) keyStore.getCertificate(alias);
+    }
+
+    public void storeKeyPair(KeyPair keyPair, String alias, char[] keyPass, X509Certificate[] chain) {
+        try {
+            PrivateKey privateKey = keyPair.getPrivate();
+            keyStore.setKeyEntry(alias, privateKey, keyPass, chain);
+            keyStore.store(new FileOutputStream(KEYSTORE_PATH), KEYSTORE_PASS);
+        } catch (KeyStoreException | CertificateException | IOException | NoSuchAlgorithmException ignore) {
+
+        }
+    }
+
+    public void storeCertificate(X509Certificate cert, String alias) {
+        try {
+            keyStore.setCertificateEntry(alias, cert);
+            keyStore.store(new FileOutputStream(KEYSTORE_PATH), KEYSTORE_PASS);
+        } catch (KeyStoreException | CertificateException | IOException | NoSuchAlgorithmException ignore) {
+
+        }
     }
 
     private void syncDatabaseWithKeyStore(KeyStore keyStore) throws KeyStoreException {
