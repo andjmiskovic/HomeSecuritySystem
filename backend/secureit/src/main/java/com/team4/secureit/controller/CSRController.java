@@ -4,7 +4,7 @@ import com.team4.secureit.api.ResponseCreated;
 import com.team4.secureit.api.ResponseOk;
 import com.team4.secureit.dto.request.CSRCreationRequest;
 import com.team4.secureit.dto.request.CSRRejectionRequest;
-import com.team4.secureit.model.Admin;
+import com.team4.secureit.dto.request.CertificateCreationOptions;
 import com.team4.secureit.model.PersistedCSR;
 import com.team4.secureit.service.CSRService;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,7 +12,6 @@ import jakarta.validation.Valid;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -49,11 +48,10 @@ public class CSRController {
         return csrService.getById(id);
     }
 
-    @PutMapping("/{id}/approve")
+    @PostMapping("/{id}/certificate")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseOk approve(@PathVariable final UUID id, Authentication authentication) throws EntityNotFoundException {
-        Admin admin = (Admin) authentication.getPrincipal();
-        csrService.approve(id, admin);
+    public ResponseOk issueCertificate(@PathVariable final UUID id, @RequestBody final CertificateCreationOptions options) throws EntityNotFoundException, IOException {
+        csrService.approve(id, options);
         return new ResponseOk("CSR approved successfully.");
     }
 

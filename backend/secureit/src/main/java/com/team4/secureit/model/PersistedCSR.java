@@ -19,7 +19,7 @@ public class PersistedCSR {
     @Column(columnDefinition = "uuid")
     private UUID id = UUID.randomUUID();
 
-    @Column
+    @Column(length = 4096)
     private String pem;
 
     @Column

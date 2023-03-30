@@ -1,16 +1,16 @@
 package com.team4.secureit.service;
 
 import com.team4.secureit.dto.request.CSRCreationRequest;
-import com.team4.secureit.model.Admin;
+import com.team4.secureit.dto.request.CertificateCreationOptions;
 import com.team4.secureit.model.PersistedCSR;
 import com.team4.secureit.model.RequestStatus;
 import com.team4.secureit.repository.PersistedCSRRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -33,8 +34,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 public class CSRService {
+
+    @Autowired
+    private CertificateService certificateService;
 
     @Autowired
     private PersistedCSRRepository persistedCSRRepository;
@@ -61,14 +64,15 @@ public class CSRService {
         }
     }
 
-    public void approve(UUID id, Admin admin) {
-        PersistedCSR request = getById(id);
+    public void approve(UUID id, CertificateCreationOptions options) throws IOException {
+        PersistedCSR persistedCSR = getById(id);
 
-        request.setStatus(RequestStatus.APPROVED);
-        request.setProcessed(Instant.now());
-        // TODO: create and save certificate
+        persistedCSR.setStatus(RequestStatus.APPROVED);
+        persistedCSR.setProcessed(Instant.now());
+        persistedCSRRepository.save(persistedCSR);
 
-        persistedCSRRepository.save(request);
+        PKCS10CertificationRequest csr = convertToPKCS10CR(persistedCSR);
+        certificateService.generateCertificate(csr, options, null);
     }
 
     public void reject(UUID id, String reason) {
@@ -124,6 +128,10 @@ public class CSRService {
         return persistedCSR;
     }
 
+    private PKCS10CertificationRequest convertToPKCS10CR(PersistedCSR persistedCSR) throws IOException {
+        return parsePEM(persistedCSR.getPem());
+    }
+
     private String convertToPEM(PKCS10CertificationRequest csr) throws IOException {
         PemObject pemObject = new PemObject("CERTIFICATE REQUEST", csr.getEncoded());
         StringWriter stringWriter = new StringWriter();
@@ -131,5 +139,16 @@ public class CSRService {
             pemWriter.writeObject(pemObject);
         }
         return stringWriter.toString();
+    }
+
+    private PKCS10CertificationRequest parsePEM(String pem) throws IOException {
+        try (PEMParser pemParser = new PEMParser(new StringReader(pem))) {
+            Object object = pemParser.readObject();
+            if (object instanceof PKCS10CertificationRequest) {
+                return (PKCS10CertificationRequest) object;
+            } else {
+                throw new IllegalArgumentException("PEM content is not a CSR");
+            }
+        }
     }
 }

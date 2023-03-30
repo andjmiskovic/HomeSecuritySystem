@@ -1,59 +1,52 @@
 package com.team4.secureit.service;
 
-import com.team4.secureit.model.IssuerData;
-import com.team4.secureit.model.PersistedCSR;
-import com.team4.secureit.model.SubjectData;
-import lombok.AllArgsConstructor;
-import org.bouncycastle.cert.X509CertificateHolder;
+import com.team4.secureit.dto.request.CertificateCreationOptions;
+import com.team4.secureit.model.CertificateDetails;
+import com.team4.secureit.repository.CertificateDetailsRepository;
+import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
-import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
-import org.bouncycastle.operator.ContentSigner;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.bouncycastle.pkcs.PKCS10CertificationRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigInteger;
-import java.security.cert.CertificateException;
+import java.security.KeyPair;
+import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.Date;
+import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class CertificateService {
 
-    public X509Certificate generateCertificate(SubjectData subjectData, IssuerData issuerData, PersistedCSR request) {
-        try {
-            // Posto klasa za generisanje sertifikata ne moze da primi direktno privatni kljuc pravi se builder za objekat
-            // Ovaj objekat sadrzi privatni kljuc izdavaoca sertifikata i koristiti se za potpisivanje sertifikata
-            // Parametar koji se prosledjuje je algoritam koji se koristi za potpisivanje sertifikata
-            JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
+    @Autowired
+    private CertificateDetailsRepository certificateDetailsRepository;
 
-            // Takodje se navodi koji provider se koristi, u ovom slucaju Bouncy Castle
-            builder = builder.setProvider("BC");
+    public List<CertificateDetails> getAll() {
+        return certificateDetailsRepository.findAll();
+    }
 
-            // Formira se objekat koji ce sadrzati privatni kljuc i koji ce se koristiti za potpisivanje sertifikata
-            ContentSigner contentSigner = builder.build(issuerData.getPrivateKey());
+    public List<CertificateDetails> findIssuerCertificates() {
+        return certificateDetailsRepository.findIssuerCertificates();
+    }
 
-            // Postavljaju se podaci za generisanje sertifikata
-            X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
-                    issuerData.getX500name(),
-                    new BigInteger(subjectData.getSerialNumber()),
-                    subjectData.getStartDate(),
-                    subjectData.getEndDate(),
-                    subjectData.getX500name(),
-                    subjectData.getPublicKey());
+    public X509Certificate generateCertificate(PKCS10CertificationRequest csr, CertificateCreationOptions options, KeyPair issuerKeyPair) throws IOException {
 
-            X509CertificateHolder certHolder = certGen.build(contentSigner);
+        X500Name issuerX500name = new X500Name("ok");
 
-            // Builder generise sertifikat kao objekat klase X509CertificateHolder
-            // Nakon toga je potrebno certHolder konvertovati u sertifikat, za sta se koristi certConverter
-            JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
-            certConverter = certConverter.setProvider("BC");
+        BigInteger serialNumber = new BigInteger(128, new SecureRandom());
+        Date issuedAt = new Date();
+        Date expiresAt = new Date(System.currentTimeMillis() + 365L * 24L * 60L * 60L * 1000L);
 
-            return certConverter.getCertificate(certHolder);
-        } catch (IllegalArgumentException | IllegalStateException | OperatorCreationException | CertificateException e) {
-            e.printStackTrace();
-        }
+        X509v3CertificateBuilder certGen = new X509v3CertificateBuilder(
+                issuerX500name,
+                serialNumber,
+                issuedAt,
+                expiresAt,
+                csr.getSubject(),
+                csr.getSubjectPublicKeyInfo());
+
         return null;
     }
 }
