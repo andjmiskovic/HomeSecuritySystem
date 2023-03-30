@@ -6,12 +6,14 @@ import com.team4.secureit.dto.request.CSRCreationRequest;
 import com.team4.secureit.dto.request.CSRRejectionRequest;
 import com.team4.secureit.dto.request.CertificateCreationOptions;
 import com.team4.secureit.model.PersistedCSR;
+import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.service.CSRService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -27,8 +29,9 @@ public class CSRController {
 
     @PostMapping
     @PreAuthorize("hasRole('PROPERTY_OWNER')")
-    public ResponseCreated create(@RequestBody @Valid final CSRCreationRequest csrCreationRequest) throws OperatorCreationException, IOException {
-        PersistedCSR persistedCSR = csrService.generateAndPersistCSR(csrCreationRequest);
+    public ResponseCreated create(@RequestBody @Valid final CSRCreationRequest csrCreationRequest, Authentication authentication) throws OperatorCreationException, IOException {
+        PropertyOwner propertyOwner = (PropertyOwner) authentication.getPrincipal();
+        PersistedCSR persistedCSR = csrService.generateAndPersistCSR(csrCreationRequest, propertyOwner);
         return new ResponseCreated("Successfully created CSR.", persistedCSR.getId());
     }
 

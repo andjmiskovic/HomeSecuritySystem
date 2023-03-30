@@ -12,8 +12,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.*;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -49,7 +51,6 @@ public class KeyStoreService {
         try {
             PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, keyPass);
             PublicKey publicKey = getCertificate(alias).getPublicKey();
-
             return new KeyPair(publicKey, privateKey);
         } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
             return null;
@@ -60,19 +61,17 @@ public class KeyStoreService {
         return (X509Certificate) keyStore.getCertificate(alias);
     }
 
+    public X509Certificate[] getCertificateChain(String alias) throws KeyStoreException {
+        Certificate[] certChain = keyStore.getCertificateChain(alias);
+        return Arrays.stream(certChain)
+                .map(cert -> (X509Certificate) cert)
+                .toArray(X509Certificate[]::new);
+    }
+
     public void storeKeyPair(KeyPair keyPair, String alias, char[] keyPass, X509Certificate[] chain) {
         try {
             PrivateKey privateKey = keyPair.getPrivate();
             keyStore.setKeyEntry(alias, privateKey, keyPass, chain);
-            keyStore.store(new FileOutputStream(KEYSTORE_PATH), KEYSTORE_PASS);
-        } catch (KeyStoreException | CertificateException | IOException | NoSuchAlgorithmException ignore) {
-
-        }
-    }
-
-    public void storeCertificate(X509Certificate cert, String alias) {
-        try {
-            keyStore.setCertificateEntry(alias, cert);
             keyStore.store(new FileOutputStream(KEYSTORE_PATH), KEYSTORE_PASS);
         } catch (KeyStoreException | CertificateException | IOException | NoSuchAlgorithmException ignore) {
 

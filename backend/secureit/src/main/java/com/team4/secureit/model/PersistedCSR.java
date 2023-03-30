@@ -20,7 +20,13 @@ public class PersistedCSR {
     private UUID id = UUID.randomUUID();
 
     @Column(length = 4096)
-    private String pem;
+    private String csrPem;
+
+    @Column(length = 4096)
+    private String privateKeyPem;
+
+    @Column(length = 4096)
+    private String publicKeyPem;
 
     @Column
     private String alias;

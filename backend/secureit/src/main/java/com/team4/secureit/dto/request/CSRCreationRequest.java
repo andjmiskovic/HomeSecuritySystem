@@ -12,9 +12,6 @@ import lombok.Data;
 @AlgorithmAndKeySize
 public class CSRCreationRequest {
 
-    @NotBlank(message = "Common name cannot be blank")
-    private String commonName;
-
     @NotBlank(message = "Organization name cannot be blank")
     private String organization;
 
