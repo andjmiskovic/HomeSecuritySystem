@@ -11,6 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Data
+@Table(name = "PERSISTED_CSR")
 @NoArgsConstructor
 public class PersistedCSR {
 
@@ -51,6 +52,9 @@ public class PersistedCSR {
 
     @Column
     private String rejectionReason;
+
+    @Column
+    private Instant processed;
 
     @CreationTimestamp
     private Instant created;

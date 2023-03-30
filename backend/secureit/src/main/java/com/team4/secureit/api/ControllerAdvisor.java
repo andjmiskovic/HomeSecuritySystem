@@ -5,6 +5,7 @@ import com.team4.secureit.exception.EmailAlreadyVerifiedException;
 import com.team4.secureit.exception.InvalidVerificationCodeException;
 import com.team4.secureit.exception.UserNotFoundException;
 import io.jsonwebtoken.JwtException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -55,6 +56,12 @@ public class ControllerAdvisor {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseError handleUserNotFoundException(UserNotFoundException e) {
         return new ResponseError(HttpStatus.NOT_FOUND, "User not found.");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseError handleEntityNotFoundException(EntityNotFoundException e) {
+        return new ResponseError(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

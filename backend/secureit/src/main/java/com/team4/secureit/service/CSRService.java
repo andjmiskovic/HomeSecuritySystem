@@ -1,13 +1,11 @@
 package com.team4.secureit.service;
 
 import com.team4.secureit.dto.request.CSRCreationRequest;
-import com.team4.secureit.dto.response.CSRResponse;
-import com.team4.secureit.model.CertificateSigningRequest;
+import com.team4.secureit.model.Admin;
 import com.team4.secureit.model.PersistedCSR;
 import com.team4.secureit.model.RequestStatus;
 import com.team4.secureit.repository.PersistedCSRRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -18,15 +16,19 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,10 +39,46 @@ public class CSRService {
     @Autowired
     private PersistedCSRRepository persistedCSRRepository;
 
-    public void generateAndPersistCSR(CSRCreationRequest request) throws OperatorCreationException {
+    public PersistedCSR generateAndPersistCSR(CSRCreationRequest request) throws OperatorCreationException, IOException {
         PKCS10CertificationRequest csr = generateCSR(request);
         PersistedCSR persistedCSR = convertToPersistedCSR(request, csr);
-        persistedCSRRepository.save(persistedCSR);
+        return persistedCSRRepository.save(persistedCSR);
+    }
+
+    public List<PersistedCSR> getAll() {
+        return persistedCSRRepository.findAll();
+    }
+
+    public PersistedCSR getById(UUID id) throws EntityNotFoundException {
+        return persistedCSRRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("CSR not found."));
+    }
+
+    public List<PersistedCSR> findByStatus(String status) {
+        try {
+            return persistedCSRRepository.findByStatus(RequestStatus.valueOf(status.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            return Collections.emptyList();
+        }
+    }
+
+    public void approve(UUID id, Admin admin) {
+        PersistedCSR request = getById(id);
+
+        request.setStatus(RequestStatus.APPROVED);
+        request.setProcessed(Instant.now());
+        // TODO: create and save certificate
+
+        persistedCSRRepository.save(request);
+    }
+
+    public void reject(UUID id, String reason) {
+        PersistedCSR request = getById(id);
+
+        request.setStatus(RequestStatus.REJECTED);
+        request.setRejectionReason(reason);
+        request.setProcessed(Instant.now());
+
+        persistedCSRRepository.save(request);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -72,9 +110,9 @@ public class CSRService {
         }
     }
 
-    private PersistedCSR convertToPersistedCSR(CSRCreationRequest request, PKCS10CertificationRequest csr) {
+    private PersistedCSR convertToPersistedCSR(CSRCreationRequest request, PKCS10CertificationRequest csr) throws IOException {
         PersistedCSR persistedCSR = new PersistedCSR();
-        persistedCSR.setPem(csr.toString());
+        persistedCSR.setPem(convertToPEM(csr));
         persistedCSR.setAlias(request.getCommonName());
         persistedCSR.setCommonName(request.getCommonName());
         persistedCSR.setOrganization(request.getOrganization());
@@ -86,50 +124,12 @@ public class CSRService {
         return persistedCSR;
     }
 
-    private List<CSRResponse> csrMapper(List<PersistedCSR> requests) {
-        List<CSRResponse> responses = new ArrayList<>();
-        requests.forEach(request -> responses.add(new CSRResponse(request)));
-        return responses;
-    }
-
-    public List<CSRResponse> getAll() {
-        return csrMapper(persistedCSRRepository.findAll());
-    }
-
-    public List<CSRResponse> getByStatus(String status) {
-        return csrMapper(persistedCSRRepository.findByStatus(RequestStatus.valueOf(status)));
-    }
-
-    public CSRResponse getById(UUID id) throws EntityNotFoundException {
-        return new CSRResponse(get(id));
-    }
-
-    public CertificateSigningRequest get(UUID id) throws EntityNotFoundException {
-        return csrRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-    }
-
-    public CSRResponse approve(UUID id, String adminEmail) {
-        // TODO: Replace with PersitedCSR
-        CertificateSigningRequest request = get(id);
-
-        request.setStatus(RequestStatus.ACCEPTED);
-        request.setProcessed(LocalDateTime.now());
-        // TODO: create and save certificate
-//        X509Certificate certificate = certificateService.generateCertificate(new SubjectData(), new IssuerData(), request);
-
-        persistedCSRRepository.save(request);
-        return new CSRResponse(request);
-    }
-
-    public CSRResponse reject(UUID id, String reason) {
-        // TODO: Replace with PersitedCSR
-        CertificateSigningRequest request = get(id);
-
-        request.setStatus(RequestStatus.REJECTED);
-        request.setRejectionReason(reason);
-        request.setProcessed(LocalDateTime.now());
-
-        persistedCSRRepository.save(request);
-        return new CSRResponse(request);
+    private String convertToPEM(PKCS10CertificationRequest csr) throws IOException {
+        PemObject pemObject = new PemObject("CERTIFICATE REQUEST", csr.getEncoded());
+        StringWriter stringWriter = new StringWriter();
+        try (PemWriter pemWriter = new PemWriter(stringWriter)) {
+            pemWriter.writeObject(pemObject);
+        }
+        return stringWriter.toString();
     }
 }

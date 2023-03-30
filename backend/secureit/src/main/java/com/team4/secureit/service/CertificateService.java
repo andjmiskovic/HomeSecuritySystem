@@ -1,7 +1,7 @@
 package com.team4.secureit.service;
 
-import com.team4.secureit.model.CertificateSigningRequest;
 import com.team4.secureit.model.IssuerData;
+import com.team4.secureit.model.PersistedCSR;
 import com.team4.secureit.model.SubjectData;
 import lombok.AllArgsConstructor;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -21,7 +21,7 @@ import java.security.cert.X509Certificate;
 @AllArgsConstructor
 public class CertificateService {
 
-    public X509Certificate generateCertificate(SubjectData subjectData, IssuerData issuerData, CertificateSigningRequest request) {
+    public X509Certificate generateCertificate(SubjectData subjectData, IssuerData issuerData, PersistedCSR request) {
         try {
             // Posto klasa za generisanje sertifikata ne moze da primi direktno privatni kljuc pravi se builder za objekat
             // Ovaj objekat sadrzi privatni kljuc izdavaoca sertifikata i koristiti se za potpisivanje sertifikata
