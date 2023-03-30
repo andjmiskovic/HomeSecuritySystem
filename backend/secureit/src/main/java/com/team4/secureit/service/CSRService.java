@@ -2,11 +2,11 @@ package com.team4.secureit.service;
 
 import com.team4.secureit.dto.request.CSRCreationRequest;
 import com.team4.secureit.dto.request.CertificateCreationOptions;
-import com.team4.secureit.model.PersistedCSR;
+import com.team4.secureit.model.CSRDetails;
 import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.model.RequestStatus;
 import com.team4.secureit.repository.CertificateDetailsRepository;
-import com.team4.secureit.repository.PersistedCSRRepository;
+import com.team4.secureit.repository.CSRDetailsRepository;
 import com.team4.secureit.util.CertificateUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -54,50 +54,50 @@ public class CSRService {
     private KeyStoreService keyStoreService;
 
     @Autowired
-    private PersistedCSRRepository persistedCSRRepository;
+    private CSRDetailsRepository csrDetailsRepository;
 
     @Autowired
     private CertificateDetailsRepository certificateDetailsRepository;
 
     @SuppressWarnings("ConstantConditions")
-    public PersistedCSR generateAndPersistCSR(CSRCreationRequest request, PropertyOwner propertyOwner) throws OperatorCreationException, IOException {
+    public CSRDetails generateAndPersistCSR(CSRCreationRequest request, PropertyOwner propertyOwner) throws OperatorCreationException, IOException {
         KeyPair keyPair = generateKeyPair(request.getAlgorithm(), request.getKeySize());
         PKCS10CertificationRequest csr = generateCSR(request, keyPair, propertyOwner.getEmail());
-        PersistedCSR persistedCSR = pkcs10crToPersistedCSR(request, keyPair, csr);
-        return persistedCSRRepository.save(persistedCSR);
+        CSRDetails csrDetails = csrToCSRDetails(request, keyPair, csr);
+        return csrDetailsRepository.save(csrDetails);
     }
 
-    public List<PersistedCSR> getAll() {
-        return persistedCSRRepository.findAll();
+    public List<CSRDetails> getAll() {
+        return csrDetailsRepository.findAll();
     }
 
-    public PersistedCSR getById(UUID id) throws EntityNotFoundException {
-        return persistedCSRRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("CSR not found."));
+    public CSRDetails getById(UUID id) throws EntityNotFoundException {
+        return csrDetailsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("CSR not found."));
     }
 
-    public List<PersistedCSR> findByStatus(String status) {
+    public List<CSRDetails> findByStatus(String status) {
         try {
-            return persistedCSRRepository.findByStatus(RequestStatus.valueOf(status.toUpperCase()));
+            return csrDetailsRepository.findByStatus(RequestStatus.valueOf(status.toUpperCase()));
         } catch (IllegalArgumentException e) {
             return Collections.emptyList();
         }
     }
 
-    public void issueCertificate(UUID id, CertificateCreationOptions options) throws IOException, GeneralSecurityException, OperatorCreationException {
-        PersistedCSR persistedCSR = getById(id);
-        PKCS10CertificationRequest csr = persistedCSRtoPKCS10CR(persistedCSR);
+    public void issueAndPersistCertificate(UUID id, CertificateCreationOptions options) throws IOException, GeneralSecurityException, OperatorCreationException {
+        CSRDetails csrDetails = getById(id);
+        PKCS10CertificationRequest csr = csrDetailsToCSR(csrDetails);
         X509Certificate[] chain = keyStoreService.getCertificateChain(options.getIssuerAlias());
 
-        String alias = persistedCSR.getAlias();
+        String alias = csrDetails.getAlias();
         KeyPair keyPair = new KeyPair(
-                parsePublicKeyFromPEM(persistedCSR.getPublicKeyPem(), persistedCSR.getAlgorithm()),
-                parsePrivateKeyFromPEM(persistedCSR.getPrivateKeyPem())
+                parsePublicKeyFromPEM(csrDetails.getPublicKeyPem(), csrDetails.getAlgorithm()),
+                parsePrivateKeyFromPEM(csrDetails.getPrivateKeyPem())
         );
 
-        persistedCSR.setStatus(RequestStatus.APPROVED);
-        persistedCSR.setProcessed(Instant.now());
-        persistedCSR.setPrivateKeyPem("REDACTED");
-        persistedCSRRepository.save(persistedCSR);
+        csrDetails.setStatus(RequestStatus.APPROVED);
+        csrDetails.setProcessed(Instant.now());
+        csrDetails.setPrivateKeyPem("REDACTED");
+        csrDetailsRepository.save(csrDetails);
 
         X509Certificate cert = certificateService.generateCertificate(csr, options);
         certificateDetailsRepository.save(CertificateUtils.convertToDetails(cert, alias));
@@ -106,13 +106,13 @@ public class CSRService {
     }
 
     public void rejectRequest(UUID id, String reason) {
-        PersistedCSR request = getById(id);
+        CSRDetails request = getById(id);
 
         request.setStatus(RequestStatus.REJECTED);
         request.setRejectionReason(reason);
         request.setProcessed(Instant.now());
 
-        persistedCSRRepository.save(request);
+        csrDetailsRepository.save(request);
     }
 
     private PKCS10CertificationRequest generateCSR(CSRCreationRequest request, KeyPair keyPair, String commonName) throws OperatorCreationException {
@@ -142,24 +142,24 @@ public class CSRService {
         }
     }
 
-    private PersistedCSR pkcs10crToPersistedCSR(CSRCreationRequest request, KeyPair keyPair, PKCS10CertificationRequest csr) throws IOException {
-        PersistedCSR persistedCSR = new PersistedCSR();
-        persistedCSR.setCsrPem(csrToPEM(csr));
-        persistedCSR.setPrivateKeyPem(keyToPEM(keyPair.getPrivate()));
-        persistedCSR.setPublicKeyPem(keyToPEM(keyPair.getPublic()));
-        persistedCSR.setAlias(readRDNsFromCSR(csr, BCStyle.CN));
-        persistedCSR.setCommonName(readRDNsFromCSR(csr, BCStyle.CN));
-        persistedCSR.setOrganization(request.getOrganization());
-        persistedCSR.setCity(request.getCity());
-        persistedCSR.setState(request.getState());
-        persistedCSR.setCountry(request.getCountry());
-        persistedCSR.setAlgorithm(request.getAlgorithm());
-        persistedCSR.setKeySize(request.getKeySize());
-        return persistedCSR;
+    private CSRDetails csrToCSRDetails(CSRCreationRequest request, KeyPair keyPair, PKCS10CertificationRequest csr) throws IOException {
+        CSRDetails csrDetails = new CSRDetails();
+        csrDetails.setCsrPem(csrToPEM(csr));
+        csrDetails.setPrivateKeyPem(keyToPEM(keyPair.getPrivate()));
+        csrDetails.setPublicKeyPem(keyToPEM(keyPair.getPublic()));
+        csrDetails.setAlias(readRDNsFromCSR(csr, BCStyle.CN));
+        csrDetails.setCommonName(readRDNsFromCSR(csr, BCStyle.CN));
+        csrDetails.setOrganization(request.getOrganization());
+        csrDetails.setCity(request.getCity());
+        csrDetails.setState(request.getState());
+        csrDetails.setCountry(request.getCountry());
+        csrDetails.setAlgorithm(request.getAlgorithm());
+        csrDetails.setKeySize(request.getKeySize());
+        return csrDetails;
     }
 
-    private PKCS10CertificationRequest persistedCSRtoPKCS10CR(PersistedCSR persistedCSR) throws IOException {
-        return parseCSRFromPEM(persistedCSR.getCsrPem());
+    private PKCS10CertificationRequest csrDetailsToCSR(CSRDetails csrDetails) throws IOException {
+        return parseCSRFromPEM(csrDetails.getCsrPem());
     }
 
     private String csrToPEM(PKCS10CertificationRequest csr) throws IOException {

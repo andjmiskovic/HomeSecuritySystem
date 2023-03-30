@@ -11,9 +11,9 @@ import java.util.UUID;
 
 @Entity
 @Data
-@Table(name = "PERSISTED_CSR")
+@Table(name = "CSR_DETAILS")
 @NoArgsConstructor
-public class PersistedCSR {
+public class CSRDetails {
 
     @Id
     @Column(columnDefinition = "uuid")

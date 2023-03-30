@@ -5,7 +5,7 @@ import com.team4.secureit.api.ResponseOk;
 import com.team4.secureit.dto.request.CSRCreationRequest;
 import com.team4.secureit.dto.request.CSRRejectionRequest;
 import com.team4.secureit.dto.request.CertificateCreationOptions;
-import com.team4.secureit.model.PersistedCSR;
+import com.team4.secureit.model.CSRDetails;
 import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.service.CSRService;
 import jakarta.persistence.EntityNotFoundException;
@@ -29,15 +29,15 @@ public class CSRController {
 
     @PostMapping
     @PreAuthorize("hasRole('PROPERTY_OWNER')")
-    public ResponseCreated create(@RequestBody @Valid final CSRCreationRequest csrCreationRequest, Authentication authentication) throws OperatorCreationException, IOException {
+    public ResponseCreated createCSR(@RequestBody @Valid final CSRCreationRequest csrCreationRequest, Authentication authentication) throws OperatorCreationException, IOException {
         PropertyOwner propertyOwner = (PropertyOwner) authentication.getPrincipal();
-        PersistedCSR persistedCSR = csrService.generateAndPersistCSR(csrCreationRequest, propertyOwner);
-        return new ResponseCreated("Successfully created CSR.", persistedCSR.getId());
+        CSRDetails csrDetails = csrService.generateAndPersistCSR(csrCreationRequest, propertyOwner);
+        return new ResponseCreated("Successfully created CSR.", csrDetails.getId());
     }
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public List<PersistedCSR> getAll(@RequestParam(value = "status", required = false) String status) {
+    public List<CSRDetails> getAll(@RequestParam(value = "status", required = false) String status) {
         if (status != null) {
             return csrService.findByStatus(status);
         } else {
@@ -47,14 +47,14 @@ public class CSRController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public PersistedCSR getById(@PathVariable final UUID id) throws EntityNotFoundException {
+    public CSRDetails getById(@PathVariable final UUID id) throws EntityNotFoundException {
         return csrService.getById(id);
     }
 
     @PostMapping("/{id}/certificate")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseOk issueCertificate(@PathVariable final UUID id, @RequestBody final CertificateCreationOptions options) throws Exception {
-        csrService.issueCertificate(id, options);
+        csrService.issueAndPersistCertificate(id, options);
         return new ResponseOk("CSR approved successfully.");
     }
 
