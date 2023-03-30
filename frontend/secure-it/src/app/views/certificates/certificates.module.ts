@@ -1,23 +1,27 @@
 import {NgModule} from "@angular/core";
 import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatInputModule} from "@angular/material/input";
 import {MatDialogModule} from "@angular/material/dialog";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatMenuModule} from "@angular/material/menu";
-import {DashboardContainerComponent} from './container/dashboard-container/dashboard-container.component';
+import {CertificateListComponent} from "./container/certificate-list/certificate-list.component";
+import {
+  CertificatesDetailsDialogComponent
+} from "./components/certificates-details-dialog/certificates-details-dialog.component";
 import {SharedModule} from "../../shared/shared.module";
-import {CsrFormComponent} from './components/csr-form/csr-form.component';
 import {MatSelectModule} from "@angular/material/select";
+import {MatTableModule} from "@angular/material/table";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 @NgModule({
   declarations: [
-    DashboardContainerComponent,
-    CsrFormComponent,
+    CertificateListComponent,
+    CertificatesDetailsDialogComponent
   ],
   imports: [
     MatFormFieldModule,
@@ -33,12 +37,14 @@ import {MatSelectModule} from "@angular/material/select";
     ReactiveFormsModule,
     MatMenuModule,
     SharedModule,
-    MatSelectModule
+    MatSelectModule,
+    MatTableModule,
+    MatPaginatorModule
   ],
   exports: [
-    DashboardContainerComponent
+    CertificateListComponent
   ],
-  bootstrap: [DashboardContainerComponent]
+  bootstrap: [CertificateListComponent]
 })
-export class DashboardModule {
+export class CertificatesModule {
 }

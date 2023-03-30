@@ -9,7 +9,6 @@ import {Router} from "@angular/router";
 export class SidebarComponent {
   @Input() currentPage = 'dashboard';
   @Input() userRole = 'ADMIN';
-  isActive = false;
 
   constructor(private router: Router) {
   }
