@@ -1,9 +1,6 @@
 package com.team4.secureit.api;
 
-import com.team4.secureit.exception.EmailAlreadyInUseException;
-import com.team4.secureit.exception.EmailAlreadyVerifiedException;
-import com.team4.secureit.exception.InvalidVerificationCodeException;
-import com.team4.secureit.exception.UserNotFoundException;
+import com.team4.secureit.exception.*;
 import io.jsonwebtoken.JwtException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -62,6 +59,12 @@ public class ControllerAdvisor {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseError handleEntityNotFoundException(EntityNotFoundException e) {
         return new ResponseError(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(CertificateAlreadyRevokedException.class)
+    public ResponseError handleCertificateAlreadyRevokedException(CertificateAlreadyRevokedException e) {
+        return new ResponseError(HttpStatus.CONFLICT, "Certificate has already been revoked.");
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

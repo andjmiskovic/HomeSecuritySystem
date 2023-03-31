@@ -17,7 +17,7 @@ import java.util.Date;
 public class CertificateDetails {
 
     @Id
-    @Column(nullable = false, unique = true)
+    @Column
     private BigInteger serialNumber;
 
     @Column(unique = true)
