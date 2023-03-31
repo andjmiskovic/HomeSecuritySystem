@@ -1,5 +1,7 @@
 package com.team4.secureit.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +25,7 @@ public class CSRDetails {
     private String csrPem;
 
     @Column(length = 4096)
+    @JsonIgnore
     private String privateKeyPem;
 
     @Column(length = 4096)
@@ -57,9 +60,10 @@ public class CSRDetails {
     private RequestStatus status = RequestStatus.PENDING;
 
     @Column
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String rejectionReason;
 
-    @Column
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Instant processed;
 
     @CreationTimestamp
