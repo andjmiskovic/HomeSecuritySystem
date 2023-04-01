@@ -1,11 +1,12 @@
 import {CollectionViewer, DataSource} from "@angular/cdk/collections";
 import {BehaviorSubject, catchError, finalize, Observable, of} from "rxjs";
+import {CertificateService} from "../services/certificates.service";
 
 export class CertificatesListItem {
-  issuedBy!: string;
-  issuedTo!: string;
-  validTo!: Date;
-  validFrom!: Date;
+  serialNumber!: number;
+  alias!: string;
+  notBefore!: string;
+  notAfter!: string;
 }
 
 export class CertificateTableDataSource implements DataSource<CertificatesListItem> {
@@ -17,7 +18,7 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
   public totalNumber$ = this.totalNumber.asObservable();
 
   constructor(
-    // private certificateService: CertificateService
+    private certificateService: CertificateService
   ) {
   }
 
@@ -30,23 +31,34 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
     this.loadingSubject.complete();
   }
 
-  loadCertificates(sortKind = 'start', sortDirection = 'desc', pageIndex = 0, pageSize = 10) {
+  loadCertificates() {
 
     this.loadingSubject.next(true);
 
-    // this.certificateService.getCertificates(driverEmail, customerEmail, sortKind, sortDirection,
-    //   pageIndex, pageSize).pipe(
-    //   catchError(() => of([])),
-    //   finalize(() => this.loadingSubject.next(false))
-    // )
-    //   .subscribe(rides => {
-    //     if ("content" in rides) {
-    //       this.ridesSubject.next(rides.content);
-    //     }
-    //     if ("totalElements" in rides) {
-    //       this.totalNumber.next(rides.totalElements);
-    //     }
-    //   });
+    this.certificateService.getAll().pipe(
+      catchError(() => of([])),
+      finalize(() => this.loadingSubject.next(false))
+    )
+      .subscribe(certificates => {
+        console.log("AAAAA")
+        console.log(certificates)
+        let certificateItems: CertificatesListItem[] = []
+        certificates.forEach((certificate) => {
+          let certificateItem = new CertificatesListItem()
+          certificateItem.alias = certificate.alias
+          certificateItem.notBefore = certificate.notBefore
+          certificateItem.notAfter = certificate.notAfter
+          certificateItem.serialNumber = certificate.serialNumber
+          certificateItems.push(certificateItem)
+        })
+        this.certificatesSubject.next(certificateItems)
+        // if ("content" in rides) {
+        //   this.certificatesSubject.next(rides.content);
+        // }
+        // if ("totalElements" in rides) {
+        //   this.totalNumber.next(rides.totalElements);
+        // }
+      });
   }
 
 }

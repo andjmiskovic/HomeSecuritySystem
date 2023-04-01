@@ -3,6 +3,7 @@ import {FormBuilder, Validators} from "@angular/forms";
 import {AuthService} from "../../../../services/auth.service";
 import {Router} from '@angular/router';
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {LoginCredentials} from "../../../../model/LoginCredentials";
 
 @Component({
   selector: 'app-login',
@@ -42,7 +43,16 @@ export class LoginComponent {
   }
 
   login() {
-    // TO DO
+    let loginCredentials: LoginCredentials = {
+      email: this.email,
+      password: this.password
+    }
+    this.authService.login(loginCredentials).subscribe({
+      next: (loginResponse) => {
+        localStorage.setItem('token', "Bearer " + loginResponse.accessToken);
+        this.router.navigate(['/certificates'])
+      }
+    })
   }
 
   openSnack(message: string) {
