@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {CsrFormComponent} from "../../../dashboard/components/csr-form/csr-form.component";
 
@@ -8,6 +8,8 @@ import {CsrFormComponent} from "../../../dashboard/components/csr-form/csr-form.
   styleUrls: ['./certificate-requests.component.css']
 })
 export class CertificateRequestsComponent {
+
+  @Input() id!: string;
 
   constructor(private dialog: MatDialog) {
   }
