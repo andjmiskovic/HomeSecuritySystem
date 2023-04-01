@@ -14,7 +14,7 @@ export class AuthService {
   private readonly authUrl: string;
 
   constructor(private http: HttpClient) {
-    this.authUrl = 'http://localhost:8000/auth';
+    this.authUrl = 'http://localhost:8001/auth';
   }
 
   public login(user: LoginCredentials): Observable<LoginResponseDto> {
@@ -37,7 +37,6 @@ export class AuthService {
     return {
       headers: new HttpHeaders({
         'Access-Control-Allow-Origin': '*',
-        'Authorization': localStorage.getItem('token') || 'authkey',
         'Content-Type': 'application/json',
       })
     };

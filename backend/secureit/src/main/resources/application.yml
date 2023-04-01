@@ -54,4 +54,4 @@ app:
   mailing:
     templatesLocation: 'templates'
 server:
-  port: '8000'
+  port: '8001'
