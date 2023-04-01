@@ -18,6 +18,8 @@ import {MatInputModule} from "@angular/material/input";
 import {FormsModule} from "@angular/forms";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {DashboardModule} from "./views/dashboard/dashboard.module";
+import {CertificatesModule} from "./views/certificates/certificates.module";
+import {CsrModule} from "./views/csr/csr.module";
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import {DashboardModule} from "./views/dashboard/dashboard.module";
     MatSortModule,
     MatInputModule,
     FormsModule,
-    DashboardModule
+    DashboardModule,
+    CertificatesModule,
+    CsrModule
   ],
   providers: [],
   bootstrap: [AppComponent]
