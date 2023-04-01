@@ -7,6 +7,7 @@ import {merge, tap} from "rxjs";
 import {
   CertificatesDetailsDialogComponent
 } from "../../components/certificates-details-dialog/certificates-details-dialog.component";
+import {CertificatesService} from "../../../../services/certificates.service";
 
 @Component({
   selector: 'app-certificate-list',
@@ -21,8 +22,8 @@ export class CertificateListComponent {
   @ViewChild(MatSort, {static: false}) sort!: MatSort;
   requestStatus = "accepted";
 
-  constructor(public dialog: MatDialog) {
-    this.dataSource = new CertificateTableDataSource();
+  constructor(public dialog: MatDialog, private certificateService: CertificatesService) {
+    this.dataSource = new CertificateTableDataSource(certificateService);
   }
 
   ngAfterViewInit() {

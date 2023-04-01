@@ -1,5 +1,6 @@
 import {CollectionViewer, DataSource} from "@angular/cdk/collections";
 import {BehaviorSubject, catchError, finalize, Observable, of} from "rxjs";
+import {CertificatesService} from "../services/certificates.service";
 
 export class CertificatesListItem {
   issuedBy!: string;
@@ -17,7 +18,7 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
   public totalNumber$ = this.totalNumber.asObservable();
 
   constructor(
-    // private certificateService: CertificateService
+    private certificateService: CertificatesService
   ) {
   }
 
@@ -30,23 +31,23 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
     this.loadingSubject.complete();
   }
 
-  loadCertificates(sortKind = 'start', sortDirection = 'desc', pageIndex = 0, pageSize = 10) {
+  loadCertificates(sortKind = 'start', sortDirection = 'desc') {
 
     this.loadingSubject.next(true);
 
-    // this.certificateService.getCertificates(driverEmail, customerEmail, sortKind, sortDirection,
-    //   pageIndex, pageSize).pipe(
-    //   catchError(() => of([])),
-    //   finalize(() => this.loadingSubject.next(false))
-    // )
-    //   .subscribe(rides => {
-    //     if ("content" in rides) {
-    //       this.ridesSubject.next(rides.content);
-    //     }
-    //     if ("totalElements" in rides) {
-    //       this.totalNumber.next(rides.totalElements);
-    //     }
-    //   });
+    this.certificateService.getCertificates(sortKind, sortDirection).pipe(
+      catchError(() => of([])),
+      finalize(() => this.loadingSubject.next(false))
+    )
+      .subscribe(certificates => {
+        console.log(certificates)
+        // if ("content" in rides) {
+        //   this.certificatesSubject.next(rides.content);
+        // }
+        // if ("totalElements" in rides) {
+        //   this.totalNumber.next(rides.totalElements);
+        // }
+      });
   }
 
 }

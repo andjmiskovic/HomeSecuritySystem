@@ -55,9 +55,4 @@
       <td>No data matching the filters</td>
     </tr>
   </mat-table>
-  <mat-paginator [pageSize]="10"
-                 [length]="dataSource.totalNumber$ | async"
-                 showFirstLastButtons
-                 [pageSizeOptions]="[5, 10, 50]"></mat-paginator>
-
 </div>

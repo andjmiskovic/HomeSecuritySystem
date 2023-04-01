@@ -49,7 +49,7 @@ export class LoginComponent {
     }
     this.authService.login(loginCredentials).subscribe({
       next: (user) => {
-        this.router.navigate(['/certificate-list'])
+        this.router.navigate(['/certificates'])
       }
 
     })
