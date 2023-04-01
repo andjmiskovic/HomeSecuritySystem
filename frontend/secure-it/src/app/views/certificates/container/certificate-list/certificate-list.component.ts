@@ -7,7 +7,8 @@ import {merge, tap} from "rxjs";
 import {
   CertificatesDetailsDialogComponent
 } from "../../components/certificates-details-dialog/certificates-details-dialog.component";
-import {CertificatesService} from "../../../../services/certificates.service";
+import {CertificateService} from "../../../../services/certificates.service";
+import {getDateTime} from "../../../../utils/TimeUtils";
 
 @Component({
   selector: 'app-certificate-list',
@@ -15,32 +16,32 @@ import {CertificatesService} from "../../../../services/certificates.service";
   styleUrls: ['./certificate-list.component.css']
 })
 export class CertificateListComponent {
-  displayedColumns = ["issuedTo", "issuedBy", "validFrom", "validTo", "details"];
+  displayedColumns = ["serialNumber", "alias", "notBefore", "notAfter", "details"];
   dataSource: CertificateTableDataSource;
 
   @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort!: MatSort;
   requestStatus = "accepted";
 
-  constructor(public dialog: MatDialog, private certificateService: CertificatesService) {
+  constructor(public dialog: MatDialog, private certificateService: CertificateService) {
     this.dataSource = new CertificateTableDataSource(certificateService);
   }
 
   ngAfterViewInit() {
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-    merge(this.sort.sortChange, this.paginator.page)
-      .pipe(
-        tap(() => this.loadCertificates())
-      )
-      .subscribe();
+    this.loadCertificates()
+    // this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    // merge(this.sort.sortChange, this.paginator.page)
+    //   .pipe(
+    //     tap(() => this.loadCertificates())
+    //   )
+    //   .subscribe();
   }
 
   loadCertificates() {
     this.dataSource.loadCertificates(
-      this.sort.active,
-      this.sort.direction,
-      this.paginator.pageIndex,
-      this.paginator.pageSize);
+      // this.sort.active,
+      // this.sort.direction
+    );
   }
 
   detailsAboutCertificate(id: number) {
@@ -54,5 +55,10 @@ export class CertificateListComponent {
 
   applyFilter($event: KeyboardEvent) {
 
+  }
+
+
+  parseDate(date: string) {
+    return getDateTime(date)
   }
 }

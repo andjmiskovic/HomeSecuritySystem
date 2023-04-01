@@ -3,8 +3,8 @@ export class CertificateDetails {
   alias!: string;
   subject!: string;
   issuer!: string;
-  notBefore!: Date;
-  notAfter!: Date;
+  notBefore!: string;
+  notAfter!: string;
   signatureAlgorithm!: string;
   version!: number;
   publicKeyAlgorithm!: number;

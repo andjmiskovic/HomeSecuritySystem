@@ -8,7 +8,7 @@ import {CertificateDetails} from "../model/CertificateDetails";
 @Injectable({
   providedIn: 'root'
 })
-export class CertificatesService {
+export class CertificateService {
 
   private readonly certificateUrl: string;
 
@@ -16,7 +16,7 @@ export class CertificatesService {
     this.certificateUrl = environment.apiUrl + '/certificates';
   }
 
-  public getCertificates(sortKind = 'start', sortOrder = 'desc'): Observable<CertificateDetails[]> {
+  public getAll(sortKind = 'start', sortOrder = 'desc'): Observable<CertificateDetails[]> {
     return this.http.get<CertificateDetails[]>(this.certificateUrl, AuthService.getHttpOptions());
   }
 }

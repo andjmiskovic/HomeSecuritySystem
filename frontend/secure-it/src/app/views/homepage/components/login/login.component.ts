@@ -48,10 +48,10 @@ export class LoginComponent {
       password: this.password
     }
     this.authService.login(loginCredentials).subscribe({
-      next: (user) => {
+      next: (loginResponse) => {
+        localStorage.setItem('token', "Bearer " + loginResponse.accessToken);
         this.router.navigate(['/certificates'])
       }
-
     })
   }
 

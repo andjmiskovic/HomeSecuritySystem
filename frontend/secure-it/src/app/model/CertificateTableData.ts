@@ -1,12 +1,12 @@
 import {CollectionViewer, DataSource} from "@angular/cdk/collections";
 import {BehaviorSubject, catchError, finalize, Observable, of} from "rxjs";
-import {CertificatesService} from "../services/certificates.service";
+import {CertificateService} from "../services/certificates.service";
 
 export class CertificatesListItem {
-  issuedBy!: string;
-  issuedTo!: string;
-  validTo!: Date;
-  validFrom!: Date;
+  serialNumber!: number;
+  alias!: string;
+  notBefore!: string;
+  notAfter!: string;
 }
 
 export class CertificateTableDataSource implements DataSource<CertificatesListItem> {
@@ -18,7 +18,7 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
   public totalNumber$ = this.totalNumber.asObservable();
 
   constructor(
-    private certificateService: CertificatesService
+    private certificateService: CertificateService
   ) {
   }
 
@@ -31,16 +31,27 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
     this.loadingSubject.complete();
   }
 
-  loadCertificates(sortKind = 'start', sortDirection = 'desc') {
+  loadCertificates() {
 
     this.loadingSubject.next(true);
 
-    this.certificateService.getCertificates(sortKind, sortDirection).pipe(
+    this.certificateService.getAll().pipe(
       catchError(() => of([])),
       finalize(() => this.loadingSubject.next(false))
     )
       .subscribe(certificates => {
+        console.log("AAAAA")
         console.log(certificates)
+        let certificateItems: CertificatesListItem[] = []
+        certificates.forEach((certificate) => {
+          let certificateItem = new CertificatesListItem()
+          certificateItem.alias = certificate.alias
+          certificateItem.notBefore = certificate.notBefore
+          certificateItem.notAfter = certificate.notAfter
+          certificateItem.serialNumber = certificate.serialNumber
+          certificateItems.push(certificateItem)
+        })
+        this.certificatesSubject.next(certificateItems)
         // if ("content" in rides) {
         //   this.certificatesSubject.next(rides.content);
         // }

@@ -8,35 +8,28 @@
       <mat-icon matPrefix>search</mat-icon>
       <input matInput (keyup)="applyFilter($event)" placeholder="Search certificates..." #input>
     </mat-form-field>
-
-    <mat-form-field appearance="outline" style="width: 300px">
-      <mat-select [ngModel]="requestStatus">
-        <mat-option value="accepted">Valid certificates</mat-option>
-        <mat-option value="rejected">Expired certificates</mat-option>
-      </mat-select>
-    </mat-form-field>
   </p>
 
   <mat-table [dataSource]="dataSource" matSort matSortActive="start" matSortDirection="desc" matSortDisableClear>
 
-    <ng-container matColumnDef="issuedTo">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Issued to</mat-header-cell>
-      <mat-cell *matCellDef="let certificate">{{certificate.issuedTo}}</mat-cell>
+    <ng-container matColumnDef="serialNumber">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Serial number</mat-header-cell>
+      <mat-cell *matCellDef="let certificate">{{certificate.serialNumber}}</mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="issuedBy">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Issued by</mat-header-cell>
-      <mat-cell *matCellDef="let certificate">{{certificate.issuedBy}}</mat-cell>
+    <ng-container matColumnDef="alias">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Alias</mat-header-cell>
+      <mat-cell *matCellDef="let certificate">{{certificate.alias}}</mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="validFrom">
+    <ng-container matColumnDef="notBefore">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Valid from</mat-header-cell>
-      <mat-cell *matCellDef="let certificate">{{certificate.validFrom}}</mat-cell>
+      <mat-cell *matCellDef="let certificate">{{parseDate(certificate.notBefore)}}</mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="validTo">
+    <ng-container matColumnDef="notAfter">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Valid to</mat-header-cell>
-      <mat-cell *matCellDef="let certificate">{{certificate.validTo}}</mat-cell>
+      <mat-cell *matCellDef="let certificate">{{parseDate(certificate.notAfter)}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="details">
@@ -50,7 +43,6 @@
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-
     <tr *matNoDataRow>
       <td>No data matching the filters</td>
     </tr>
