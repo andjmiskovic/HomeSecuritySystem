@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
+import {MatDialog} from "@angular/material/dialog";
+import {CsrFormComponent} from "../../components/csr-form/csr-form.component";
 
 @Component({
   selector: 'app-dashboard-container',
@@ -7,4 +9,11 @@ import { Component } from '@angular/core';
 })
 export class DashboardContainerComponent {
 
+  constructor(public dialog: MatDialog) {
+  }
+
+  openNewCertificateDialog() {
+    this.dialog.open(CsrFormComponent);
+  }
 }
+

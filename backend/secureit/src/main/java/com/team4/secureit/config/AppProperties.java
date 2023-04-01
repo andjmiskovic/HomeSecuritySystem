@@ -20,6 +20,7 @@ public class AppProperties {
     @Setter
     public static class Mailing {
         private String templatesLocation;
+        private String senderAddress;
     }
 
     public Auth getAuth() {

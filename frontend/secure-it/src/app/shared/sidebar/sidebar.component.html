@@ -1,7 +1,6 @@
-<div class="sidebar" [ngClass]="{ 'active': isActive }">
-  <div class="logo_content">
-    <i class="bx bx-menu" (click)="isActive = !isActive" id="menu-btn"></i>
-  </div>
+<div class="sidebar">
+  <img src="assets/logo/icon_blue.png" class="logo" style="margin-top: 10px" alt="">
+  <hr style="height: 1px; background: var(--blue)">
   <ul>
     <li>
       <a (click)="navigate('/dashboard')" [ngClass]="{ 'currentPage': currentPage === 'dashboard' }">
@@ -18,13 +17,6 @@
       <span class="tooltip">Users</span>
     </li>
     <li>
-      <a (click)="navigate('/map')" [ngClass]="{ 'currentPage': currentPage === 'map' }">
-        <mat-icon>location_pin</mat-icon>
-        <span class="links_name">Map</span>
-      </a>
-      <span class="tooltip">Map</span>
-    </li>
-    <li>
       <a (click)="navigate('/analytics')" [ngClass]="{ 'currentPage': currentPage === 'analytics' }">
         <mat-icon>query_stats</mat-icon>
         <span class="links_name">Analytics</span>
@@ -37,20 +29,6 @@
         <span class="links_name">My Profile</span>
       </a>
       <span class="tooltip">My Profile</span>
-    </li>
-    <li>
-      <a (click)="navigate('/chat')" [ngClass]="{ 'currentPage': currentPage === 'chat' }">
-        <mat-icon>message</mat-icon>
-        <span class="links_name">Messages</span>
-      </a>
-      <span class="tooltip">Messages</span>
-    </li>
-    <li>
-      <a (click)="navigate('/rides')" [ngClass]="{ 'currentPage': currentPage === 'rides' }">
-        <mat-icon>directions_car</mat-icon>
-        <span class="links_name">Rides History</span>
-      </a>
-      <span class="tooltip">Rides History</span>
     </li>
     <li>
       <a (click)="logout()">

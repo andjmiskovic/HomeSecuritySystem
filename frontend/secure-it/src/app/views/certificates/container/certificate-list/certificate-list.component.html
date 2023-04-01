@@ -1,8 +1,21 @@
 <app-sidebar currentPage="certificates"></app-sidebar>
-<div style="margin-left: 90px; margin-right: 10px">
-  <div class="filter-container">
-    <h1 style="font-weight: 400; margin-top: 20px">All certificates</h1>
-  </div>
+<img src="../../../../../assets/images/background-line.jpg" class="dashboard-background" alt="dashboard-background"/>
+
+<div style="margin-left: 90px; margin-right: 10px; margin-top: -80px">
+  <h1 style="font-weight: 500; margin-left: 10px; color: white">All certificates</h1>
+  <p>
+    <mat-form-field appearance="outline" style="width: 300px">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Search certificates..." #input>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 300px">
+      <mat-select [ngModel]="requestStatus">
+        <mat-option value="accepted">Valid certificates</mat-option>
+        <mat-option value="rejected">Expired certificates</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </p>
 
   <mat-table [dataSource]="dataSource" matSort matSortActive="start" matSortDirection="desc" matSortDisableClear>
 

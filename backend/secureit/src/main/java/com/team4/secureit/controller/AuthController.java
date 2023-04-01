@@ -3,6 +3,7 @@ package com.team4.secureit.controller;
 import com.team4.secureit.api.ResponseOk;
 import com.team4.secureit.dto.request.LoginRequest;
 import com.team4.secureit.dto.request.RegistrationRequest;
+import com.team4.secureit.dto.request.VerificationRequest;
 import com.team4.secureit.dto.response.TokenResponse;
 import com.team4.secureit.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,5 +37,11 @@ public class AuthController {
     public ResponseOk register(@Valid @RequestBody RegistrationRequest registrationRequest) {
         accountService.registerPropertyOwner(registrationRequest);
         return new ResponseOk("User registered successfully.");
+    }
+
+    @PostMapping("/register/verify")
+    public ResponseOk verify(@Valid @RequestBody VerificationRequest verificationRequest) {
+        accountService.verifyEmail(verificationRequest);
+        return new ResponseOk("Email verified successfully.");
     }
 }

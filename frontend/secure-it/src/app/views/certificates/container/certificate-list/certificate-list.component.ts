@@ -1,9 +1,12 @@
 import {Component, ViewChild} from '@angular/core';
-import {CertificateTableDataSource} from "../../model/CertificateTableData";
+import {CertificateTableDataSource} from "../../../../model/CertificateTableData";
 import {MatDialog} from "@angular/material/dialog";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {merge, tap} from "rxjs";
+import {
+  CertificatesDetailsDialogComponent
+} from "../../components/certificates-details-dialog/certificates-details-dialog.component";
 
 @Component({
   selector: 'app-certificate-list',
@@ -16,6 +19,7 @@ export class CertificateListComponent {
 
   @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort!: MatSort;
+  requestStatus = "accepted";
 
   constructor(public dialog: MatDialog) {
     this.dataSource = new CertificateTableDataSource();
@@ -39,11 +43,15 @@ export class CertificateListComponent {
   }
 
   detailsAboutCertificate(id: number) {
-    // const dialogRef = this.dialog.open(RideDetailsDialogComponent, {
-    //   height: '600px',
-    //   width: '1000px'
-    // });
-    // dialogRef.componentInstance.id = id;
-    // dialogRef.componentInstance.dialogRef = dialogRef;
+    const dialogRef = this.dialog.open(CertificatesDetailsDialogComponent, {
+      height: '600px',
+      width: '1000px'
+    });
+    dialogRef.componentInstance.id = id;
+    dialogRef.componentInstance.dialogRef = dialogRef;
+  }
+
+  applyFilter($event: KeyboardEvent) {
+
   }
 }

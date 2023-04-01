@@ -50,7 +50,7 @@
 }
 
 .sidebar ul {
-  margin-top: 110px;
+  margin-top: 10px;
   margin-left: -45px;
 }
 
@@ -136,68 +136,15 @@
 
 .sidebar ul li mat-icon {
   height: 50px;
-  color: var(--yellow);
+  color: var(--blue);
   min-width: 50px;
   border-radius: var(--border-radius);
   text-align: center;
   line-height: 50px;
 }
 
-.sidebar .profile_content {
-  position: absolute;
-  color: var(--white);
-  left: 0;
-  bottom: 0;
-  width: 100%;
-}
-
-.sidebar .profile_content .profile {
-  position: relative;
-  padding: 10px 6px;
-  background: var(--gray);
-  height: 60px;
-}
-
-.sidebar .profile_content .profile_details {
-  display: flex;
-  align-items: center;
-  font-size: 15px;
-  opacity: 0;
-  pointer-events: none;
-  white-space: nowrap;
-}
-
-.sidebar .profile_content .profile_details img {
-  height: 45px;
-  width: 45px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 10px;
-}
-
-.sidebar.active .profile_content .profile_details {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.profile #log_out {
-  position: absolute;
-  left: 50%;
-  bottom: 5px;
-  transform: translateX(-50%);
-  min-width: 50px;
-  line-height: 50px;
-  font-size: 20px;
-  float: right;
-  text-align: center;
-}
-
-.sidebar.active .profile #log_out {
-  left: 90%;
-}
-
 .token {
-  color: var(--yellow);
+  color: var(--blue);
 }
 
 .number-of-tokens {
