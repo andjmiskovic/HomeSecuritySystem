@@ -9,18 +9,18 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatMenuModule} from "@angular/material/menu";
-import {CsrListComponent} from "./container/csr-list/csr-list.component";
 import {CsrDetailsDialogComponent} from './components/csr-details-dialog/csr-details-dialog.component';
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatTableModule} from "@angular/material/table";
 import {SharedModule} from "../../shared/shared.module";
 import {MatSelectModule} from "@angular/material/select";
 import {MatOptionModule} from "@angular/material/core";
+import {CertificateRequestsComponent} from './container/certificate-requests/certificate-requests.component';
 
 @NgModule({
   declarations: [
-    CsrListComponent,
-    CsrDetailsDialogComponent
+    CsrDetailsDialogComponent,
+    CertificateRequestsComponent
   ],
   imports: [
     MatFormFieldModule,
@@ -41,10 +41,8 @@ import {MatOptionModule} from "@angular/material/core";
     SharedModule,
     MatPaginatorModule,
   ],
-  exports: [
-    CsrListComponent
-  ],
-  bootstrap: [CsrListComponent]
+  exports: [],
+  bootstrap: []
 })
 export class CsrModule {
 }

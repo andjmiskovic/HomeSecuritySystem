@@ -7,12 +7,12 @@ import {CertificateListComponent} from "./views/certificates/container/certifica
 import {
   DashboardContainerComponent
 } from "./views/dashboard/container/dashboard-container/dashboard-container.component";
-import {CsrListComponent} from "./views/csr/container/csr-list/csr-list.component";
+import {CertificateRequestsComponent} from "./views/csr/container/certificate-requests/certificate-requests.component";
 
 const routes: Routes = [
   {path: '', component: HomepageContainerComponent},
   {path: 'certificates', component: CertificateListComponent},
-  {path: 'csrs', component: CsrListComponent},
+  {path: 'requests', component: CertificateRequestsComponent},
   {path: 'dashboard', component: DashboardContainerComponent},
   {path: '403', component: NotAuthorizedPageComponent},
   {path: '**', component: NotFoundPageComponent}
