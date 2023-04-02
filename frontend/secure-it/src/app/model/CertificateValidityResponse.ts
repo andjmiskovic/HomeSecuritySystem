@@ -1,7 +1,7 @@
 export class CertificateValidityResponse {
   valid!: boolean;
   reason?: string;
-  revokedAt?: Date;
-  validAfter?: Date;
-  validUntil?: Date;
+  revokedAt: Date = new Date();
+  validAfter: Date = new Date();
+  validUntil: Date = new Date();
 }

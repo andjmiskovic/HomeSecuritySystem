@@ -3,12 +3,12 @@ import {CertificateTableDataSource} from "../../../../model/CertificateTableData
 import {MatDialog} from "@angular/material/dialog";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
-import {merge, tap} from "rxjs";
 import {
   CertificatesDetailsDialogComponent
 } from "../../components/certificates-details-dialog/certificates-details-dialog.component";
 import {CertificateService} from "../../../../services/certificates.service";
 import {getDateTime} from "../../../../utils/TimeUtils";
+import {CertificateDetails} from "../../../../model/CertificateDetails";
 
 @Component({
   selector: 'app-certificate-list',
@@ -28,37 +28,26 @@ export class CertificateListComponent {
   }
 
   ngAfterViewInit() {
-    this.loadCertificates()
-    // this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-    // merge(this.sort.sortChange, this.paginator.page)
-    //   .pipe(
-    //     tap(() => this.loadCertificates())
-    //   )
-    //   .subscribe();
+    this.loadCertificates();
   }
 
   loadCertificates() {
-    this.dataSource.loadCertificates(
-      // this.sort.active,
-      // this.sort.direction
-    );
+    this.dataSource.loadCertificates();
   }
 
-  detailsAboutCertificate(id: number) {
+  detailsAboutCertificate(certificate: CertificateDetails) {
     const dialogRef = this.dialog.open(CertificatesDetailsDialogComponent, {
       height: '600px',
       width: '1000px'
     });
-    dialogRef.componentInstance.id = id;
+    dialogRef.componentInstance.serialNumber = certificate.serialNumber;
     dialogRef.componentInstance.dialogRef = dialogRef;
   }
 
   applyFilter($event: KeyboardEvent) {
-
   }
 
-
   parseDate(date: string) {
-    return getDateTime(date)
+    return getDateTime(date);
   }
 }

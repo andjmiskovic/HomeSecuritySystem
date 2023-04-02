@@ -4,7 +4,6 @@ import com.team4.secureit.dto.request.CertificateCreationOptions;
 import com.team4.secureit.dto.request.CertificateRevocationRequest;
 import com.team4.secureit.dto.response.CertificateValidityResponse;
 import com.team4.secureit.exception.CertificateAlreadyRevokedException;
-import com.team4.secureit.model.CSRDetails;
 import com.team4.secureit.model.CertificateDetails;
 import com.team4.secureit.model.CertificateRevocation;
 import com.team4.secureit.repository.CertificateDetailsRepository;
@@ -19,7 +18,6 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
-import org.bouncycastle.jcajce.provider.asymmetric.X509;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
@@ -63,7 +61,7 @@ public class CertificateService {
     public CertificateValidityResponse checkValidityForSerialNumber(BigInteger serialNumber) throws KeyStoreException {
         Optional<CertificateRevocation> revocation = certificateRevocationRepository.findBySerialNumber(serialNumber);
         if (revocation.isPresent())
-            return new CertificateValidityResponse("The certificate has been revoked and should not be used.", Date.from(revocation.get().getCreated()));
+            return new CertificateValidityResponse(revocation.get().getRevocationReason(), Date.from(revocation.get().getCreated()));
 
         CertificateDetails certificateDetails = getBySerialNumber(serialNumber);
         X509Certificate certificate = keyStoreService.getCertificate(certificateDetails.getAlias());

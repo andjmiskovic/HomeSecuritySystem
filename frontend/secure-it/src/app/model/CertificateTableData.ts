@@ -3,10 +3,10 @@ import {BehaviorSubject, catchError, finalize, Observable, of} from "rxjs";
 import {CertificateService} from "../services/certificates.service";
 
 export class CertificatesListItem {
-  serialNumber!: number;
+  serialNumber!: BigInteger;
   alias!: string;
-  notBefore!: string;
-  notAfter!: string;
+  notBefore!: Date;
+  notAfter!: Date;
 }
 
 export class CertificateTableDataSource implements DataSource<CertificatesListItem> {
@@ -40,8 +40,6 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
       finalize(() => this.loadingSubject.next(false))
     )
       .subscribe(certificates => {
-        console.log("AAAAA")
-        console.log(certificates)
         let certificateItems: CertificatesListItem[] = []
         certificates.forEach((certificate) => {
           let certificateItem = new CertificatesListItem()

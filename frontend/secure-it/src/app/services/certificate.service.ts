@@ -32,7 +32,7 @@ export class CertificateService {
   }
 
   revokeCertificate(serialNumber: BigInteger, request: CertificateRevocationRequest): Observable<any> {
-    return this.http.put(`${this.certificatesUrl}/${serialNumber}/revoke`, request, AuthService.getHttpOptions());
+    return this.http.post(`${this.certificatesUrl}/${serialNumber}/revoke`, request, AuthService.getHttpOptions());
   }
 
   findIssuerCertificates(): Observable<CertificateDetails[]> {
