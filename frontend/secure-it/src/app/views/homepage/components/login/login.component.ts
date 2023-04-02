@@ -26,18 +26,6 @@ export class LoginComponent {
   constructor(@Inject(MatSnackBar) private _snackBar: MatSnackBar, private _formBuilder: FormBuilder, private authService: AuthService, private router: Router) {
   }
 
-  postLogin(accessToken: string) {
-    localStorage.setItem('token', "Bearer " + accessToken);
-    this.authService.getCurrentlyLoggedUser().subscribe({
-      next: (user) => {
-        if (user.role === "CUSTOMER")
-          this.router.navigate(['/dashboard']);
-        else if (user.role === "ADMIN")
-          this.router.navigate(['/dashboard']);
-      }
-    });
-  }
-
   switchToRegisterForm() {
     this.switchForm.emit();
   }
@@ -50,7 +38,7 @@ export class LoginComponent {
     this.authService.login(loginCredentials).subscribe({
       next: (loginResponse) => {
         localStorage.setItem('token', "Bearer " + loginResponse.accessToken);
-        localStorage.setItem('userRole', "ADMIN");
+        localStorage.setItem('userRole', loginResponse.role);
         this.router.navigate(['/dashboard'])
       }
     })

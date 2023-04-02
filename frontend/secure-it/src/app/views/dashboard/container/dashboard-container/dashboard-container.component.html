@@ -1,2 +1,9 @@
+<img src="../../../../../assets/images/background-line.jpg" class="dashboard-background" alt="dashboard-background"/>
+
 <app-sidebar currentPage="dashboard"></app-sidebar>
-<button class="create-certificate" mat-button (click)="openNewCertificateDialog()">New Certificate</button>
+<div style="margin-left: 90px; margin-right: 10px; margin-top: -80px">
+  <h1 style="font-weight: 500; margin-left: 10px; color: white">Dashboard</h1>
+  <button *ngIf="userRole!=='ROLE_ADMIN'" class="create-certificate" mat-raised-button (click)="openNewCertificateDialog()">New
+    Certificate
+  </button>
+</div>

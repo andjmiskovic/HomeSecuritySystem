@@ -43,12 +43,13 @@ export class RegistrationComponent {
       const requestBody: RegisterCredentials = {
         "email": this.email,
         "password": this.password,
-        "name": this.name,
-        "surname": this.lastName,
+        "firstName": this.name,
+        "lastName": this.lastName,
         "phoneNumber": this.phoneNumber,
         "city": this.city,
+        "passwordConfirmation": this.password2
       }
-
+      console.log(requestBody)
       this.authService.register(requestBody).subscribe({
         next: () => this.openSnackBar("We sent you registration link"),
         error: (message) => this.openSnackBar(message)

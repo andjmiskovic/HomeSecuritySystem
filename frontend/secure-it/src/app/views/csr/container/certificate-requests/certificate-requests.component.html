@@ -3,10 +3,11 @@
 
 <div style="margin-left: 90px; margin-right: 10px; margin-top: -80px">
   <h1 style="font-weight: 500; margin-left: 10px; color: white">Certificate requests</h1>
-  <p style="margin-top: 70px;">
+  <p style="z-index: 1000">
     <mat-form-field appearance="outline" style="width: 300px">
       <mat-icon matPrefix>search</mat-icon>
-      <input matInput [(ngModel)]="searchFilter" (keyup)="applySearchFilter($event)" placeholder="Search certificates..." #input>
+      <input matInput [(ngModel)]="searchFilter" (keyup)="applySearchFilter($event)"
+             placeholder="Search certificates..." #input>
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-select disableRipple [(ngModel)]="selectedFilter" (selectionChange)="selectedFilterChange($event)">
