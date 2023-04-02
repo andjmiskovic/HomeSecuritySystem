@@ -8,12 +8,17 @@ import {
   DashboardContainerComponent
 } from "./views/dashboard/container/dashboard-container/dashboard-container.component";
 import {CertificateRequestsComponent} from "./views/csr/container/certificate-requests/certificate-requests.component";
+import {AuthGuard} from "./model/AuthGuard";
+import {VerificationCodeComponent} from "./views/homepage/components/verification-code/verification-code.component";
+import {VerificationScreenComponent} from "./views/verification-screen/verification-screen.component";
 
 const routes: Routes = [
   {path: '', component: HomepageContainerComponent},
-  {path: 'certificates', component: CertificateListComponent},
-  {path: 'requests', component: CertificateRequestsComponent},
-  {path: 'dashboard', component: DashboardContainerComponent},
+  {path: 'certificates', component: CertificateListComponent, canActivate: [AuthGuard]},
+  {path: 'requests', component: CertificateRequestsComponent, canActivate: [AuthGuard]},
+  {path: 'dashboard', component: DashboardContainerComponent, canActivate: [AuthGuard]},
+  // {path: 'registration/verification?code=/:verificationCode', component: VerificationScreenComponent},
+  {path: 'registration/verification', component: VerificationScreenComponent},
   {path: '403', component: NotAuthorizedPageComponent},
   {path: '**', component: NotFoundPageComponent}
 ];
