@@ -1,4 +1,4 @@
 export class CertificateCreationOptions {
-  extensions!: { [key: string]: string };
+  extensions!: { [key: string]: any };
   issuerAlias!: string;
 }
