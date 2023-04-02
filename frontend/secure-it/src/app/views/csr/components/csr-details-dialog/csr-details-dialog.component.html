@@ -31,11 +31,11 @@
 
   <div class="row">
     <div class="label">Created:</div>
-    <div class="value">{{csr.created}}</div>
+    <div class="value">{{parseDate(csr.created)}}</div>
   </div>
   <div class="row">
     <div class="label">Modified:</div>
-    <div class="value">{{csr.modified}}</div>
+    <div class="value">{{parseDate(csr.modified)}}</div>
   </div>
 
   <div class="row">
@@ -72,19 +72,59 @@
   <div class="row">
     <div class="label">Status:</div>
     <div class="value">
-      <span *ngIf="csr.status == 'APPROVED'" class="requestStatus" style="background-color: var(--green)">APPROVED</span>
+      <span *ngIf="csr.status == 'APPROVED'" class="requestStatus"
+            style="background-color: var(--green)">APPROVED</span>
       <span *ngIf="csr.status == 'REJECTED'" class="requestStatus" style="background-color: var(--red)">REJECTED</span>
       <span *ngIf="csr.status == 'PENDING'" class="requestStatus" style="background-color: var(--blue)">PENDING</span>
     </div>
   </div>
 
-  <hr>
+  <div *ngIf="csr.status == 'PENDING'">
+    <hr>
+    <button mat-stroked-button color="warn" (click)="inProcess = 'rejection'" style="margin-right: 5px">
+      Reject certificate
+    </button>
+    <button mat-stroked-button style="color: var(--green)" (click)="inProcess = 'issuing'">
+      Issue certificate
+    </button>
 
-  <button mat-stroked-button color="warn" (click)="reject(csr.id)" style="margin-right: 5px">
-    Reject certificate
-  </button>
-  <button mat-stroked-button style="color: var(--green)" (click)="approve(csr.id)">
-    Issue certificate
-  </button>
+    <div *ngIf="inProcess == 'rejection'">
+      <mat-form-field style="width: 100%" appearance="outline">
+        <mat-label>Rejection reason</mat-label>
+        <textarea [(ngModel)]="reason" matInput placeholder="Ex. Request is invalid because..."></textarea>
+      </mat-form-field>
 
+      <button mat-raised-button style="color: var(--red); width: 100%" (click)="reject()">
+        Reject certificate
+      </button>
+    </div>
+
+    <div *ngIf="inProcess == 'issuing'">
+      <!--      <mat-form-field appearance="fill">-->
+      <!--        <mat-label>Toppings</mat-label>-->
+      <!--        <mat-select [formControl]="toppings" multiple>-->
+      <!--          <mat-select-trigger>-->
+      <!--            {{toppings.value?.[0] || ''}}-->
+      <!--            <span *ngIf="(toppings.value?.length || 0) > 1" class="example-additional-selection">-->
+      <!--        (+{{(toppings.value?.length || 0) - 1}} {{toppings.value?.length === 2 ? 'other' : 'others'}})-->
+      <!--      </span>-->
+      <!--          </mat-select-trigger>-->
+      <!--          <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping}}</mat-option>-->
+      <!--        </mat-select>-->
+      <!--      </mat-form-field>-->
+
+      <mat-form-field appearance="outline">
+        <mat-label>Choose an issuer</mat-label>
+        <mat-select>
+          <mat-option value="1680141471">Secure IT Root</mat-option>
+          <mat-option value="1680141778">Secure IT Property Owners</mat-option>
+          <mat-option value="1680141838">Secure IT General Purpose</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button style="color: var(--red); width: 100%" (click)="reject()">
+        Issue certificate
+      </button>
+    </div>
+  </div>
 </div>
