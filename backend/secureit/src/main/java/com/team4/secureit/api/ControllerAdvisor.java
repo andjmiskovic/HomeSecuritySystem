@@ -67,6 +67,12 @@ public class ControllerAdvisor {
         return new ResponseError(HttpStatus.CONFLICT, "Certificate has already been revoked.");
     }
 
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(VerificationFailedException.class)
+    public ResponseError handleVerificationFailedException(VerificationFailedException e) {
+        return new ResponseError(HttpStatus.FORBIDDEN, e.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(JwtException.class)
     public ResponseError handleJwtExceptions(JwtException e) {

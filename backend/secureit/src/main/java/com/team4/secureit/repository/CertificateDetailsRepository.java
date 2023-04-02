@@ -17,6 +17,8 @@ public interface CertificateDetailsRepository extends JpaRepository<CertificateD
 
     Optional<CertificateDetails> findBySerialNumber(BigInteger serialNumber);
 
+    Optional<CertificateDetails> findBySerialNumberAndSubscriber(BigInteger serialNumber, User subscriber);
+
     List<CertificateDetails> findByCertificateAuthority(boolean certificateAuthority);
 
     default List<CertificateDetails> findIssuerCertificates() {
