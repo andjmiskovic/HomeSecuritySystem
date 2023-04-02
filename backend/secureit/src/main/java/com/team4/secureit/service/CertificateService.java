@@ -23,6 +23,7 @@ import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyStoreException;
 import java.security.PrivateKey;
@@ -95,7 +96,7 @@ public class CertificateService {
         return certificateRevocationRepository.findAll();
     }
 
-    public X509Certificate generateCertificate(PKCS10CertificationRequest csr, CertificateCreationOptions options) throws KeyStoreException, CertificateException, OperatorCreationException, CertIOException {
+    public X509Certificate generateCertificate(PKCS10CertificationRequest csr, CertificateCreationOptions options) throws KeyStoreException, CertificateException, OperatorCreationException, IOException {
         SubjectPublicKeyInfo subjectPublicKeyInfo = csr.getSubjectPublicKeyInfo();
         X500Name subjectX500Name = csr.getSubject();
 
@@ -115,14 +116,14 @@ public class CertificateService {
                 subjectX500Name,
                 subjectPublicKeyInfo);
 
-        setExtensions(certBuilder, options.getExtensions());
+        setExtensions(certBuilder, options.getExtensions(), subjectPublicKeyInfo);
 
         X509CertificateHolder certHolder = certBuilder.build(new JcaContentSignerBuilder("SHA256WithRSA").build(issuerPrivateKey));
 
         return new JcaX509CertificateConverter().getCertificate(certHolder);
     }
 
-    private void setExtensions(X509v3CertificateBuilder certBuilder, Extensions extensions) throws CertIOException {
+    private void setExtensions(X509v3CertificateBuilder certBuilder, Extensions extensions, SubjectPublicKeyInfo subjectPublicKeyInfo) throws IOException {
         // Set keyUsage
         int keyUsageBitmap = 0;
         List<String> keyUsageValues = extensions.getKeyUsage();
@@ -144,7 +145,11 @@ public class CertificateService {
             keyUsageBitmap |= KeyUsage.digitalSignature;
         if (keyUsageValues.contains("decipherOnly"))
             keyUsageBitmap |= KeyUsage.decipherOnly;
-        certBuilder.addExtension(Extension.keyUsage, true, new KeyUsage(keyUsageBitmap));
+        certBuilder.addExtension(
+                Extension.keyUsage,
+                true,
+                new KeyUsage(keyUsageBitmap)
+        );
 
         // Set subjectAlternativeName
         if (extensions.getSubjectAlternativeName() != null) {
@@ -154,7 +159,22 @@ public class CertificateService {
                             .map(e -> new GeneralName(GeneralName.dNSName, e))
                             .toArray(GeneralName[]::new)
             );
-            certBuilder.addExtension(Extension.subjectAlternativeName, false, sanNames);
+
+            certBuilder.addExtension(
+                    Extension.subjectAlternativeName,
+                    false,
+                    sanNames
+            );
+        }
+
+        // Set subjectKeyIdentifier
+        if (extensions.getSubjectKeyIdentifier() != null && extensions.getSubjectKeyIdentifier()) {
+            byte[] subjectKeyIdentifier = new SubjectKeyIdentifier(subjectPublicKeyInfo.getPublicKeyData().getBytes()).getKeyIdentifier();
+            certBuilder.addExtension(
+                    Extension.subjectKeyIdentifier,
+                    true,
+                    new SubjectKeyIdentifier(subjectKeyIdentifier).getKeyIdentifier()
+            );
         }
     }
 }
