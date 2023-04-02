@@ -3,9 +3,7 @@ package com.team4.secureit.controller;
 import com.team4.secureit.api.ResponseOk;
 import com.team4.secureit.dto.request.CertificateRevocationRequest;
 import com.team4.secureit.dto.response.CertificateValidityResponse;
-import com.team4.secureit.model.CertificateDetails;
-import com.team4.secureit.model.CertificateRevocation;
-import com.team4.secureit.model.PropertyOwner;
+import com.team4.secureit.model.*;
 import com.team4.secureit.service.CertificateService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +23,13 @@ public class CertificateController {
     private CertificateService certificateService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<CertificateDetails> getAll() {
-        return certificateService.getAll();
-    }
-
-    @GetMapping
-    @PreAuthorize("hasRole('PROPERTY_OWNER')")
-    public List<CertificateDetails> findAllBySubscriber(Authentication authentication) {
-        PropertyOwner subscriber = (PropertyOwner) authentication.getPrincipal();
-        return certificateService.findAllBySubscriber(subscriber);
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROPERTY_OWNER')")
+    public List<CertificateDetails> getAll(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        if (user.getRole().equals(Role.ROLE_ADMIN))
+            return certificateService.getAll();
+        else
+            return certificateService.findAllBySubscriber(user);
     }
 
     @GetMapping("/{serialNumber}")
