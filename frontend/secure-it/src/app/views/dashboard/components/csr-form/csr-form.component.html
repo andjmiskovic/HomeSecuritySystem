@@ -1,30 +1,35 @@
-<form [formGroup]="csrForm" (ngSubmit)="onSubmit()">
-  <mat-form-field appearance="fill">
+<form [formGroup]="csrForm" (ngSubmit)="onSubmit()" class="container">
+  <mat-form-field appearance="outline" class="common-name">
+    <mat-label>Common name</mat-label>
+    <input matInput value="{{commonName}}" disabled>
+    <mat-error *ngIf="csrForm.get('organization')?.hasError('required')">Organization name cannot be blank</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="input">
     <mat-label>Organization</mat-label>
     <input matInput formControlName="organization" required>
     <mat-error *ngIf="csrForm.get('organization')?.hasError('required')">Organization name cannot be blank</mat-error>
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="outline" class="input">
     <mat-label>City</mat-label>
     <input matInput formControlName="city" required>
     <mat-error *ngIf="csrForm.get('city')?.hasError('required')">City cannot be blank</mat-error>
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="outline" class="input">
     <mat-label>State</mat-label>
     <input matInput formControlName="state" required>
     <mat-error *ngIf="csrForm.get('state')?.hasError('required')">State cannot be blank</mat-error>
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="outline" class="input">
     <mat-label>Country Code</mat-label>
     <input matInput formControlName="country" required>
     <mat-error *ngIf="csrForm.get('country')?.hasError('required')">Country code cannot be blank</mat-error>
     <mat-error *ngIf="csrForm.get('country')?.hasError('countryCode')">Invalid country code</mat-error>
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="outline" class="input">
     <mat-label>Algorithm</mat-label>
     <mat-select formControlName="algorithm" required>
       <mat-option value="RSA">RSA</mat-option>
@@ -35,12 +40,12 @@
     <mat-error *ngIf="csrForm.get('algorithm')?.hasError('pattern')">Invalid algorithm. Allowed algorithms are RSA, DSA and EC.</mat-error>
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="outline" class="input">
     <mat-label>Key Size</mat-label>
     <input matInput type="number" formControlName="keySize" required>
     <mat-error *ngIf="csrForm.get('keySize')?.hasError('required')">Keysize must be a positive integer.</mat-error>
     <mat-error *ngIf="csrForm.get('keySize')?.hasError('isPositive')">Keysize must be a positive integer.</mat-error>
   </mat-form-field>
 
-  <button mat-raised-button color="primary" type="submit" [disabled]="!csrForm.valid">Create CSR</button>
+  <button class="submit-btn" mat-raised-button color="primary" type="submit" [disabled]="!csrForm.valid" mat-dialog-close>Create CSR</button>
 </form>
