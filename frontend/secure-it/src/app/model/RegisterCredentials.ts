@@ -1,8 +1,9 @@
 export class RegisterCredentials {
   email!: string;
-  name!: string;
-  surname!: string;
+  firstName!: string;
+  lastName!: string;
   password!: string;
   phoneNumber!: string;
   city!: string;
+  passwordConfirmation!: string;
 }

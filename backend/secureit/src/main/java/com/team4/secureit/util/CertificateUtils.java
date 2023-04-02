@@ -1,6 +1,7 @@
 package com.team4.secureit.util;
 
 import com.team4.secureit.model.CertificateDetails;
+import com.team4.secureit.model.User;
 import org.bouncycastle.asn1.x509.KeyUsage;
 
 import java.security.cert.X509Certificate;
@@ -12,7 +13,7 @@ public class CertificateUtils {
         return cert.getBasicConstraints() != -1; // -1 indicates not a CA cert, 0 and above indicates CA cert
     }
 
-    public static CertificateDetails convertToDetails(X509Certificate cert, String alias) {
+    public static CertificateDetails convertToDetails(X509Certificate cert, String alias, User subscriber) {
         return new CertificateDetails(
                 cert.getSerialNumber(),
                 alias,
@@ -24,7 +25,8 @@ public class CertificateUtils {
                 cert.getVersion(),
                 cert.getPublicKey().getAlgorithm(),
                 cert.getPublicKey().getFormat(),
-                isCA(cert)
+                isCA(cert),
+                subscriber
         );
     }
 

@@ -4,11 +4,10 @@ import com.team4.secureit.config.AppProperties;
 import com.team4.secureit.dto.request.LoginRequest;
 import com.team4.secureit.dto.request.RegistrationRequest;
 import com.team4.secureit.dto.request.VerificationRequest;
-import com.team4.secureit.dto.response.TokenResponse;
+import com.team4.secureit.dto.response.LoginResponse;
 import com.team4.secureit.exception.EmailAlreadyInUseException;
 import com.team4.secureit.exception.EmailAlreadyVerifiedException;
 import com.team4.secureit.exception.InvalidVerificationCodeException;
-import com.team4.secureit.exception.UserNotFoundException;
 import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.model.Role;
 import com.team4.secureit.model.User;
@@ -54,7 +53,7 @@ public class AccountService {
 
     private final SecureRandom random = new SecureRandom();
 
-    public TokenResponse login(LoginRequest loginRequest, HttpServletResponse response) {
+    public LoginResponse login(LoginRequest loginRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(),
                 loginRequest.getPassword()
@@ -62,6 +61,7 @@ public class AccountService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String accessToken = tokenProvider.createAccessToken(authentication);
+        Role role = ((User) authentication.getPrincipal()).getRole();
         Integer tokenExpirationSeconds = appProperties.getAuth().getTokenExpirationSeconds();
         CookieUtils.addCookie(
                 response,
@@ -71,7 +71,7 @@ public class AccountService {
         );
 
         Long expiresAt = tokenProvider.readClaims(accessToken).getExpiration().getTime();
-        return new TokenResponse(accessToken, expiresAt);
+        return new LoginResponse(accessToken, expiresAt, role);
     }
 
     public void logout(HttpServletRequest request, HttpServletResponse response) {

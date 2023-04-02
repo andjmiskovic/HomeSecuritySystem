@@ -7,6 +7,7 @@ import com.team4.secureit.dto.response.CertificateValidityResponse;
 import com.team4.secureit.exception.CertificateAlreadyRevokedException;
 import com.team4.secureit.model.CertificateDetails;
 import com.team4.secureit.model.CertificateRevocation;
+import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.repository.CertificateDetailsRepository;
 import com.team4.secureit.repository.CertificateRevocationRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -54,6 +55,10 @@ public class CertificateService {
 
     public List<CertificateDetails> getAll() {
         return certificateDetailsRepository.findAll();
+    }
+
+    public List<CertificateDetails> findAllBySubscriber(PropertyOwner propertyOwner) {
+        return certificateDetailsRepository.findBySubscriber(propertyOwner);
     }
 
     public CertificateDetails getBySerialNumber(BigInteger serialNumber) {

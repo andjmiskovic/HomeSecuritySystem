@@ -9,7 +9,10 @@ import {CsrFormComponent} from "../../components/csr-form/csr-form.component";
 })
 export class DashboardContainerComponent {
 
+  userRole: string
+
   constructor(public dialog: MatDialog) {
+    this.userRole = localStorage.getItem("userRole") || ""
   }
 
   openNewCertificateDialog() {
