@@ -40,8 +40,6 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
       finalize(() => this.loadingSubject.next(false))
     )
       .subscribe(certificates => {
-        console.log("AAAAA")
-        console.log(certificates)
         let certificateItems: CertificatesListItem[] = []
         certificates.forEach((certificate) => {
           let certificateItem = new CertificatesListItem()

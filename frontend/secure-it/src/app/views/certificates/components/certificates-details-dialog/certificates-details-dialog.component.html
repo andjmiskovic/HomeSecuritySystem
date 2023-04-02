@@ -1,1 +1,87 @@
-<p>certificates-details-dialog works!</p>
+<div style="padding: 20px">
+  <h2>
+    <mat-icon style="color: var(--blue)">bookmark</mat-icon>
+    Certificate details
+  </h2>
+  <p style="margin-top: -15px"><i>Serial number: {{certificate.serialNumber}}</i></p>
+
+  <hr>
+
+  <div class="row">
+    <div class="label">Alias:</div>
+    <div class="value">{{certificate.alias}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Certificate authority:</div>
+    <div class="value">
+      <span *ngIf="certificate.certificateAuthority"><mat-icon
+        style="color: var(--green)">check_circle</mat-icon></span>
+      <span *ngIf="!certificate.certificateAuthority"><mat-icon style="color: var(--red)">report</mat-icon></span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="label">Issuer:</div>
+    <div class="value">{{certificate.issuer}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Subject:</div>
+    <div class="value">{{certificate.subject}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Validity time span:</div>
+    <div class="value">{{parseDate(certificate.notBefore)}} - {{parseDate(certificate.notAfter)}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Public key algorithm:</div>
+    <div class="value">{{certificate.publicKeyAlgorithm}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Public key format:</div>
+    <div class="value">{{certificate.publicKeyFormat}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Signature algorithm:</div>
+    <div class="value">{{certificate.publicKeyAlgorithm}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Version:</div>
+    <div class="value">{{certificate.version}}</div>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="label">Validity status:</div>
+    <div class="value">
+      <span *ngIf="validity.valid" class="validCertificate">VALID</span>
+      <span *ngIf="!validity.valid" class="invalidCertificate">INVALID</span>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="!validity.valid">
+    <div class="label">Reason:</div>
+    <div class="value">{{validity.reason}}</div>
+  </div>
+
+  <div class="row" *ngIf="!validity.valid">
+    <div class="label">Revoked at:</div>
+    <div class="value">{{parseDate(validity.revokedAt)}}</div>
+  </div>
+
+  <div class="row" *ngIf="validity.valid">
+    <div class="label">Validation time:</div>
+    <div class="value">{{parseDate(validity.validAfter)}}</div>
+  </div>
+
+  <div class="row" *ngIf="validity.valid">
+    <div class="label">Valid until:</div>
+    <div class="value">{{parseDate(validity.validUntil)}}</div>
+  </div>
+
+  <hr>
+
+  <button mat-stroked-button color="warn" *ngIf="validity.valid" (click)="revokeCertificate(certificate.serialNumber)">
+    Revoke certificate
+  </button>
+
+</div>

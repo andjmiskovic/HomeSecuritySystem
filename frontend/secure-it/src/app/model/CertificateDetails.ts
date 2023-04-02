@@ -8,5 +8,6 @@ export class CertificateDetails {
   signatureAlgorithm!: string;
   version!: number;
   publicKeyAlgorithm!: string;
+  publicKeyFormat!: string;
   certificateAuthority!: boolean;
 }

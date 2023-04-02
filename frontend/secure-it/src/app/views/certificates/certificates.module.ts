@@ -17,11 +17,13 @@ import {SharedModule} from "../../shared/shared.module";
 import {MatSelectModule} from "@angular/material/select";
 import {MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import { RevokeCertificateComponent } from './components/revoke-certificate/revoke-certificate.component';
 
 @NgModule({
   declarations: [
     CertificateListComponent,
-    CertificatesDetailsDialogComponent
+    CertificatesDetailsDialogComponent,
+    RevokeCertificateComponent
   ],
   imports: [
     MatFormFieldModule,
