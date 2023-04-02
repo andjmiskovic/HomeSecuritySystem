@@ -30,10 +30,7 @@ export class CertificatesDetailsDialogComponent implements OnInit {
 
   checkValidity() {
     this.certificateService.checkCertificateValidity(this.serialNumber).subscribe(
-      (validity) => {
-        this.validity = validity;
-        console.log(validity)
-      }
+      (validity) => this.validity = validity
     );
   }
 
