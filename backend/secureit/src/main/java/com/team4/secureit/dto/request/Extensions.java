@@ -13,4 +13,8 @@ public class Extensions {
 
     private List<String> subjectAlternativeName;
 
+    private Boolean subjectKeyIdentifier;
+
+    private Boolean authorityKeyIdentifier;
+
 }
