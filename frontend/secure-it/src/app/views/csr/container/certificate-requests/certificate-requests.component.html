@@ -4,17 +4,13 @@
 <div style="margin-left: 90px; margin-right: 10px; margin-top: -80px">
   <h1 style="font-weight: 500; margin-left: 10px; color: white">Certificate requests</h1>
   <p>
-    <button mat-button (click)="newCertificate()">New Certificate</button>
-  </p>
-  <p>
     <mat-form-field appearance="outline" style="width: 300px">
       <mat-icon matPrefix>search</mat-icon>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Search certificates..." #input>
+      <input matInput [(ngModel)]="searchFilter" (keyup)="applySearchFilter($event)" placeholder="Search certificates..." #input>
     </mat-form-field>
     <mat-form-field appearance="outline">
-      <mat-label>Select an option</mat-label>
       <mat-select disableRipple [(ngModel)]="selectedFilter" (selectionChange)="selectedFilterChange($event)">
-        <mat-option value="all">All</mat-option>
+        <mat-option value="all">All requests</mat-option>
         <mat-option value="pending">Pending</mat-option>
         <mat-option value="approved">Approved</mat-option>
         <mat-option value="rejected">Rejected</mat-option>

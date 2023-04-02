@@ -1,5 +1,3 @@
-import {CertificateTableDataSource} from "../../../../model/CertificateTableData";
-
 import {Component, ViewChild, Input} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {CsrFormComponent} from "../../../dashboard/components/csr-form/csr-form.component";
@@ -24,30 +22,26 @@ export class CertificateRequestsComponent {
   requestStatus = "accepted";
   @Input() id!: string;
   selectedFilter: string;
+  searchFilter: string;
 
   constructor(private dialog: MatDialog, private csrService: CsrService) {
     this.dataSource = new CsrTableDataSource(csrService);
     this.selectedFilter = "all"
+    this.searchFilter = ""
   }
 
   ngAfterViewInit() {
     this.loadCsrs();
   }
 
-  newCertificate() {
-    let dialogRef = this.dialog.open(CsrFormComponent, {
-      height: '400px',
-      width: '600px',
-    });
-  }
-
-  applyFilter($event: KeyboardEvent) {
-
+  applySearchFilter($event: KeyboardEvent) {
+    this.loadCsrs()
   }
 
   private loadCsrs() {
     this.dataSource.loadCsrs(
-      this.selectedFilter
+      this.selectedFilter,
+      this.searchFilter
     );
   }
 
@@ -62,4 +56,6 @@ export class CertificateRequestsComponent {
   selectedFilterChange($event: MatSelectChange) {
     this.loadCsrs();
   }
+
+
 }
