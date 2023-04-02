@@ -58,7 +58,7 @@ public class CSRController {
         return new ResponseOk("CSR approved successfully.");
     }
 
-    @PutMapping("/{id}/reject")
+    @PostMapping("/{id}/reject")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseOk rejectRequest(@PathVariable final UUID id, @RequestBody final CSRRejectionRequest request) throws EntityNotFoundException {
         csrService.rejectRequest(id, request.getRejectionReason());

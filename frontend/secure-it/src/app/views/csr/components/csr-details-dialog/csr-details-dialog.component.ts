@@ -1,9 +1,11 @@
 import {Component, Input} from '@angular/core';
-import {MatDialogRef} from "@angular/material/dialog";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {CsrDetails} from "../../../../model/CsrDetails";
 import {CsrService} from "../../../../services/csr.service";
 import {getDateTime} from "../../../../utils/TimeUtils";
 import {CertificateCreationOptions} from "../../../../model/CertificateCreationOptions";
+import {RejectCsrComponent} from "../reject-csr/reject-csr.component";
+import {ApproveCsrComponent} from "../approve-csr/approve-csr.component";
 
 @Component({
   selector: 'app-csr-details-dialog',
@@ -19,10 +21,14 @@ export class CsrDetailsDialogComponent {
   options = new CertificateCreationOptions();
   inProcess = "none";
 
-  constructor(private csrService: CsrService) {
+  constructor(private csrService: CsrService, public dialog: MatDialog) {
   }
 
   ngOnInit() {
+    this.loadCsr();
+  }
+
+  loadCsr() {
     this.csrService.getCsrById(this.id).subscribe(
       (csr) => {
         this.csr = csr;
@@ -58,10 +64,14 @@ export class CsrDetailsDialogComponent {
   }
 
   reject() {
-    this.csrService.rejectRequest(this.id, this.reason);
+    const dialogRef = this.dialog.open(RejectCsrComponent);
+    dialogRef.componentInstance.id = this.id;
+    dialogRef.afterClosed().subscribe(() => this.loadCsr());
   }
 
   issue() {
-    this.csrService.issueCertificate(this.id, this.options);
+    const dialogRef = this.dialog.open(ApproveCsrComponent);
+    dialogRef.componentInstance.id = this.id;
+    dialogRef.afterClosed().subscribe(() => this.loadCsr());
   }
 }

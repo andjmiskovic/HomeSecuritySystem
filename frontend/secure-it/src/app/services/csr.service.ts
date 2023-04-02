@@ -34,12 +34,12 @@ export class CsrService {
     return this.http.post<CsrDetails>(this.csrUrl, request, AuthService.getHttpOptions());
   }
 
-  public issueCertificate(id: string, options: CertificateCreationOptions): void {
-    this.http.post(this.csrUrl + "/" + id + "/certificate", options, AuthService.getHttpOptions());
+  public issueCertificate(id: string, options: CertificateCreationOptions): Observable<any> {
+    return this.http.post<any>(this.csrUrl + "/" + id + "/certificate", options, AuthService.getHttpOptions());
   }
 
-  public rejectRequest(id: string, reason: string): void {
+  public rejectRequest(id: string, reason: string): Observable<any> {
     let body = {"rejectionReason": reason};
-    this.http.post(this.csrUrl + "/" + id + "/certificate", body, AuthService.getHttpOptions());
+    return this.http.post<any>(this.csrUrl + "/" + id + "/reject", body, AuthService.getHttpOptions());
   }
 }
