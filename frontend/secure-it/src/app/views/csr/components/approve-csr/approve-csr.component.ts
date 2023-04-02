@@ -14,7 +14,7 @@ export class ApproveCsrComponent {
 
   options = new CertificateCreationOptions();
   template = "1";
-  chosenOptionsFormControl = new FormControl('');
+  chosenOptionsFormControl!: FormControl;
   keyUsageOptions = [
     ["encipherOnly", "Encipher Only"],
     ["cRLSign", "Certificate Revocation List Signing"],
@@ -32,6 +32,7 @@ export class ApproveCsrComponent {
   authorityKeyIdentifier = false;
 
   constructor(public dialogRef: MatDialogRef<ApproveCsrComponent>, private csrService: CsrService) {
+    this.chosenOptionsFormControl = new FormControl('')
   }
 
   onNoClick() {
@@ -46,7 +47,22 @@ export class ApproveCsrComponent {
     this.subjectAlternativeName.splice(i, 1);
   }
 
+  setOptions() {
+    this.options.extensions["subjectKeyIdentifier"] = this.subjectAlternativeName.toString();
+    this.options.extensions["authorityKeyIdentifier"] = this.authorityKeyIdentifier.toString();
+
+    let list = [];
+    for (let option of this.chosenOptionsFormControl?.value) {
+      list.push(option[0]);
+    }
+    this.options.extensions["keyUsage"] = list;
+    if (this.template === '1')
+      this.options.extensions["subjectAlternativeName"] = this.subjectAlternativeName;
+  }
+
   approve() {
+    this.setOptions();
+    console.log(this.options);
     this.csrService.issueCertificate(this.id, this.options).subscribe({
       next: () => this.onNoClick(),
       error: (err) => console.error(err)
