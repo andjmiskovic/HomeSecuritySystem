@@ -23,10 +23,12 @@ export class CertificateRequestsComponent {
   requestStatus = "accepted";
   @Input() id!: string;
   selectedFilter: string;
+  searchFilter: string;
 
   constructor(private dialog: MatDialog, private csrService: CsrService) {
     this.dataSource = new CsrTableDataSource(csrService);
     this.selectedFilter = "all"
+    this.searchFilter = ""
   }
 
   ngAfterViewInit() {
@@ -46,13 +48,14 @@ export class CertificateRequestsComponent {
     });
   }
 
-  applyFilter($event: KeyboardEvent) {
-
+  applySearchFilter($event: KeyboardEvent) {
+    this.loadCsrs()
   }
 
   private loadCsrs() {
     this.dataSource.loadCsrs(
-      this.selectedFilter
+      this.selectedFilter,
+      this.searchFilter
     );
   }
 
@@ -63,4 +66,6 @@ export class CertificateRequestsComponent {
   selectedFilterChange($event: MatSelectChange) {
     this.loadCsrs()
   }
+
+
 }

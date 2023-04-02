@@ -18,12 +18,14 @@ import {getDateTime} from "../../../../utils/TimeUtils";
 export class CertificateListComponent {
   displayedColumns = ["serialNumber", "alias", "notBefore", "notAfter", "details"];
   dataSource: CertificateTableDataSource;
+  searchFilter: string;
 
   @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort!: MatSort;
 
   constructor(public dialog: MatDialog, private certificateService: CertificateService) {
     this.dataSource = new CertificateTableDataSource(certificateService);
+    this.searchFilter = ""
   }
 
   ngAfterViewInit() {
@@ -38,6 +40,7 @@ export class CertificateListComponent {
 
   loadCertificates() {
     this.dataSource.loadCertificates(
+      this.searchFilter
       // this.sort.active,
       // this.sort.direction
     );
@@ -53,7 +56,7 @@ export class CertificateListComponent {
   }
 
   applyFilter($event: KeyboardEvent) {
-
+    this.loadCertificates()
   }
 
 

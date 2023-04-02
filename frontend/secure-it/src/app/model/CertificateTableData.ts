@@ -1,6 +1,7 @@
 import {CollectionViewer, DataSource} from "@angular/cdk/collections";
 import {BehaviorSubject, catchError, finalize, Observable, of} from "rxjs";
 import {CertificateService} from "../services/certificates.service";
+import {CertificateDetails} from "./CertificateDetails";
 
 export class CertificatesListItem {
   serialNumber!: BigInteger;
@@ -31,7 +32,7 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
     this.loadingSubject.complete();
   }
 
-  loadCertificates() {
+  loadCertificates(search: string) {
 
     this.loadingSubject.next(true);
 
@@ -40,8 +41,7 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
       finalize(() => this.loadingSubject.next(false))
     )
       .subscribe(certificates => {
-        console.log("AAAAA")
-        console.log(certificates)
+        certificates = this.searchCertificates(search, certificates);
         let certificateItems: CertificatesListItem[] = []
         certificates.forEach((certificate) => {
           let certificateItem = new CertificatesListItem()
@@ -55,6 +55,14 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
       });
   }
 
+  private searchCertificates(search: string, certificates: CertificateDetails[]) {
+    if (search !== '') {
+      certificates = certificates.filter(item => {
+        return Object.values(item).some(val => val.toString().includes(search));
+      });
+    }
+    return certificates;
+  }
 }
 
 

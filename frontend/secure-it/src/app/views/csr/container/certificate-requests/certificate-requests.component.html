@@ -9,7 +9,7 @@
   <p>
     <mat-form-field appearance="outline" style="width: 300px">
       <mat-icon matPrefix>search</mat-icon>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Search certificates..." #input>
+      <input matInput [(ngModel)]="searchFilter" (keyup)="applySearchFilter($event)" placeholder="Search certificates..." #input>
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Select an option</mat-label>
