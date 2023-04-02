@@ -51,11 +51,11 @@ export class CertificateRequestsComponent {
       width: '800px'
     });
     dialogRef.componentInstance.id = id;
+    dialogRef.afterClosed().subscribe(() => this.loadCsrs());
   }
 
   selectedFilterChange($event: MatSelectChange) {
     this.loadCsrs();
   }
-
 
 }
