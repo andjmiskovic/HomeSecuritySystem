@@ -7,6 +7,7 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {CsrService} from "../../../../services/csr.service";
 import {CsrTableDataSource} from "../../../../model/CsrTableData";
+import {MatSelectChange} from "@angular/material/select";
 
 @Component({
   selector: 'app-certificate-requests',
@@ -21,9 +22,11 @@ export class CertificateRequestsComponent {
   @ViewChild(MatSort, {static: false}) sort!: MatSort;
   requestStatus = "accepted";
   @Input() id!: string;
+  selectedFilter: string;
 
   constructor(private dialog: MatDialog, private csrService: CsrService) {
     this.dataSource = new CsrTableDataSource(csrService);
+    this.selectedFilter = "all"
   }
 
   ngAfterViewInit() {
@@ -49,11 +52,15 @@ export class CertificateRequestsComponent {
 
   private loadCsrs() {
     this.dataSource.loadCsrs(
-      'REJECTED'
+      this.selectedFilter
     );
   }
 
   detailsAboutCsr(id: BigInteger) {
 
+  }
+
+  selectedFilterChange($event: MatSelectChange) {
+    this.loadCsrs()
   }
 }

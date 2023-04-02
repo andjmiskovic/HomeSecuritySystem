@@ -19,9 +19,10 @@ export class CsrService {
 
   public getCsrs(status: string): Observable<CsrDetails[]> {
     let queryParams = new HttpParams();
-    queryParams = queryParams.append("status", status);
+    if (status !== "all")
+      queryParams = queryParams.append("status", status);
 
-    return this.http.get<CsrDetails[]>(this.csrUrl, AuthService.getHttpOptions());
+    return this.http.get<CsrDetails[]>(this.csrUrl, AuthService.getHttpOptions(queryParams));
   }
 
   public getCsrById(id: string): Observable<CsrDetails> {
