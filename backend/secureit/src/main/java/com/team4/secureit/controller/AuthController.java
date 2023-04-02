@@ -4,7 +4,7 @@ import com.team4.secureit.api.ResponseOk;
 import com.team4.secureit.dto.request.LoginRequest;
 import com.team4.secureit.dto.request.RegistrationRequest;
 import com.team4.secureit.dto.request.VerificationRequest;
-import com.team4.secureit.dto.response.TokenResponse;
+import com.team4.secureit.dto.response.LoginResponse;
 import com.team4.secureit.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,7 +23,7 @@ public class AuthController {
     private AccountService accountService;
 
     @PostMapping("/login")
-    public TokenResponse login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public LoginResponse login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         return accountService.login(loginRequest, response);
     }
 

@@ -2,3 +2,42 @@ mat-form-field {
   margin-right: 10px;
 }
 
+.dashboard-background {
+  height: 150px;
+  width: 100%;
+  object-fit: cover;
+}
+
+
+.filter-container {
+  margin-left: 20px;
+}
+
+.param {
+  font-weight: 400;
+  margin-top: -10px;
+}
+
+::ng-deep .mdc-text-field--outlined {
+  background-color: white !important;
+  border-radius: 5px !important;
+}
+
+mat-form-field {
+  margin: 5px;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-column-id,
+.mat-column-details,
+.mat-column-price {
+  max-width: 60px;
+}
+
+.mat-column-start,
+.mat-column-end {
+  max-width: 150px;
+}

@@ -1,36 +1,22 @@
 <div style="padding: 20px">
   <h2>
-    <mat-icon style="color: var(--red)">do_disturb</mat-icon>
-    Reject CSR
+    <mat-icon style="color: var(--green)">check</mat-icon>
+    Issue CSR
   </h2>
   <p style="margin-top: -15px"><i>Id: {{id}}</i></p>
 
   <hr>
 
-  <p>What is the reason for the rejection of this request?</p>
-  <mat-form-field style="width: 100%" appearance="outline" *ngIf="!otherReason">
-    <mat-label>Common reasons</mat-label>
-    <mat-select [(ngModel)]="reason">
-      <mat-option *ngFor="let reason of commonReasons" [value]="reason">
-        {{reason}}
-      </mat-option>
+  <mat-form-field appearance="outline" style="width: 100%">
+    <mat-label>Choose an issuer</mat-label>
+    <mat-select [(ngModel)]="issuer">
+      <mat-option value="1680141471">Secure IT Root</mat-option>
+      <mat-option value="1680141778">Secure IT Property Owners</mat-option>
+      <mat-option value="1680141838">Secure IT General Purpose</mat-option>
     </mat-select>
   </mat-form-field>
 
-  <button mat-flat-button class="reason-link" *ngIf="!otherReason" (click)="otherReason = true; reason = ''">
-    Other reason...
-  </button>
-
-  <mat-form-field *ngIf="otherReason" style="width: 100%" appearance="outline">
-    <mat-label>Revocation reason</mat-label>
-    <textarea [(ngModel)]="reason" matInput placeholder="Ex. Security issues..."></textarea>
-  </mat-form-field>
-
-  <button mat-flat-button class="reason-link" *ngIf="otherReason" (click)="otherReason = false; reason = ''">
-    Choose from common reasons
-  </button>
-
   <hr>
   <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-stroked-button color="warn" (click)="approve()">Reject</button>
+  <button mat-stroked-button style="color: var(--green)" (click)="approve()">Issue</button>
 </div>

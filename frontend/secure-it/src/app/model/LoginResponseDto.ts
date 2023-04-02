@@ -8,4 +8,5 @@ export class UserTokenState {
 export class LoginResponseDto {
   accessToken!: string;
   expiresAt!: number;
+  role!: string;
 }

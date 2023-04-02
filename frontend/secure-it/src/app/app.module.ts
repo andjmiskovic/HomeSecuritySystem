@@ -20,33 +20,37 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {DashboardModule} from "./views/dashboard/dashboard.module";
 import {CertificatesModule} from "./views/certificates/certificates.module";
 import {CsrModule} from "./views/csr/csr.module";
+import { VerificationScreenComponent } from './views/verification-screen/verification-screen.component';
+import {MatCardModule} from "@angular/material/card";
 
 @NgModule({
   declarations: [
     AppComponent,
     NotFoundPageComponent,
     NotAuthorizedPageComponent,
+    VerificationScreenComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HomepageModule,
-    HttpClientModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSelectModule,
-    SharedModule,
-    BrowserAnimationsModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatInputModule,
-    FormsModule,
-    DashboardModule,
-    CertificatesModule,
-    CsrModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HomepageModule,
+        HttpClientModule,
+        MatButtonModule,
+        MatIconModule,
+        MatSelectModule,
+        SharedModule,
+        BrowserAnimationsModule,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatInputModule,
+        FormsModule,
+        DashboardModule,
+        CertificatesModule,
+        CsrModule,
+        MatCardModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })
