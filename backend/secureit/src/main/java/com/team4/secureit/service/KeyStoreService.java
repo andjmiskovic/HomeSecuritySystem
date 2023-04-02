@@ -84,7 +84,7 @@ public class KeyStoreService {
                 .map(alias -> {
                     try {
                         X509Certificate cert = (X509Certificate) keyStore.getCertificate(alias);
-                        return CertificateUtils.convertToDetails(cert, alias);
+                        return CertificateUtils.convertToDetails(cert, alias, null);
                     } catch (KeyStoreException ignore) {
 
                     }

@@ -5,10 +5,12 @@ import com.team4.secureit.dto.request.CertificateRevocationRequest;
 import com.team4.secureit.dto.response.CertificateValidityResponse;
 import com.team4.secureit.model.CertificateDetails;
 import com.team4.secureit.model.CertificateRevocation;
+import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.service.CertificateService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
@@ -26,6 +28,13 @@ public class CertificateController {
     @PreAuthorize("hasRole('ADMIN')")
     public List<CertificateDetails> getAll() {
         return certificateService.getAll();
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('PROPERTY_OWNER')")
+    public List<CertificateDetails> findAllBySubscriber(Authentication authentication) {
+        PropertyOwner subscriber = (PropertyOwner) authentication.getPrincipal();
+        return certificateService.findAllBySubscriber(subscriber);
     }
 
     @GetMapping("/{serialNumber}")

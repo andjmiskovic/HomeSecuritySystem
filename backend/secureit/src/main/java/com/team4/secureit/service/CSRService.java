@@ -2,11 +2,14 @@ package com.team4.secureit.service;
 
 import com.team4.secureit.dto.request.CSRCreationRequest;
 import com.team4.secureit.dto.request.CertificateCreationOptions;
+import com.team4.secureit.exception.UserNotFoundException;
 import com.team4.secureit.model.CSRDetails;
 import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.model.RequestStatus;
+import com.team4.secureit.model.User;
 import com.team4.secureit.repository.CSRDetailsRepository;
 import com.team4.secureit.repository.CertificateDetailsRepository;
+import com.team4.secureit.repository.UserRepository;
 import com.team4.secureit.util.CertificateUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -45,6 +48,9 @@ public class CSRService {
 
     @Autowired
     private CertificateDetailsRepository certificateDetailsRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @SuppressWarnings("ConstantConditions")
     public CSRDetails generateAndPersistCSR(CSRCreationRequest request, PropertyOwner propertyOwner) throws OperatorCreationException, IOException {
@@ -86,8 +92,9 @@ public class CSRService {
         csrDetails.setPrivateKeyPem("REDACTED");
         csrDetailsRepository.save(csrDetails);
 
+        User subscriber = userRepository.findByEmail(readRDNsFromCSR(csr, BCStyle.CN)).orElseThrow(UserNotFoundException::new);
         X509Certificate cert = certificateService.generateCertificate(csr, options);
-        certificateDetailsRepository.save(CertificateUtils.convertToDetails(cert, alias));
+        certificateDetailsRepository.save(CertificateUtils.convertToDetails(cert, alias, subscriber));
 
         keyStoreService.storeKeyPair(keyPair, alias, "keypassword".toCharArray(), chain);
     }
