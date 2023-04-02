@@ -15,4 +15,6 @@ public class Extensions {
 
     private Boolean subjectKeyIdentifier;
 
+    private Boolean authorityKeyIdentifier;
+
 }
