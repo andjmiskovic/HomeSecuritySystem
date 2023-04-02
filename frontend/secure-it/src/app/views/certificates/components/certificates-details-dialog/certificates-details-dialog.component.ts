@@ -47,7 +47,7 @@ export class CertificatesDetailsDialogComponent implements OnInit {
     try {
       return getDateTime(date.toString());
     } catch (e) {
-      return '';
+      return 'N/A';
     }
   }
 }

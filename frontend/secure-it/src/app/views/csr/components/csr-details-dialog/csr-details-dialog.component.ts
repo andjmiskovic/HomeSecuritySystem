@@ -3,6 +3,7 @@ import {MatDialogRef} from "@angular/material/dialog";
 import {CsrDetails} from "../../../../model/CsrDetails";
 import {CsrService} from "../../../../services/csr.service";
 import {getDateTime} from "../../../../utils/TimeUtils";
+import {CertificateCreationOptions} from "../../../../model/CertificateCreationOptions";
 
 @Component({
   selector: 'app-csr-details-dialog',
@@ -13,7 +14,10 @@ export class CsrDetailsDialogComponent {
   @Input() id!: string;
   @Input() dialogRef!: MatDialogRef<CsrDetailsDialogComponent>;
 
-  csr: CsrDetails = new CsrDetails();
+  csr = new CsrDetails();
+  reason = "";
+  options = new CertificateCreationOptions();
+  inProcess = "none";
 
   constructor(private csrService: CsrService) {
   }
@@ -27,8 +31,12 @@ export class CsrDetailsDialogComponent {
     );
   }
 
-  parseDate(created: Date) {
-    return getDateTime(created.toString());
+  parseDate(date: Date) {
+    try {
+      return getDateTime(date.toString());
+    } catch (e) {
+      return 'N/A';
+    }
   }
 
   downloadCsrPem() {
@@ -49,11 +57,11 @@ export class CsrDetailsDialogComponent {
     document.body.removeChild(element);
   }
 
-  reject(id: string) {
-
+  reject() {
+    this.csrService.rejectRequest(this.id, this.reason);
   }
 
-  approve(id: string) {
-
+  issue() {
+    this.csrService.issueCertificate(this.id, this.options);
   }
 }

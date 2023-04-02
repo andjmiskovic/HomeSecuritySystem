@@ -5,6 +5,7 @@ import {AuthService} from "./auth.service";
 import {environment} from "../environment.development";
 import {CsrDetails} from "../model/CsrDetails";
 import {CSRCreationRequest} from "../model/CSRCreationRequest";
+import {CertificateCreationOptions} from "../model/CertificateCreationOptions";
 
 @Injectable({
   providedIn: 'root'
@@ -33,4 +34,12 @@ export class CsrService {
     return this.http.post<CsrDetails>(this.csrUrl, request, AuthService.getHttpOptions());
   }
 
+  public issueCertificate(id: string, options: CertificateCreationOptions): void {
+    this.http.post(this.csrUrl + "/" + id + "/certificate", options, AuthService.getHttpOptions());
+  }
+
+  public rejectRequest(id: string, reason: string): void {
+    let body = {"rejectionReason": reason};
+    this.http.post(this.csrUrl + "/" + id + "/certificate", body, AuthService.getHttpOptions());
+  }
 }

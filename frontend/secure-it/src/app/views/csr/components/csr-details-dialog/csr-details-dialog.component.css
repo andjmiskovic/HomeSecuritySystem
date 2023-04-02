@@ -16,9 +16,3 @@
   flex-basis: calc(100% - 200px);
   text-align: left;
 }
-
-.requestStatus {
-  border-radius: 5px;
-  padding: 5px;
-  color: white;
-}
