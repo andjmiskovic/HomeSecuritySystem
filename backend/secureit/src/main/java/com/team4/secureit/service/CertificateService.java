@@ -2,6 +2,7 @@ package com.team4.secureit.service;
 
 import com.team4.secureit.dto.request.CertificateCreationOptions;
 import com.team4.secureit.dto.request.CertificateRevocationRequest;
+import com.team4.secureit.dto.request.Extensions;
 import com.team4.secureit.dto.response.CertificateValidityResponse;
 import com.team4.secureit.exception.CertificateAlreadyRevokedException;
 import com.team4.secureit.model.CertificateDetails;
@@ -9,10 +10,8 @@ import com.team4.secureit.model.CertificateRevocation;
 import com.team4.secureit.repository.CertificateDetailsRepository;
 import com.team4.secureit.repository.CertificateRevocationRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -34,7 +33,6 @@ import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -100,7 +98,6 @@ public class CertificateService {
     public X509Certificate generateCertificate(PKCS10CertificationRequest csr, CertificateCreationOptions options) throws KeyStoreException, CertificateException, OperatorCreationException, CertIOException {
         SubjectPublicKeyInfo subjectPublicKeyInfo = csr.getSubjectPublicKeyInfo();
         X500Name subjectX500Name = csr.getSubject();
-        Map<String, String> extensions = options.getExtensions();
 
         String issuerAlias = options.getIssuerAlias();
         PrivateKey issuerPrivateKey = keyStoreService.getKeyPair(issuerAlias, "privatekeypassword".toCharArray()).getPrivate();
@@ -118,16 +115,46 @@ public class CertificateService {
                 subjectX500Name,
                 subjectPublicKeyInfo);
 
-        // TODO: Fix implementation, this one does not follow X509
-        for (Map.Entry<String, String> entry : extensions.entrySet()) {
-            String objectId = entry.getKey();
-            String value = entry.getValue();
-
-            certBuilder.addExtension(new ASN1ObjectIdentifier(objectId), false, new DEROctetString(value.getBytes()));
-        }
+        setExtensions(certBuilder, options.getExtensions());
 
         X509CertificateHolder certHolder = certBuilder.build(new JcaContentSignerBuilder("SHA256WithRSA").build(issuerPrivateKey));
 
         return new JcaX509CertificateConverter().getCertificate(certHolder);
+    }
+
+    private void setExtensions(X509v3CertificateBuilder certBuilder, Extensions extensions) throws CertIOException {
+        // Set keyUsage
+        int keyUsageBitmap = 0;
+        List<String> keyUsageValues = extensions.getKeyUsage();
+        if (keyUsageValues.contains("encipherOnly"))
+            keyUsageBitmap |= KeyUsage.encipherOnly;
+        if (keyUsageValues.contains("cRLSign"))
+            keyUsageBitmap |= KeyUsage.cRLSign;
+        if (keyUsageValues.contains("keyCertSign"))
+            keyUsageBitmap |= KeyUsage.keyCertSign;
+        if (keyUsageValues.contains("keyAgreement"))
+            keyUsageBitmap |= KeyUsage.keyAgreement;
+        if (keyUsageValues.contains("dataEncipherment"))
+            keyUsageBitmap |= KeyUsage.dataEncipherment;
+        if (keyUsageValues.contains("keyEncipherment"))
+            keyUsageBitmap |= KeyUsage.keyEncipherment;
+        if (keyUsageValues.contains("nonRepudiation"))
+            keyUsageBitmap |= KeyUsage.nonRepudiation;
+        if (keyUsageValues.contains("digitalSignature"))
+            keyUsageBitmap |= KeyUsage.digitalSignature;
+        if (keyUsageValues.contains("decipherOnly"))
+            keyUsageBitmap |= KeyUsage.decipherOnly;
+        certBuilder.addExtension(Extension.keyUsage, true, new KeyUsage(keyUsageBitmap));
+
+        // Set subjectAlternativeName
+        if (extensions.getSubjectAlternativeName() != null) {
+            List<String> altNames = extensions.getSubjectAlternativeName();
+            GeneralNames sanNames = new GeneralNames(
+                    altNames.stream()
+                            .map(e -> new GeneralName(GeneralName.dNSName, e))
+                            .toArray(GeneralName[]::new)
+            );
+            certBuilder.addExtension(Extension.subjectAlternativeName, false, sanNames);
+        }
     }
 }

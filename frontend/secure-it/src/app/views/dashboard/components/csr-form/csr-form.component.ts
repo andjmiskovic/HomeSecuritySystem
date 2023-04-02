@@ -1,6 +1,7 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CsrService} from "../../../../services/csr.service";
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-csr-form',
@@ -9,8 +10,10 @@ import {CsrService} from "../../../../services/csr.service";
 })
 export class CsrFormComponent {
   csrForm: FormGroup;
+  commonName: string;
+  @Input() dialogRef!: MatDialogRef<CsrFormComponent>;
 
-  constructor(private fb: FormBuilder, private csrService: CsrService) {
+  constructor(private fb: FormBuilder, private csrService: CsrService, ) {
     this.csrForm = this.fb.group({
       organization: ['', Validators.required],
       city: ['', Validators.required],
@@ -19,14 +22,15 @@ export class CsrFormComponent {
       algorithm: ['', [Validators.required, Validators.pattern(/^(RSA|DSA|EC)$/)]],
       keySize: ['', [Validators.required, Validators.min(1)]]
     });
+    this.commonName = "A"
   }
 
   onSubmit() {
     if (this.csrForm.valid) {
       const data = this.csrForm.value;
       this.csrService.createCsr(data).subscribe({
-        next: () => console.log(""),
-        error: () => console.error("")
+        next: (csr) => console.log(csr),
+        error: () => console.error("Error")
       })
     }
   }

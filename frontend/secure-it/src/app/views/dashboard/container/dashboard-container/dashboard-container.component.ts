@@ -13,7 +13,10 @@ export class DashboardContainerComponent {
   }
 
   openNewCertificateDialog() {
-    this.dialog.open(CsrFormComponent);
+    this.dialog.open(CsrFormComponent, {
+      height: '450px',
+      width: '600px',
+    });
   }
 }
 

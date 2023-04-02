@@ -1,0 +1,19 @@
+.container {
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.input {
+  flex-basis: calc(50% - 10px);
+  flex-grow: 0;
+  margin: 5px;
+}
+
+.submit-btn {
+  width: 99%;
+}
+
+.common-name {
+  width: 99%;
+}
