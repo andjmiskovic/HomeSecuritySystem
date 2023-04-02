@@ -48,14 +48,12 @@ export class ApproveCsrComponent {
   }
 
   setOptions() {
-    this.options.extensions["subjectKeyIdentifier"] = this.subjectAlternativeName.toString();
-    this.options.extensions["authorityKeyIdentifier"] = this.authorityKeyIdentifier.toString();
+    this.options.extensions = {
+      "subjectKeyIdentifier": this.subjectKeyIdentifier,
+      "authorityKeyIdentifier": this.authorityKeyIdentifier,
+      "keyUsage": this.chosenOptionsFormControl?.value
+    };
 
-    let list = [];
-    for (let option of this.chosenOptionsFormControl?.value) {
-      list.push(option[0]);
-    }
-    this.options.extensions["keyUsage"] = list;
     if (this.template === '1')
       this.options.extensions["subjectAlternativeName"] = this.subjectAlternativeName;
   }
