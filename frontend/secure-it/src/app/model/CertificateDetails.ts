@@ -1,13 +1,12 @@
 export class CertificateDetails {
-  serialNumber!: number;
+  serialNumber!: BigInteger;
   alias!: string;
   subject!: string;
   issuer!: string;
-  notBefore!: string;
-  notAfter!: string;
+  notBefore!: Date;
+  notAfter!: Date;
   signatureAlgorithm!: string;
   version!: number;
-  publicKeyAlgorithm!: number;
-  publicKeyFormat!: string;
+  publicKeyAlgorithm!: string;
   certificateAuthority!: boolean;
 }
