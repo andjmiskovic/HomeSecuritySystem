@@ -57,5 +57,4 @@ export class CertificateRequestsComponent {
   selectedFilterChange($event: MatSelectChange) {
     this.loadCsrs();
   }
-
 }

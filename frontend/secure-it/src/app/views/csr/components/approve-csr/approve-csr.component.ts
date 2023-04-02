@@ -1,6 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {MatDialogRef} from "@angular/material/dialog";
 import {CsrService} from "../../../../services/csr.service";
+import {CertificateCreationOptions} from "../../../../model/CertificateCreationOptions";
 
 @Component({
   selector: 'app-approve-csr',
@@ -10,16 +11,8 @@ import {CsrService} from "../../../../services/csr.service";
 export class ApproveCsrComponent {
   @Input() id!: string;
 
-  reason = "";
-  commonReasons = [
-    'Incomplete or inaccurate information',
-    'Requester doesn\'t meet requirements',
-    'Compromised account or suspicion of fraud',
-    'Violation of policies or regulatory requirements',
-    'Suspicion of malicious activities',
-    'Insufficient or unreasonable justification'
-  ];
-  otherReason: boolean = false;
+  issuer = "1680141471";
+  options = new CertificateCreationOptions();
 
   constructor(public dialogRef: MatDialogRef<ApproveCsrComponent>, private csrService: CsrService) {
   }
@@ -29,9 +22,9 @@ export class ApproveCsrComponent {
   }
 
   approve() {
-    // this.csrService.issueCertificate(this.id, this.reason).subscribe({
-    //   next: () => this.onNoClick(),
-    //   error: (err) => console.error(err)
-    // })
+    this.csrService.issueCertificate(this.id, this.options).subscribe({
+      next: () => this.onNoClick(),
+      error: (err) => console.error(err)
+    })
   }
 }
