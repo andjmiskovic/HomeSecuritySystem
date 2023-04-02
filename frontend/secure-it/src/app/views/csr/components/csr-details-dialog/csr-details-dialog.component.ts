@@ -29,12 +29,7 @@ export class CsrDetailsDialogComponent {
   }
 
   loadCsr() {
-    this.csrService.getCsrById(this.id).subscribe(
-      (csr) => {
-        this.csr = csr;
-        console.log(csr)
-      }
-    );
+    this.csrService.getCsrById(this.id).subscribe((csr) => this.csr = csr);
   }
 
   parseDate(date: Date) {

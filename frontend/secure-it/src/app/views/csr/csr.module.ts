@@ -18,6 +18,7 @@ import {MatOptionModule} from "@angular/material/core";
 import {CertificateRequestsComponent} from './container/certificate-requests/certificate-requests.component';
 import {RejectCsrComponent} from "./components/reject-csr/reject-csr.component";
 import {ApproveCsrComponent} from "./components/approve-csr/approve-csr.component";
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
   declarations: [
@@ -26,25 +27,26 @@ import {ApproveCsrComponent} from "./components/approve-csr/approve-csr.componen
     RejectCsrComponent,
     ApproveCsrComponent
   ],
-  imports: [
-    MatFormFieldModule,
-    MatIconModule,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDialogModule,
-    FormsModule,
-    CommonModule,
-    MatSnackBarModule,
-    ReactiveFormsModule,
-    MatMenuModule,
-    MatTableModule,
-    MatSelectModule,
-    MatOptionModule,
-    SharedModule,
-    MatPaginatorModule,
-  ],
+    imports: [
+        MatFormFieldModule,
+        MatIconModule,
+        MatButtonModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDialogModule,
+        FormsModule,
+        CommonModule,
+        MatSnackBarModule,
+        ReactiveFormsModule,
+        MatMenuModule,
+        MatTableModule,
+        MatSelectModule,
+        MatOptionModule,
+        SharedModule,
+        MatPaginatorModule,
+        MatCheckboxModule,
+    ],
   exports: [],
   bootstrap: []
 })

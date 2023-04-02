@@ -57,7 +57,6 @@ export class CsrTableDataSource implements DataSource<CsrListItem> {
   private searchCsrs(search: string, csrs: CsrDetails[]) {
     if (search !== '') {
       csrs = csrs.filter(item => {
-        console.log(item)
         return Object.values(item).some(val => val !== null && val !== undefined && val.toString().includes(search));
       });
     }
