@@ -38,6 +38,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static com.team4.secureit.util.CertificateUtils.getKeyUsageBitmap;
+
 @Service
 public class CertificateService {
 
@@ -101,6 +103,7 @@ public class CertificateService {
     public X509Certificate generateCertificate(PKCS10CertificationRequest csr, CertificateCreationOptions options) throws KeyStoreException, CertificateException, OperatorCreationException, IOException, NoSuchAlgorithmException {
         SubjectPublicKeyInfo subjectPublicKeyInfo = csr.getSubjectPublicKeyInfo();
         X500Name subjectX500Name = csr.getSubject();
+        Extensions extensions = options.getExtensions();
 
         String issuerAlias = options.getIssuerAlias();
         PrivateKey issuerPrivateKey = keyStoreService.getKeyPair(issuerAlias, "privatekeypassword".toCharArray()).getPrivate();
@@ -118,76 +121,42 @@ public class CertificateService {
                 subjectX500Name,
                 subjectPublicKeyInfo);
 
-        setExtensions(certBuilder, options.getExtensions(), subjectPublicKeyInfo);
+        setKeyUsageExtension(certBuilder, extensions);
+        setSubjectAlternativeNameExtension(certBuilder, extensions);
+        setSubjectKeyIdentifierExtension(certBuilder, extensions, subjectPublicKeyInfo);
+        setAuthorityKeyIdentifierExtension(certBuilder, extensions, subjectPublicKeyInfo);
 
         X509CertificateHolder certHolder = certBuilder.build(new JcaContentSignerBuilder("SHA256WithRSA").build(issuerPrivateKey));
-
         return new JcaX509CertificateConverter().getCertificate(certHolder);
     }
 
-    private void setExtensions(X509v3CertificateBuilder certBuilder, Extensions extensions, SubjectPublicKeyInfo subjectPublicKeyInfo) throws IOException, NoSuchAlgorithmException {
-        // Set keyUsage
-        int keyUsageBitmap = 0;
-        List<String> keyUsageValues = extensions.getKeyUsage();
-        if (keyUsageValues.contains("encipherOnly"))
-            keyUsageBitmap |= KeyUsage.encipherOnly;
-        if (keyUsageValues.contains("cRLSign"))
-            keyUsageBitmap |= KeyUsage.cRLSign;
-        if (keyUsageValues.contains("keyCertSign"))
-            keyUsageBitmap |= KeyUsage.keyCertSign;
-        if (keyUsageValues.contains("keyAgreement"))
-            keyUsageBitmap |= KeyUsage.keyAgreement;
-        if (keyUsageValues.contains("dataEncipherment"))
-            keyUsageBitmap |= KeyUsage.dataEncipherment;
-        if (keyUsageValues.contains("keyEncipherment"))
-            keyUsageBitmap |= KeyUsage.keyEncipherment;
-        if (keyUsageValues.contains("nonRepudiation"))
-            keyUsageBitmap |= KeyUsage.nonRepudiation;
-        if (keyUsageValues.contains("digitalSignature"))
-            keyUsageBitmap |= KeyUsage.digitalSignature;
-        if (keyUsageValues.contains("decipherOnly"))
-            keyUsageBitmap |= KeyUsage.decipherOnly;
-        certBuilder.addExtension(
-                Extension.keyUsage,
-                true,
-                new KeyUsage(keyUsageBitmap)
-        );
+    private void setKeyUsageExtension(X509v3CertificateBuilder certBuilder, Extensions extensions) throws CertIOException {
+        int keyUsageBitmap = getKeyUsageBitmap(extensions.getKeyUsage());
+        certBuilder.addExtension(Extension.keyUsage, true, new KeyUsage(keyUsageBitmap));
+    }
 
-        // Set subjectAlternativeName
-        if (extensions.getSubjectAlternativeName() != null) {
-            List<String> altNames = extensions.getSubjectAlternativeName();
-            GeneralNames sanNames = new GeneralNames(
-                    altNames.stream()
-                            .map(e -> new GeneralName(GeneralName.dNSName, e))
-                            .toArray(GeneralName[]::new)
-            );
-
-            certBuilder.addExtension(
-                    Extension.subjectAlternativeName,
-                    false,
-                    sanNames
-            );
+    private void setSubjectAlternativeNameExtension(X509v3CertificateBuilder certBuilder, Extensions extensions) throws CertIOException {
+        List<String> altNames = extensions.getSubjectAlternativeName();
+        if (altNames != null) {
+            GeneralNames sanNames = new GeneralNames(altNames.stream()
+                    .map(e -> new GeneralName(GeneralName.dNSName, e))
+                    .toArray(GeneralName[]::new));
+            certBuilder.addExtension(Extension.subjectAlternativeName, false, sanNames);
         }
+    }
 
-        // Set subjectKeyIdentifier
-        if (extensions.getSubjectKeyIdentifier() != null && extensions.getSubjectKeyIdentifier()) {
+    private void setSubjectKeyIdentifierExtension(X509v3CertificateBuilder certBuilder, Extensions extensions, SubjectPublicKeyInfo subjectPublicKeyInfo) throws CertIOException {
+        if (extensions.getSubjectKeyIdentifier() != null && extensions.getAuthorityKeyIdentifier()) {
             byte[] subjectKeyIdentifier = new SubjectKeyIdentifier(subjectPublicKeyInfo.getPublicKeyData().getBytes()).getKeyIdentifier();
-            certBuilder.addExtension(
-                    Extension.subjectKeyIdentifier,
-                    true,
-                    new SubjectKeyIdentifier(subjectKeyIdentifier).getKeyIdentifier()
-            );
+            certBuilder.addExtension(Extension.subjectKeyIdentifier, true, subjectKeyIdentifier);
         }
+    }
 
-        // Set authorityKeyIdentifier
+    private void setAuthorityKeyIdentifierExtension(X509v3CertificateBuilder certBuilder, Extensions extensions, SubjectPublicKeyInfo subjectPublicKeyInfo) throws NoSuchAlgorithmException, CertIOException {
         if (extensions.getAuthorityKeyIdentifier() != null && extensions.getAuthorityKeyIdentifier()) {
             JcaX509ExtensionUtils extensionUtils = new JcaX509ExtensionUtils();
             byte[] authorityKeyIdentifier = extensionUtils.createAuthorityKeyIdentifier(subjectPublicKeyInfo).getKeyIdentifier();
-            certBuilder.addExtension(
-                    Extension.authorityKeyIdentifier,
-                    false,
-                    new AuthorityKeyIdentifier(authorityKeyIdentifier)
-            );
+            certBuilder.addExtension(Extension.authorityKeyIdentifier, false, new AuthorityKeyIdentifier(authorityKeyIdentifier));
         }
     }
 }
