@@ -21,7 +21,6 @@ export class CertificateListComponent {
 
   @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort!: MatSort;
-  requestStatus = "accepted";
 
   constructor(public dialog: MatDialog, private certificateService: CertificateService) {
     this.dataSource = new CertificateTableDataSource(certificateService);

@@ -52,12 +52,6 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
           certificateItems.push(certificateItem)
         })
         this.certificatesSubject.next(certificateItems)
-        // if ("content" in rides) {
-        //   this.certificatesSubject.next(rides.content);
-        // }
-        // if ("totalElements" in rides) {
-        //   this.totalNumber.next(rides.totalElements);
-        // }
       });
   }
 

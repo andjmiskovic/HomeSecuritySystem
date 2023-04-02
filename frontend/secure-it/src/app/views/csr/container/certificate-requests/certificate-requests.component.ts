@@ -1,6 +1,9 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {CsrFormComponent} from "../../../dashboard/components/csr-form/csr-form.component";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
+import {CsrService} from "../../../../services/csr.service";
 
 @Component({
   selector: 'app-certificate-requests',
@@ -9,7 +12,12 @@ import {CsrFormComponent} from "../../../dashboard/components/csr-form/csr-form.
 })
 export class CertificateRequestsComponent {
 
-  constructor(private dialog: MatDialog) {
+  @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort!: MatSort;
+  requestStatus = "accepted";
+
+  constructor(private dialog: MatDialog, private csrService: CsrService) {
+    this.dataSource = new C
   }
 
   newCertificate() {
