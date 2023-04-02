@@ -21,7 +21,7 @@ export class CsrService {
     let queryParams = new HttpParams();
     queryParams = queryParams.append("status", status);
 
-    return this.http.get<CsrDetails[]>(this.csrUrl, AuthService.getHttpOptions(queryParams));
+    return this.http.get<CsrDetails[]>(this.csrUrl, AuthService.getHttpOptions());
   }
 
   public getCsrById(id: string): Observable<CsrDetails> {

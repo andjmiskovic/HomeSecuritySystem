@@ -11,34 +11,46 @@
       <mat-icon matPrefix>search</mat-icon>
       <input matInput (keyup)="applyFilter($event)" placeholder="Search certificates..." #input>
     </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Select an option</mat-label>
+      <mat-select disableRipple>
+        <mat-option value="1">Option 1</mat-option>
+        <mat-option value="2">Option 2</mat-option>
+        <mat-option value="3">Option 3</mat-option>
+      </mat-select>
+    </mat-form-field>
   </p>
 
   <mat-table [dataSource]="dataSource" matSort matSortActive="start" matSortDirection="desc" matSortDisableClear>
-
-    <ng-container matColumnDef="serialNumber">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Serial number</mat-header-cell>
-      <mat-cell *matCellDef="let certificate">{{certificate.serialNumber}}</mat-cell>
-    </ng-container>
-
     <ng-container matColumnDef="alias">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Alias</mat-header-cell>
-      <mat-cell *matCellDef="let certificate">{{certificate.alias}}</mat-cell>
+      <mat-cell *matCellDef="let csr">{{csr.alias}}</mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="notBefore">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Valid from</mat-header-cell>
-      <mat-cell *matCellDef="let certificate">{{parseDate(certificate.notBefore)}}</mat-cell>
+    <ng-container matColumnDef="organization">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Organization</mat-header-cell>
+      <mat-cell *matCellDef="let csr">{{csr.organization}}</mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="notAfter">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Valid to</mat-header-cell>
-      <mat-cell *matCellDef="let certificate">{{parseDate(certificate.notAfter)}}</mat-cell>
+    <ng-container matColumnDef="algorithm">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Algorithm</mat-header-cell>
+      <mat-cell *matCellDef="let csr">{{csr.algorithm}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="keySize">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Key size</mat-header-cell>
+      <mat-cell *matCellDef="let csr">{{csr.keySize}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+      <mat-cell *matCellDef="let csr">{{csr.status}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="details">
       <mat-header-cell *matHeaderCellDef>Details</mat-header-cell>
-      <mat-cell *matCellDef="let certificate">
-        <button (click)="detailsAboutCertificate(certificate.id)" mat-icon-button color="primary">
+      <mat-cell *matCellDef="let csr">
+        <button (click)="detailsAboutCsr(csr.id)" mat-icon-button color="primary">
           <mat-icon>article</mat-icon>
         </button>
       </mat-cell>

@@ -1,17 +1,12 @@
-<<<<<<< HEAD
-import {Component, ViewChild} from '@angular/core';
+import {CertificateTableDataSource} from "../../../../model/CertificateTableData";
 
-======
-=
-import {Component, Input} from '@angular/core';
-
->>>>>>>
-dev
+import {Component, ViewChild, Input} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {CsrFormComponent} from "../../../dashboard/components/csr-form/csr-form.component";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {CsrService} from "../../../../services/csr.service";
+import {CsrTableDataSource} from "../../../../model/CsrTableData";
 
 @Component({
   selector: 'app-certificate-requests',
@@ -19,6 +14,8 @@ import {CsrService} from "../../../../services/csr.service";
   styleUrls: ['./certificate-requests.component.css']
 })
 export class CertificateRequestsComponent {
+  displayedColumns = ["alias", "organization", "algorithm", "keySize", "status", "details"];
+  dataSource: CsrTableDataSource;
 
   @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort!: MatSort;
@@ -26,7 +23,17 @@ export class CertificateRequestsComponent {
   @Input() id!: string;
 
   constructor(private dialog: MatDialog, private csrService: CsrService) {
-    this.dataSource = new C
+    this.dataSource = new CsrTableDataSource(csrService);
+  }
+
+  ngAfterViewInit() {
+    this.loadCsrs()
+    // this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    // merge(this.sort.sortChange, this.paginator.page)
+    //   .pipe(
+    //     tap(() => this.loadCertificates())
+    //   )
+    //   .subscribe();
   }
 
   newCertificate() {
@@ -34,5 +41,19 @@ export class CertificateRequestsComponent {
       height: '400px',
       width: '600px',
     });
+  }
+
+  applyFilter($event: KeyboardEvent) {
+
+  }
+
+  private loadCsrs() {
+    this.dataSource.loadCsrs(
+      'REJECTED'
+    );
+  }
+
+  detailsAboutCsr(id: BigInteger) {
+
   }
 }
