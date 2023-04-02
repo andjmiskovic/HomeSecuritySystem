@@ -18,5 +18,7 @@ export class SidebarComponent {
   }
 
   logout() {
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
   }
 }

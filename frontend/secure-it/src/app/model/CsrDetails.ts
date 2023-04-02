@@ -1,16 +1,20 @@
 export class CsrDetails {
-  algorithm!: string;
-  alias!: string;
-  city!: string;
-  commonName!: string;
-  country!: string;
-  created!: Date | null;
-  csrPem!: string;
   id!: string;
-  keySize!: number;
-  modified!: Date | null;
-  organization!: string;
-  publicKeyPem!: string;
+  alias!: string;
+  commonName!: string;
+
+  country!: string;
   state!: string;
+  city!: string;
+
+  created: Date = new Date();
+  modified: Date = new Date();
+
+  algorithm!: string;
+  csrPem!: string;
+  publicKeyPem!: string;
+  keySize!: number;
+
+  organization!: string;
   status!: string;
 }

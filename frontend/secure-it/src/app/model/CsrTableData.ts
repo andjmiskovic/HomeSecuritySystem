@@ -1,13 +1,12 @@
 import {CollectionViewer, DataSource} from "@angular/cdk/collections";
 import {BehaviorSubject, catchError, finalize, Observable, of} from "rxjs";
-import {CertificateService} from "../services/certificates.service";
 import {CsrService} from "../services/csr.service";
 
 export class CsrListItem {
+  id!: string;
   alias!: string;
+  commonName!: string;
   organization!: string;
-  algorithm!: string;
-  keySize!: number;
   status!: string;
 }
 
@@ -34,27 +33,23 @@ export class CsrTableDataSource implements DataSource<CsrListItem> {
   }
 
   loadCsrs(status: string) {
-
     this.loadingSubject.next(true);
-
     this.csrService.getCsrs(status).pipe(
       catchError(() => of([])),
       finalize(() => this.loadingSubject.next(false))
     )
       .subscribe(csrs => {
-        console.log("AAAAA")
-        console.log(csrs)
         let certificateItems: CsrListItem[] = []
         csrs.forEach((csr) => {
-          let csrItem = new CsrListItem()
-          csrItem.alias = csr.alias
-          csrItem.algorithm = csr.algorithm
-          csrItem.keySize = csr.keySize
-          csrItem.organization = csr.organization
-          csrItem.status = csr.status
-          certificateItems.push(csrItem)
+          let csrItem = new CsrListItem();
+          csrItem.id = csr.id;
+          csrItem.commonName = csr.commonName;
+          csrItem.alias = csr.alias;
+          csrItem.organization = csr.organization;
+          csrItem.status = csr.status;
+          certificateItems.push(csrItem);
         })
-        this.certificatesSubject.next(certificateItems)
+        this.certificatesSubject.next(certificateItems);
       });
   }
 

@@ -1,4 +1,4 @@
-<app-sidebar currentPage="certificates"></app-sidebar>
+<app-sidebar currentPage="requests"></app-sidebar>
 <img src="../../../../../assets/images/background-line.jpg" class="dashboard-background" alt="dashboard-background"/>
 
 <div style="margin-left: 90px; margin-right: 10px; margin-top: -80px">
@@ -23,24 +23,20 @@
   </p>
 
   <mat-table [dataSource]="dataSource" matSort matSortActive="start" matSortDirection="desc" matSortDisableClear>
+
     <ng-container matColumnDef="alias">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Alias</mat-header-cell>
       <mat-cell *matCellDef="let csr">{{csr.alias}}</mat-cell>
     </ng-container>
 
+    <ng-container matColumnDef="commonName">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Common name</mat-header-cell>
+      <mat-cell *matCellDef="let csr">{{csr.commonName}}</mat-cell>
+    </ng-container>
+
     <ng-container matColumnDef="organization">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Organization</mat-header-cell>
       <mat-cell *matCellDef="let csr">{{csr.organization}}</mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="algorithm">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Algorithm</mat-header-cell>
-      <mat-cell *matCellDef="let csr">{{csr.algorithm}}</mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="keySize">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Key size</mat-header-cell>
-      <mat-cell *matCellDef="let csr">{{csr.keySize}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="status">

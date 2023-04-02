@@ -1,3 +1,90 @@
-<h2>Certificate</h2>
-<i><p>Serial number: {{certificate.serialNumber}}</p></i>
-<hr>
+<div style="padding: 20px">
+  <h2>
+    <mat-icon style="color: var(--blue)">bookmark</mat-icon>
+    Certificate Signing request
+  </h2>
+  <p style="margin-top: -15px; font-size: 12px"><i>Id: {{csr.id}}</i></p>
+
+  <hr>
+
+  <div class="row">
+    <div class="label">Alias:</div>
+    <div class="value">{{csr.alias}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Common name:</div>
+    <div class="value">{{csr.commonName}}</div>
+  </div>
+
+  <div class="row">
+    <div class="label">Country:</div>
+    <div class="value">{{csr.country}}</div>
+  </div>
+  <div class="row">
+    <div class="label">State:</div>
+    <div class="value">{{csr.state}}</div>
+  </div>
+  <div class="row">
+    <div class="label">City:</div>
+    <div class="value">{{csr.city}}</div>
+  </div>
+
+  <div class="row">
+    <div class="label">Created:</div>
+    <div class="value">{{csr.created}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Modified:</div>
+    <div class="value">{{csr.modified}}</div>
+  </div>
+
+  <div class="row">
+    <div class="label">Algorithm:</div>
+    <div class="value">{{csr.algorithm}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Public key pem:</div>
+    <div class="value">
+      <button style="font-size: 12px" mat-stroked-button (click)="downloadCsrPem()">
+        <mat-icon style="color: var(--blue)">download</mat-icon>
+        Download
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="label">Csr pem:</div>
+    <div class="value">
+      <button style="font-size: 12px" mat-stroked-button size="small" (click)="downloadPublicKeyPem()">
+        <mat-icon style="color: var(--blue)">download</mat-icon>
+        Download
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="label">Key size:</div>
+    <div class="value">{{csr.keySize}}</div>
+  </div>
+
+  <div class="row">
+    <div class="label">Organization:</div>
+    <div class="value">{{csr.organization}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Status:</div>
+    <div class="value">
+      <span *ngIf="csr.status == 'APPROVED'" class="requestStatus" style="background-color: var(--green)">APPROVED</span>
+      <span *ngIf="csr.status == 'REJECTED'" class="requestStatus" style="background-color: var(--red)">REJECTED</span>
+      <span *ngIf="csr.status == 'PENDING'" class="requestStatus" style="background-color: var(--blue)">PENDING</span>
+    </div>
+  </div>
+
+  <hr>
+
+  <button mat-stroked-button color="warn" (click)="reject(csr.id)" style="margin-right: 5px">
+    Reject certificate
+  </button>
+  <button mat-stroked-button style="color: var(--green)" (click)="approve(csr.id)">
+    Issue certificate
+  </button>
+
+</div>

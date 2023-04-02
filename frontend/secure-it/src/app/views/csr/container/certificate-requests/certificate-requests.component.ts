@@ -8,6 +8,7 @@ import {MatSort} from "@angular/material/sort";
 import {CsrService} from "../../../../services/csr.service";
 import {CsrTableDataSource} from "../../../../model/CsrTableData";
 import {MatSelectChange} from "@angular/material/select";
+import {CsrDetailsDialogComponent} from "../../components/csr-details-dialog/csr-details-dialog.component";
 
 @Component({
   selector: 'app-certificate-requests',
@@ -15,7 +16,7 @@ import {MatSelectChange} from "@angular/material/select";
   styleUrls: ['./certificate-requests.component.css']
 })
 export class CertificateRequestsComponent {
-  displayedColumns = ["alias", "organization", "algorithm", "keySize", "status", "details"];
+  displayedColumns = ["alias", "commonName", "organization", "status", "details"];
   dataSource: CsrTableDataSource;
 
   @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
@@ -30,13 +31,7 @@ export class CertificateRequestsComponent {
   }
 
   ngAfterViewInit() {
-    this.loadCsrs()
-    // this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-    // merge(this.sort.sortChange, this.paginator.page)
-    //   .pipe(
-    //     tap(() => this.loadCertificates())
-    //   )
-    //   .subscribe();
+    this.loadCsrs();
   }
 
   newCertificate() {
@@ -56,11 +51,15 @@ export class CertificateRequestsComponent {
     );
   }
 
-  detailsAboutCsr(id: BigInteger) {
-
+  detailsAboutCsr(id: string) {
+    let dialogRef = this.dialog.open(CsrDetailsDialogComponent, {
+      height: '650px',
+      width: '800px'
+    });
+    dialogRef.componentInstance.id = id;
   }
 
   selectedFilterChange($event: MatSelectChange) {
-    this.loadCsrs()
+    this.loadCsrs();
   }
 }

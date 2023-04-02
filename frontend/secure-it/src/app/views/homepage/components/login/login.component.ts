@@ -50,7 +50,8 @@ export class LoginComponent {
     this.authService.login(loginCredentials).subscribe({
       next: (loginResponse) => {
         localStorage.setItem('token', "Bearer " + loginResponse.accessToken);
-        this.router.navigate(['/certificates'])
+        localStorage.setItem('userRole', "ADMIN");
+        this.router.navigate(['/dashboard'])
       }
     })
   }

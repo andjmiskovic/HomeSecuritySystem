@@ -5,35 +5,24 @@
     <li>
       <a (click)="navigate('/dashboard')" [ngClass]="{ 'currentPage': currentPage === 'dashboard' }">
         <mat-icon>dashboard</mat-icon>
-        <span class="links_name">Dashboard</span>
       </a>
       <span class="tooltip">Dashboard</span>
     </li>
-    <li>
-      <a (click)="navigate('/users')" [ngClass]="{ 'currentPage': currentPage === 'users' }">
-        <mat-icon>groups</mat-icon>
-        <span class="links_name">Users</span>
+    <li *ngIf="userRole == 'ADMIN'">
+      <a (click)="navigate('/certificates')" [ngClass]="{ 'currentPage': currentPage === 'certificates' }">
+        <mat-icon>article</mat-icon>
       </a>
-      <span class="tooltip">Users</span>
+      <span class="tooltip">Certificates</span>
     </li>
-    <li>
-      <a (click)="navigate('/analytics')" [ngClass]="{ 'currentPage': currentPage === 'analytics' }">
-        <mat-icon>query_stats</mat-icon>
-        <span class="links_name">Analytics</span>
+    <li *ngIf="userRole == 'ADMIN'">
+      <a (click)="navigate('/requests')" [ngClass]="{ 'currentPage': currentPage === 'requests' }">
+        <mat-icon>dehaze</mat-icon>
       </a>
-      <span class="tooltip">Analytics</span>
-    </li>
-    <li>
-      <a (click)="navigate('/profile')" [ngClass]="{ 'currentPage': currentPage === 'profile' }">
-        <mat-icon>person</mat-icon>
-        <span class="links_name">My Profile</span>
-      </a>
-      <span class="tooltip">My Profile</span>
+      <span class="tooltip">CSRs</span>
     </li>
     <li>
       <a (click)="logout()">
         <mat-icon>logout</mat-icon>
-        <span class="links_name">Log out</span>
       </a>
       <span class="tooltip">Log out</span>
     </li>

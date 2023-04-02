@@ -2,7 +2,6 @@ import {Component, Input, OnInit} from '@angular/core';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {CertificateDetails} from "../../../../model/CertificateDetails";
 import {CertificateService} from "../../../../services/certificate.service";
-import {CsrDetailsDialogComponent} from "../../../csr/components/csr-details-dialog/csr-details-dialog.component";
 import {CertificateValidityResponse} from "../../../../model/CertificateValidityResponse";
 import {RevokeCertificateComponent} from "../revoke-certificate/revoke-certificate.component";
 import {getDateTime} from "../../../../utils/TimeUtils";
@@ -14,7 +13,7 @@ import {getDateTime} from "../../../../utils/TimeUtils";
 })
 export class CertificatesDetailsDialogComponent implements OnInit {
   @Input() serialNumber!: BigInteger;
-  @Input() dialogRef!: MatDialogRef<CsrDetailsDialogComponent>;
+  @Input() dialogRef!: MatDialogRef<CertificatesDetailsDialogComponent, any>;
 
   certificate: CertificateDetails = new CertificateDetails();
   validity: CertificateValidityResponse = new CertificateValidityResponse();
