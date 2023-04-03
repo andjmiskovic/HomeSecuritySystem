@@ -3,13 +3,16 @@ package com.team4.secureit.service;
 import com.team4.secureit.dto.request.CertificateCreationOptions;
 import com.team4.secureit.dto.request.CertificateRevocationRequest;
 import com.team4.secureit.dto.request.Extensions;
+import com.team4.secureit.dto.request.LoginVerificationRequest;
 import com.team4.secureit.dto.response.CertificateValidityResponse;
 import com.team4.secureit.exception.CertificateAlreadyRevokedException;
+import com.team4.secureit.exception.VerificationFailedException;
 import com.team4.secureit.model.CertificateDetails;
 import com.team4.secureit.model.CertificateRevocation;
 import com.team4.secureit.model.User;
 import com.team4.secureit.repository.CertificateDetailsRepository;
 import com.team4.secureit.repository.CertificateRevocationRepository;
+import com.team4.secureit.util.CSRUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.*;
@@ -52,6 +55,9 @@ public class CertificateService {
 
     @Autowired
     private KeyStoreService keyStoreService;
+
+    @Autowired
+    private AccountService accountService;
 
     public List<CertificateDetails> getAll() {
         return certificateDetailsRepository.findAll();
@@ -133,6 +139,18 @@ public class CertificateService {
 
         X509CertificateHolder certHolder = certBuilder.build(new JcaContentSignerBuilder("SHA256WithRSA").build(issuerPrivateKey));
         return new JcaX509CertificateConverter().getCertificate(certHolder);
+    }
+
+    public String getPrivateKey(BigInteger serialNumber, LoginVerificationRequest verificationRequest, User subscriber) throws IOException {
+        if (!accountService.verifyLogin(verificationRequest, subscriber))
+            throw new VerificationFailedException("Verification failed.");
+
+        CertificateDetails details = certificateDetailsRepository.findBySerialNumberAndSubscriber(serialNumber, subscriber)
+                .orElseThrow(() -> new EntityNotFoundException("Certificate not found."));
+
+        String alias = details.getAlias();
+        PrivateKey privateKey = keyStoreService.getKeyPair(alias, "privatekeypassword".toCharArray()).getPrivate();
+        return CSRUtils.keyToPEM(privateKey);
     }
 
     private void setKeyUsageExtension(X509v3CertificateBuilder certBuilder, Extensions extensions) throws CertIOException {

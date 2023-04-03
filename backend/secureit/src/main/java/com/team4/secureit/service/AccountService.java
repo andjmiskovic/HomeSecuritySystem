@@ -2,6 +2,7 @@ package com.team4.secureit.service;
 
 import com.team4.secureit.config.AppProperties;
 import com.team4.secureit.dto.request.LoginRequest;
+import com.team4.secureit.dto.request.LoginVerificationRequest;
 import com.team4.secureit.dto.request.RegistrationRequest;
 import com.team4.secureit.dto.request.VerificationRequest;
 import com.team4.secureit.dto.response.LoginResponse;
@@ -72,6 +73,10 @@ public class AccountService {
 
         Long expiresAt = tokenProvider.readClaims(accessToken).getExpiration().getTime();
         return new LoginResponse(accessToken, expiresAt, role);
+    }
+
+    public boolean verifyLogin(LoginVerificationRequest verificationRequest, User user) {
+        return passwordEncoder.matches(verificationRequest.getPassword(), user.getPassword());
     }
 
     public void logout(HttpServletRequest request, HttpServletResponse response) {
