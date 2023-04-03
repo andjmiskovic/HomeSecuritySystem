@@ -6,6 +6,7 @@ import {getDateTime} from "../../../../utils/TimeUtils";
 import {CertificateCreationOptions} from "../../../../model/CertificateCreationOptions";
 import {RejectCsrComponent} from "../reject-csr/reject-csr.component";
 import {ApproveCsrComponent} from "../approve-csr/approve-csr.component";
+import {downloadTxtFile} from "../../../../utils/DownloadFile";
 
 @Component({
   selector: 'app-csr-details-dialog',
@@ -41,21 +42,11 @@ export class CsrDetailsDialogComponent {
   }
 
   downloadCsrPem() {
-    this.downloadTxtFile(this.csr.csrPem, "csrPem.txt");
+    downloadTxtFile(this.csr.csrPem, "csrPem.txt");
   }
 
   downloadPublicKeyPem() {
-    this.downloadTxtFile(this.csr.publicKeyPem, "publicKeyPem.txt");
-  }
-
-  downloadTxtFile(content: string, fileName: string): void {
-    const element = document.createElement('a');
-    const file = new Blob([content], {type: 'text/plain'});
-    element.href = URL.createObjectURL(file);
-    element.download = fileName;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+    downloadTxtFile(this.csr.publicKeyPem, "publicKeyPem.txt");
   }
 
   reject() {

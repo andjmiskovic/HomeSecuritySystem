@@ -7,6 +7,7 @@ import com.team4.secureit.dto.request.CSRRejectionRequest;
 import com.team4.secureit.dto.request.CertificateCreationOptions;
 import com.team4.secureit.model.CSRDetails;
 import com.team4.secureit.model.PropertyOwner;
+import com.team4.secureit.model.User;
 import com.team4.secureit.service.CSRService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -44,6 +45,17 @@ public class CSRController {
             return csrService.getAll();
         }
     }
+
+//    @GetMapping
+//    @PreAuthorize("hasRole('PROPERTY_OWNER')")
+//    public List<CSRDetails> getAllBySubscriber(@RequestParam(value = "status", required = false) String status, Authentication authentication) {
+//        User user = (User) authentication.getPrincipal();
+//        if (status != null) {
+//            return csrService.findByStatusAndBySubscriber(status, user);
+//        } else {
+//            return csrService.getAllBySubscriber(user);
+//        }
+//    }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")

@@ -84,5 +84,8 @@
           (click)="revokeCertificate(certificate.serialNumber)">
     Revoke certificate
   </button>
-
+  <button mat-stroked-button color="warn" *ngIf="validity.valid && userRole==='ROLE_PROPERTY_OWNER'"
+          (click)="previewPrivateKey(certificate.serialNumber)">
+    Preview private key
+  </button>
 </div>

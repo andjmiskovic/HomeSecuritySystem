@@ -18,12 +18,14 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import { RevokeCertificateComponent } from './components/revoke-certificate/revoke-certificate.component';
+import { PreviewPrivateKeyComponent } from './components/preview-private-key/preview-private-key.component';
 
 @NgModule({
   declarations: [
     CertificateListComponent,
     CertificatesDetailsDialogComponent,
-    RevokeCertificateComponent
+    RevokeCertificateComponent,
+    PreviewPrivateKeyComponent
   ],
   imports: [
     MatFormFieldModule,

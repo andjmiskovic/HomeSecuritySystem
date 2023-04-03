@@ -72,4 +72,7 @@ public class CSRDetails {
     @UpdateTimestamp
     private Instant modified;
 
+    @ManyToOne
+    @JsonIgnore
+    private User subscriber;
 }

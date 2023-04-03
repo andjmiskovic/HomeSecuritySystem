@@ -2,6 +2,7 @@ package com.team4.secureit.util;
 
 import com.team4.secureit.dto.request.CSRCreationRequest;
 import com.team4.secureit.model.CSRDetails;
+import com.team4.secureit.model.User;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 
 public class CSRUtils {
 
-    public static CSRDetails csrToCSRDetails(CSRCreationRequest request, KeyPair keyPair, PKCS10CertificationRequest csr) throws IOException {
+    public static CSRDetails csrToCSRDetails(CSRCreationRequest request, KeyPair keyPair, PKCS10CertificationRequest csr, User propertyOwner) throws IOException {
         CSRDetails csrDetails = new CSRDetails();
         csrDetails.setCsrPem(csrToPEM(csr));
         csrDetails.setPrivateKeyPem(keyToPEM(keyPair.getPrivate()));
@@ -39,6 +40,7 @@ public class CSRUtils {
         csrDetails.setCountry(request.getCountry());
         csrDetails.setAlgorithm(request.getAlgorithm());
         csrDetails.setKeySize(request.getKeySize());
+        csrDetails.setSubscriber(propertyOwner);
         return csrDetails;
     }
 

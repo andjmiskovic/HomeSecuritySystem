@@ -42,4 +42,8 @@ export class CertificateService {
   getAllRevocations(): Observable<CertificateRevocation[]> {
     return this.http.get<CertificateRevocation[]>(`${this.certificatesUrl}/revocations`, AuthService.getHttpOptions());
   }
+
+  getPrivateKey(serialNumber: BigInteger, password: string) {
+    return this.http.post<string>(`${this.certificatesUrl}/${serialNumber}/privateKey`, {password}, AuthService.getHttpOptions());
+  }
 }

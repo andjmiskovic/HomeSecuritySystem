@@ -56,13 +56,20 @@ public class CSRService {
     public CSRDetails generateAndPersistCSR(CSRCreationRequest request, PropertyOwner propertyOwner) throws OperatorCreationException, IOException {
         KeyPair keyPair = generateKeyPair(request.getAlgorithm(), request.getKeySize());
         PKCS10CertificationRequest csr = generateCSR(request, keyPair, propertyOwner.getEmail());
-        CSRDetails csrDetails = csrToCSRDetails(request, keyPair, csr);
+        CSRDetails csrDetails = csrToCSRDetails(request, keyPair, csr, propertyOwner);
         return csrDetailsRepository.save(csrDetails);
     }
 
     public List<CSRDetails> getAll() {
         return csrDetailsRepository.findAll();
     }
+
+//    public List<CSRDetails> findByStatusAndBySubscriber(String status, User user) {
+//    }
+
+//    public List<CSRDetails> getAllBySubscriber(User user) {
+//        return csrDetailsRepository.find
+//    }
 
     public CSRDetails getById(UUID id) throws EntityNotFoundException {
         return csrDetailsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("CSR not found."));
@@ -135,4 +142,6 @@ public class CSRService {
             return null;
         }
     }
+
+
 }

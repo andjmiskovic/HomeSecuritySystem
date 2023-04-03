@@ -5,6 +5,7 @@ import {CertificateService} from "../../../../services/certificate.service";
 import {CertificateValidityResponse} from "../../../../model/CertificateValidityResponse";
 import {RevokeCertificateComponent} from "../revoke-certificate/revoke-certificate.component";
 import {getDateTime} from "../../../../utils/TimeUtils";
+import {PreviewPrivateKeyComponent} from "../preview-private-key/preview-private-key.component";
 
 @Component({
   selector: 'app-certificates-details-dialog',
@@ -49,5 +50,11 @@ export class CertificatesDetailsDialogComponent implements OnInit {
     } catch (e) {
       return 'N/A';
     }
+  }
+
+  previewPrivateKey(serialNumber: BigInteger) {
+    const dialogRef = this.dialog.open(PreviewPrivateKeyComponent);
+    dialogRef.componentInstance.serialNumber = serialNumber;
+    dialogRef.afterClosed().subscribe(() => {});
   }
 }
