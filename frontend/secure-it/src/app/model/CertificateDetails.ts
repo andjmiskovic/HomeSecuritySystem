@@ -10,4 +10,5 @@ export class CertificateDetails {
   publicKeyAlgorithm!: string;
   publicKeyFormat!: string;
   certificateAuthority!: boolean;
+  pem!: string;
 }

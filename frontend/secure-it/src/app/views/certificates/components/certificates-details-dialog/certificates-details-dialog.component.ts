@@ -6,6 +6,7 @@ import {CertificateValidityResponse} from "../../../../model/CertificateValidity
 import {RevokeCertificateComponent} from "../revoke-certificate/revoke-certificate.component";
 import {getDateTime} from "../../../../utils/TimeUtils";
 import {PreviewPrivateKeyComponent} from "../preview-private-key/preview-private-key.component";
+import {downloadTxtFile} from "../../../../utils/DownloadFile";
 
 @Component({
   selector: 'app-certificates-details-dialog',
@@ -56,5 +57,10 @@ export class CertificatesDetailsDialogComponent implements OnInit {
     const dialogRef = this.dialog.open(PreviewPrivateKeyComponent);
     dialogRef.componentInstance.serialNumber = serialNumber;
     dialogRef.afterClosed().subscribe(() => {});
+  }
+
+  downloadPublicKeyPem() {
+    console.log(this.certificate)
+    downloadTxtFile(this.certificate.pem, "publicKeyPem.txt");
   }
 }
