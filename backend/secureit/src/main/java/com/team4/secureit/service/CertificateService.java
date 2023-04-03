@@ -30,10 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.SecureRandom;
+import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
@@ -130,7 +127,7 @@ public class CertificateService {
         Extensions extensions = options.getExtensions();
 
         String issuerAlias = options.getIssuerAlias();
-        PrivateKey issuerPrivateKey = keyStoreService.getKeyPair(issuerAlias, "privatekeypassword".toCharArray()).getPrivate();
+        KeyPair issuerKeyPair = keyStoreService.getKeyPair(issuerAlias, "privatekeypassword".toCharArray());
         X500Name issuerX500Name = new JcaX509CertificateHolder(keyStoreService.getCertificate(issuerAlias)).getSubject();
 
         BigInteger serialNumber = new BigInteger(48, new SecureRandom());
@@ -148,9 +145,9 @@ public class CertificateService {
         setKeyUsageExtension(certBuilder, extensions);
         setSubjectAlternativeNameExtension(certBuilder, extensions);
         setSubjectKeyIdentifierExtension(certBuilder, extensions, subjectPublicKeyInfo);
-        setAuthorityKeyIdentifierExtension(certBuilder, extensions, subjectPublicKeyInfo);
+        setAuthorityKeyIdentifierExtension(certBuilder, extensions, issuerKeyPair.getPublic());
 
-        X509CertificateHolder certHolder = certBuilder.build(new JcaContentSignerBuilder("SHA256WithRSA").build(issuerPrivateKey));
+        X509CertificateHolder certHolder = certBuilder.build(new JcaContentSignerBuilder("SHA256WithRSA").build(issuerKeyPair.getPrivate()));
         return new JcaX509CertificateConverter().getCertificate(certHolder);
     }
 
@@ -181,18 +178,15 @@ public class CertificateService {
         }
     }
 
-    private void setSubjectKeyIdentifierExtension(X509v3CertificateBuilder certBuilder, Extensions extensions, SubjectPublicKeyInfo subjectPublicKeyInfo) throws CertIOException {
-        if (extensions.getSubjectKeyIdentifier() != null && extensions.getAuthorityKeyIdentifier()) {
-            byte[] subjectKeyIdentifier = new SubjectKeyIdentifier(subjectPublicKeyInfo.getPublicKeyData().getBytes()).getKeyIdentifier();
-            certBuilder.addExtension(Extension.subjectKeyIdentifier, true, subjectKeyIdentifier);
+    private void setSubjectKeyIdentifierExtension(X509v3CertificateBuilder certBuilder, Extensions extensions, SubjectPublicKeyInfo subjectPublicKeyInfo) throws CertIOException, NoSuchAlgorithmException {
+        if (Boolean.TRUE.equals(extensions.getAuthorityKeyIdentifier())) {
+            certBuilder.addExtension(Extension.subjectKeyIdentifier, false, new JcaX509ExtensionUtils().createSubjectKeyIdentifier(subjectPublicKeyInfo));
         }
     }
 
-    private void setAuthorityKeyIdentifierExtension(X509v3CertificateBuilder certBuilder, Extensions extensions, SubjectPublicKeyInfo subjectPublicKeyInfo) throws NoSuchAlgorithmException, CertIOException {
-        if (extensions.getAuthorityKeyIdentifier() != null && extensions.getAuthorityKeyIdentifier()) {
-            JcaX509ExtensionUtils extensionUtils = new JcaX509ExtensionUtils();
-            byte[] authorityKeyIdentifier = extensionUtils.createAuthorityKeyIdentifier(subjectPublicKeyInfo).getKeyIdentifier();
-            certBuilder.addExtension(Extension.authorityKeyIdentifier, false, new AuthorityKeyIdentifier(authorityKeyIdentifier));
+    private void setAuthorityKeyIdentifierExtension(X509v3CertificateBuilder certBuilder, Extensions extensions, PublicKey issuerPublicKey) throws NoSuchAlgorithmException, CertIOException {
+        if (Boolean.TRUE.equals(extensions.getAuthorityKeyIdentifier())) {
+            certBuilder.addExtension(Extension.authorityKeyIdentifier, false, new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(issuerPublicKey));
         }
     }
 }
