@@ -159,7 +159,7 @@ public class CertificateService {
                 .orElseThrow(() -> new EntityNotFoundException("Certificate not found."));
 
         String alias = details.getAlias();
-        PrivateKey privateKey = keyStoreService.getKeyPair(alias, "privatekeypassword".toCharArray()).getPrivate();
+        PrivateKey privateKey = keyStoreService.getKeyPair(alias, "keypassword".toCharArray()).getPrivate();
         return CSRUtils.keyToPEM(privateKey);
     }
 
