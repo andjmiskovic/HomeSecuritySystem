@@ -19,8 +19,8 @@ export class CsrFormComponent {
       city: ['', Validators.required],
       state: ['', Validators.required],
       country: ['', [Validators.required, CountryCodeValidator]],
-      algorithm: ['', [Validators.required, Validators.pattern(/^(RSA|DSA|EC)$/)]],
-      keySize: ['', [Validators.required, Validators.min(1)]]
+      algorithm: ['RSA', [Validators.required, Validators.pattern(/^(RSA|DSA|EC)$/)]],
+      keySize: ['2048', [Validators.required, Validators.min(1)]]
     });
     this.commonName = "A"
   }
