@@ -3,7 +3,8 @@
 <app-sidebar currentPage="dashboard"></app-sidebar>
 <div style="margin-left: 90px; margin-right: 10px; margin-top: -80px">
   <h1 style="font-weight: 500; margin-left: 10px; color: white">Dashboard</h1>
-  <button *ngIf="userRole!=='ROLE_ADMIN'" class="create-certificate" mat-raised-button (click)="openNewCertificateDialog()">New
-    Certificate
+  <button *ngIf="userRole!=='ROLE_ADMIN'" class="create-certificate" mat-raised-button
+          (click)="openNewCertificateDialog()">
+    New Certificate Request
   </button>
 </div>
