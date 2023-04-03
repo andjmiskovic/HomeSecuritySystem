@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @Service
 public class KeyStoreService {
@@ -62,10 +63,12 @@ public class KeyStoreService {
         return (X509Certificate) keyStore.getCertificate(alias);
     }
 
-    public X509Certificate[] getCertificateChain(String alias) throws KeyStoreException {
-        Certificate[] certChain = keyStore.getCertificateChain(alias);
-        return Arrays.stream(certChain)
+    public X509Certificate[] getCertificateChain(String alias, X509Certificate newCert) throws KeyStoreException {
+        Certificate[] chain = keyStore.getCertificateChain(alias);
+        X509Certificate[] x509chain = Arrays.stream(chain)
                 .map(cert -> (X509Certificate) cert)
+                .toArray(X509Certificate[]::new);
+        return Stream.concat(Arrays.stream(x509chain), Stream.of(newCert))
                 .toArray(X509Certificate[]::new);
     }
 
