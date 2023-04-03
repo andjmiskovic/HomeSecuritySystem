@@ -133,7 +133,7 @@ public class CertificateService {
         PrivateKey issuerPrivateKey = keyStoreService.getKeyPair(issuerAlias, "privatekeypassword".toCharArray()).getPrivate();
         X500Name issuerX500Name = new JcaX509CertificateHolder(keyStoreService.getCertificate(issuerAlias)).getSubject();
 
-        BigInteger serialNumber = new BigInteger(64, new SecureRandom());
+        BigInteger serialNumber = new BigInteger(48, new SecureRandom());
         Date notBefore = new Date();
         Date notAfter = new Date(System.currentTimeMillis() + 365L * 24L * 60L * 60L * 1000L);
 
