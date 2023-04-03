@@ -25,7 +25,7 @@ export class CertificateListComponent {
 
   constructor(public dialog: MatDialog, private certificateService: CertificateService) {
     this.dataSource = new CertificateTableDataSource(certificateService);
-    this.searchFilter = ""
+    this.searchFilter = "";
   }
 
   ngAfterViewInit() {
@@ -33,9 +33,7 @@ export class CertificateListComponent {
   }
 
   loadCertificates() {
-    this.dataSource.loadCertificates(
-      this.searchFilter
-    );
+    this.dataSource.loadCertificates(this.searchFilter);
   }
 
   detailsAboutCertificate(certificate: CertificateDetails) {

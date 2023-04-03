@@ -17,7 +17,7 @@ export class DashboardContainerComponent {
 
   openNewCertificateDialog() {
     this.dialog.open(CsrFormComponent, {
-      height: '450px',
+      height: '500px',
       width: '600px',
     });
   }
