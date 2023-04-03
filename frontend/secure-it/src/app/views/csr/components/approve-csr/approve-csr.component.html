@@ -50,7 +50,7 @@
         <button style="float: right" mat-flat-button class="reason-link" (click)="addNewInstance()">+ Add new instance
         </button>
       </p>
-      <div *ngFor="let name of subjectAlternativeName; let i = index">
+      <div *ngFor="let name of subjectAlternativeName; let i = index; trackBy:trackByFn">
         <mat-form-field style="width: 100%; font-size: 12px" appearance="outline">
           <mat-label>Alternative name no.{{i + 1}}</mat-label>
           <input matInput [(ngModel)]="subjectAlternativeName[i]">

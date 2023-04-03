@@ -26,13 +26,13 @@ export class PreviewPrivateKeyComponent {
   }
 
   previewPrivateKey() {
-    this.certificateService.getPrivateKey(this.serialNumber,this.password).subscribe({
+    this.certificateService.getPrivateKey(this.serialNumber, this.password).subscribe({
       next: (res) => {
         downloadTxtFile(res, "privateKeyPem.txt")
       },
       error: (res) => {
-        downloadTxtFile(res.error.text, "privateKeyPem.txt")
-        // this.openSnackBar(res)
+        if (res.error.text)
+          downloadTxtFile(res.error.text, "privateKeyPem.txt")
       }
     })
   }

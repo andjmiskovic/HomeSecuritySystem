@@ -66,4 +66,8 @@ export class ApproveCsrComponent {
       error: (err) => console.error(err)
     })
   }
+
+  trackByFn(index: any, item: any) {
+    return index;
+  }
 }
