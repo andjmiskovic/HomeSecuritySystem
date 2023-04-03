@@ -1,6 +1,6 @@
 import {CollectionViewer, DataSource} from "@angular/cdk/collections";
 import {BehaviorSubject, catchError, finalize, Observable, of} from "rxjs";
-import {CertificateService} from "../services/certificates.service";
+import {CertificateService} from "../services/certificate.service";
 import {CertificateDetails} from "./CertificateDetails";
 
 export class CertificatesListItem {
@@ -8,6 +8,7 @@ export class CertificatesListItem {
   alias!: string;
   notBefore!: Date;
   notAfter!: Date;
+  validityStatus!: string;
 }
 
 export class CertificateTableDataSource implements DataSource<CertificatesListItem> {
@@ -41,17 +42,21 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
       finalize(() => this.loadingSubject.next(false))
     )
       .subscribe(certificates => {
-        certificates = this.searchCertificates(search, certificates);
-        let certificateItems: CertificatesListItem[] = []
-        certificates.forEach((certificate) => {
-          let certificateItem = new CertificatesListItem()
-          certificateItem.alias = certificate.alias
-          certificateItem.notBefore = certificate.notBefore
-          certificateItem.notAfter = certificate.notAfter
-          certificateItem.serialNumber = certificate.serialNumber
-          certificateItems.push(certificateItem)
+        this.certificateService.getValidities().subscribe((validities) => {
+          certificates = this.searchCertificates(search, certificates);
+          let certificateItems: CertificatesListItem[] = []
+          certificates.forEach((certificate) => {
+            let certificateItem = new CertificatesListItem()
+            certificateItem.alias = certificate.alias
+            certificateItem.notBefore = certificate.notBefore
+            certificateItem.notAfter = certificate.notAfter
+            certificateItem.serialNumber = certificate.serialNumber
+            certificateItem.validityStatus = validities[Number(certificate.serialNumber)].valid ? "VALID" : "INVALID"
+            certificateItems.push(certificateItem)
+          })
+          console.log(certificateItems)
+          this.certificatesSubject.next(certificateItems)
         })
-        this.certificatesSubject.next(certificateItems)
       });
   }
 

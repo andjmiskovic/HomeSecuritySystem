@@ -32,6 +32,16 @@
       <mat-cell *matCellDef="let certificate">{{parseDate(certificate.notAfter)}}</mat-cell>
     </ng-container>
 
+    <ng-container matColumnDef="validityStatus">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Validity status</mat-header-cell>
+      <mat-cell *matCellDef="let certificate">
+        <span *ngIf="certificate.validityStatus == 'VALID'" class="requestStatus"
+              style="background-color: var(--green)">VALID</span>
+        <span *ngIf="certificate.validityStatus == 'INVALID'" class="requestStatus"
+              style="background-color: var(--red)">INVALID</span>
+      </mat-cell>
+    </ng-container>
+
     <ng-container matColumnDef="details">
       <mat-header-cell *matHeaderCellDef>Details</mat-header-cell>
       <mat-cell *matCellDef="let certificate">

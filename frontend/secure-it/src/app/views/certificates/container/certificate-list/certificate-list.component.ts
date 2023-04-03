@@ -6,9 +6,9 @@ import {MatSort} from "@angular/material/sort";
 import {
   CertificatesDetailsDialogComponent
 } from "../../components/certificates-details-dialog/certificates-details-dialog.component";
-import {CertificateService} from "../../../../services/certificates.service";
 import {getDateTime} from "../../../../utils/TimeUtils";
 import {CertificateDetails} from "../../../../model/CertificateDetails";
+import {CertificateService} from "../../../../services/certificate.service";
 
 @Component({
   selector: 'app-certificate-list',
@@ -16,7 +16,7 @@ import {CertificateDetails} from "../../../../model/CertificateDetails";
   styleUrls: ['./certificate-list.component.css']
 })
 export class CertificateListComponent {
-  displayedColumns = ["serialNumber", "alias", "notBefore", "notAfter", "details"];
+  displayedColumns = ["serialNumber", "alias", "notBefore", "notAfter", "validityStatus", "details"];
   dataSource: CertificateTableDataSource;
   searchFilter: string;
 
@@ -45,6 +45,7 @@ export class CertificateListComponent {
     });
     dialogRef.componentInstance.serialNumber = certificate.serialNumber;
     dialogRef.componentInstance.dialogRef = dialogRef;
+    dialogRef.afterClosed().subscribe(() => this.loadCertificates());
   }
 
   applyFilter($event: KeyboardEvent) {
