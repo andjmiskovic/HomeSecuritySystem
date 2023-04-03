@@ -19,6 +19,9 @@ public class CertificateDetails {
     @Column
     private BigInteger serialNumber;
 
+    @Column(length = 4096)
+    private String pem;
+
     @Column(unique = true)
     private String alias;
 
