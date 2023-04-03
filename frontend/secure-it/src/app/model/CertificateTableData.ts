@@ -20,7 +20,7 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
   public totalNumber$ = this.totalNumber.asObservable();
 
   constructor(
-    private certificateService: CertificateService
+    private certificateService: CertificateService, private userRole: string
   ) {
   }
 
@@ -42,21 +42,24 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
       finalize(() => this.loadingSubject.next(false))
     )
       .subscribe(certificates => {
-        this.certificateService.getValidities().subscribe((validities) => {
-          certificates = this.searchCertificates(search, certificates);
-          let certificateItems: CertificatesListItem[] = []
-          certificates.forEach((certificate) => {
-            let certificateItem = new CertificatesListItem()
-            certificateItem.alias = certificate.alias
-            certificateItem.notBefore = certificate.notBefore
-            certificateItem.notAfter = certificate.notAfter
-            certificateItem.serialNumber = certificate.serialNumber
-            certificateItem.validityStatus = validities[Number(certificate.serialNumber)].valid ? "VALID" : "INVALID"
-            certificateItems.push(certificateItem)
+        if (this.userRole === "ADMIN") {
+          this.certificateService.getValidities().subscribe((validities) => {
+            let certificateItems = this.getCertificateItems(search, certificates);
+            certificateItems.forEach((item) => {
+              item.validityStatus = validities[Number(item.serialNumber)].valid ? "VALID" : "INVALID"
+            })
+            this.certificatesSubject.next(certificateItems);
           })
-          console.log(certificateItems)
-          this.certificatesSubject.next(certificateItems)
-        })
+        } else {
+          let certificateItems = this.getCertificateItems(search, certificates);
+          certificateItems.forEach((item) => {
+            this.certificateService.checkCertificateValidity(item.serialNumber).subscribe((validitiy) => {
+              item.validityStatus = validitiy.valid ? "VALID" : "INVALID"
+            })
+          })
+          this.certificatesSubject.next(certificateItems);
+        }
+
       });
   }
 
@@ -67,6 +70,20 @@ export class CertificateTableDataSource implements DataSource<CertificatesListIt
       });
     }
     return certificates;
+  }
+
+  getCertificateItems(search: string, certificates: any): CertificatesListItem[] {
+    certificates = this.searchCertificates(search, certificates);
+    let certificateItems: CertificatesListItem[] = []
+    certificates.forEach((certificate: any) => {
+      let certificateItem = new CertificatesListItem()
+      certificateItem.alias = certificate.alias
+      certificateItem.notBefore = certificate.notBefore
+      certificateItem.notAfter = certificate.notAfter
+      certificateItem.serialNumber = certificate.serialNumber
+      certificateItems.push(certificateItem)
+    })
+    return certificateItems
   }
 }
 

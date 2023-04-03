@@ -19,12 +19,13 @@ export class CertificateListComponent {
   displayedColumns = ["serialNumber", "alias", "notBefore", "notAfter", "validityStatus", "details"];
   dataSource: CertificateTableDataSource;
   searchFilter: string;
-
+  userRole: string;
   @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort!: MatSort;
 
   constructor(public dialog: MatDialog, private certificateService: CertificateService) {
-    this.dataSource = new CertificateTableDataSource(certificateService);
+    this.userRole = localStorage.getItem("userRole") || ""
+    this.dataSource = new CertificateTableDataSource(certificateService, this.userRole);
     this.searchFilter = "";
   }
 
