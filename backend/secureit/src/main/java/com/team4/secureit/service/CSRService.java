@@ -85,7 +85,6 @@ public class CSRService {
     public void issueAndPersistCertificate(UUID id, CertificateCreationOptions options) throws IOException, GeneralSecurityException, OperatorCreationException {
         CSRDetails csrDetails = getById(id);
         PKCS10CertificationRequest csr = csrDetailsToCSR(csrDetails);
-        X509Certificate[] chain = keyStoreService.getCertificateChain(options.getIssuerAlias());
 
         String alias = csrDetails.getAlias();
         KeyPair keyPair = new KeyPair(
@@ -99,6 +98,7 @@ public class CSRService {
 
         User subscriber = csrDetails.getSubscriber();
         X509Certificate cert = certificateService.generateCertificate(csr, options);
+        X509Certificate[] chain = keyStoreService.getCertificateChain(options.getIssuerAlias(), cert);
 
         keyStoreService.storeKeyPair(keyPair, alias, "keypassword".toCharArray(), chain);
         certificateDetailsRepository.save(CertificateUtils.convertToDetails(cert, alias, subscriber));
