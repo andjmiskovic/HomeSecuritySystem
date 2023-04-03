@@ -5,15 +5,16 @@ import com.team4.secureit.dto.request.LoginRequest;
 import com.team4.secureit.dto.request.RegistrationRequest;
 import com.team4.secureit.dto.request.VerificationRequest;
 import com.team4.secureit.dto.response.LoginResponse;
+import com.team4.secureit.dto.response.UserInfoResponse;
+import com.team4.secureit.model.User;
 import com.team4.secureit.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/auth")
@@ -43,5 +44,12 @@ public class AuthController {
     public ResponseOk verify(@Valid @RequestBody VerificationRequest verificationRequest) {
         accountService.verifyEmail(verificationRequest);
         return new ResponseOk("Email verified successfully.");
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public UserInfoResponse getLoggedUserInfo(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return new UserInfoResponse(user);
     }
 }
