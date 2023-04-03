@@ -86,7 +86,7 @@ public class CertificateService {
         } catch (CertificateNotYetValidException e) {
             return new CertificateValidityResponse("The certificate is not yet valid and cannot be used until its valid start date has passed.", validAfter, validBefore);
         } catch (Exception ignored) {
-            return null;
+            return new CertificateValidityResponse("The certificate is invalid or corrupted.", validAfter, validBefore);
         }
     }
 
