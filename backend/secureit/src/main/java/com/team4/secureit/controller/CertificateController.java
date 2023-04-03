@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyStoreException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/certificates")
@@ -51,6 +52,12 @@ public class CertificateController {
     @PreAuthorize("hasAnyRole('ADMIN', 'PROPERTY_OWNER')")
     public CertificateValidityResponse checkCertificateValidity(@PathVariable final BigInteger serialNumber) throws EntityNotFoundException, KeyStoreException {
         return certificateService.checkValidityForSerialNumber(serialNumber);
+    }
+
+    @GetMapping("/validities")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public Map<String, CertificateValidityResponse> batchCheckCertificateValidity() {
+        return certificateService.batchCheckCertificateValidity();
     }
 
     @PostMapping("/{serialNumber}/revoke")

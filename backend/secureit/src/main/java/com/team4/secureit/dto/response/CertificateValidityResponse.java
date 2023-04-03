@@ -10,6 +10,9 @@ public class CertificateValidityResponse {
     private boolean valid;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String message;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String reason;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -38,5 +41,9 @@ public class CertificateValidityResponse {
         this.valid = false;
         this.reason = reason;
         this.revokedAt = revokedAt;
+    }
+
+    public CertificateValidityResponse(String message) {
+        this.message = message;
     }
 }

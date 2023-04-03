@@ -86,9 +86,8 @@ public class KeyStoreService {
                         X509Certificate cert = (X509Certificate) keyStore.getCertificate(alias);
                         return CertificateUtils.convertToDetails(cert, alias, null);
                     } catch (KeyStoreException ignore) {
-
+                        return null;
                     }
-                    return null;
                 })
                 .filter(Objects::nonNull)
                 .toList();
