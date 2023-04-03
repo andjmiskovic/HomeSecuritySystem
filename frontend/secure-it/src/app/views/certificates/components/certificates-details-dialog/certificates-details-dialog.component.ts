@@ -17,8 +17,11 @@ export class CertificatesDetailsDialogComponent implements OnInit {
 
   certificate: CertificateDetails = new CertificateDetails();
   validity: CertificateValidityResponse = new CertificateValidityResponse();
+  userRole: string;
+
 
   constructor(private certificateService: CertificateService, public dialog: MatDialog) {
+    this.userRole = localStorage.getItem("userRole") || ""
   }
 
   ngOnInit() {

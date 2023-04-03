@@ -80,7 +80,8 @@
 
   <hr>
 
-  <button mat-stroked-button color="warn" *ngIf="validity.valid" (click)="revokeCertificate(certificate.serialNumber)">
+  <button mat-stroked-button color="warn" *ngIf="validity.valid && userRole==='ROLE_ADMIN'"
+          (click)="revokeCertificate(certificate.serialNumber)">
     Revoke certificate
   </button>
 

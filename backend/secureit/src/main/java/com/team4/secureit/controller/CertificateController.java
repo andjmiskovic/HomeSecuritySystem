@@ -33,13 +33,13 @@ public class CertificateController {
     }
 
     @GetMapping("/{serialNumber}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROPERTY_OWNER')")
     public CertificateDetails getBySerialNumber(@PathVariable final BigInteger serialNumber) throws EntityNotFoundException {
         return certificateService.getBySerialNumber(serialNumber);
     }
 
     @GetMapping("/{serialNumber}/validity")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROPERTY_OWNER')")
     public CertificateValidityResponse checkCertificateValidity(@PathVariable final BigInteger serialNumber) throws EntityNotFoundException, KeyStoreException {
         return certificateService.checkValidityForSerialNumber(serialNumber);
     }
