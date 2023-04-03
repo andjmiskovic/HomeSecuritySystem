@@ -2,9 +2,7 @@ package com.team4.secureit.service;
 
 import com.team4.secureit.dto.request.CSRCreationRequest;
 import com.team4.secureit.dto.request.CertificateCreationOptions;
-import com.team4.secureit.exception.UserNotFoundException;
 import com.team4.secureit.model.CSRDetails;
-import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.model.RequestStatus;
 import com.team4.secureit.model.User;
 import com.team4.secureit.repository.CSRDetailsRepository;
@@ -98,13 +96,13 @@ public class CSRService {
         csrDetails.setStatus(RequestStatus.APPROVED);
         csrDetails.setProcessed(Instant.now());
         csrDetails.setPrivateKeyPem("REDACTED");
-        csrDetailsRepository.save(csrDetails);
 
         User subscriber = csrDetails.getSubscriber();
         X509Certificate cert = certificateService.generateCertificate(csr, options);
-        certificateDetailsRepository.save(CertificateUtils.convertToDetails(cert, alias, subscriber));
 
         keyStoreService.storeKeyPair(keyPair, alias, "keypassword".toCharArray(), chain);
+        certificateDetailsRepository.save(CertificateUtils.convertToDetails(cert, alias, subscriber));
+        csrDetailsRepository.save(csrDetails);
     }
 
     public void rejectRequest(UUID id, String reason) {
