@@ -6,7 +6,6 @@ import com.team4.secureit.dto.request.CSRCreationRequest;
 import com.team4.secureit.dto.request.CSRRejectionRequest;
 import com.team4.secureit.dto.request.CertificateCreationOptions;
 import com.team4.secureit.model.CSRDetails;
-import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.model.Role;
 import com.team4.secureit.model.User;
 import com.team4.secureit.service.CSRService;
@@ -32,8 +31,8 @@ public class CSRController {
     @PostMapping
     @PreAuthorize("hasRole('PROPERTY_OWNER')")
     public ResponseCreated createCSR(@RequestBody @Valid final CSRCreationRequest csrCreationRequest, Authentication authentication) throws OperatorCreationException, IOException {
-        PropertyOwner propertyOwner = (PropertyOwner) authentication.getPrincipal();
-        CSRDetails csrDetails = csrService.generateAndPersistCSR(csrCreationRequest, propertyOwner);
+        User subscriber = (User) authentication.getPrincipal();
+        CSRDetails csrDetails = csrService.generateAndPersistCSR(csrCreationRequest, subscriber);
         return new ResponseCreated("Successfully created CSR.", csrDetails.getId());
     }
 

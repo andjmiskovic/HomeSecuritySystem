@@ -5,7 +5,6 @@ import com.team4.secureit.model.CSRDetails;
 import com.team4.secureit.model.User;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.RDN;
-import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMKeyPair;
@@ -27,20 +26,20 @@ import java.util.stream.Collectors;
 
 public class CSRUtils {
 
-    public static CSRDetails csrToCSRDetails(CSRCreationRequest request, KeyPair keyPair, PKCS10CertificationRequest csr, User propertyOwner) throws IOException {
+    public static CSRDetails csrToCSRDetails(CSRCreationRequest request, KeyPair keyPair, PKCS10CertificationRequest csr, User subscriber) throws IOException {
         CSRDetails csrDetails = new CSRDetails();
         csrDetails.setCsrPem(csrToPEM(csr));
         csrDetails.setPrivateKeyPem(keyToPEM(keyPair.getPrivate()));
         csrDetails.setPublicKeyPem(keyToPEM(keyPair.getPublic()));
-        csrDetails.setAlias(readRDNsFromCSR(csr, BCStyle.CN));
-        csrDetails.setCommonName(readRDNsFromCSR(csr, BCStyle.CN));
+        csrDetails.setAlias(subscriber.getEmail() + getAliasSuffix());
+        csrDetails.setCommonName(subscriber.getEmail());
         csrDetails.setOrganization(request.getOrganization());
         csrDetails.setCity(request.getCity());
         csrDetails.setState(request.getState());
         csrDetails.setCountry(request.getCountry());
         csrDetails.setAlgorithm(request.getAlgorithm());
         csrDetails.setKeySize(request.getKeySize());
-        csrDetails.setSubscriber(propertyOwner);
+        csrDetails.setSubscriber(subscriber);
         return csrDetails;
     }
 
@@ -102,5 +101,10 @@ public class CSRUtils {
         return Arrays.stream(rdns)
                 .map(rdn -> rdn.getFirst().getValue().toString())
                 .collect(Collectors.joining(","));
+    }
+
+    private static String getAliasSuffix() {
+        long unixTime = System.currentTimeMillis() / 1000L;
+        return " " + Long.toHexString(unixTime);
     }
 }
