@@ -1,4 +1,4 @@
 export class CertificateCreationOptions {
   extensions!: { [key: string]: any };
-  issuerAlias!: string;
+  issuerAlias: string = "secure it root ca";
 }

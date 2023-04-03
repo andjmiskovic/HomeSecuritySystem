@@ -70,4 +70,18 @@ export class ApproveCsrComponent {
   trackByFn(index: any, item: any) {
     return index;
   }
+
+  validForm(): boolean {
+    if (this.chosenOptionsFormControl.value?.length == 0)
+      return false;
+    if (this.template == '1' && this.subjectAlternativeName.length == 0)
+      return false;
+    if (this.template == '1') {
+      for (let x of this.subjectAlternativeName) {
+        if (x.length == 0)
+          return false;
+      }
+    }
+    return true;
+  }
 }

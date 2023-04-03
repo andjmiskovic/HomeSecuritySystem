@@ -11,10 +11,9 @@
     <mat-form-field appearance="outline" style="width: 100%; margin-top: 10px">
       <mat-label>Choose an issuer</mat-label>
       <mat-select [(ngModel)]="options.issuerAlias">
-        <mat-option value="secure it root ca">Secure IT Root</mat-option>
-        <mat-option value="secure it general purpose ca (secure it root ca)">Secure IT Property Owners</mat-option>
-        <mat-option value="secure it property owners ca (secure it root ca)">Secure IT General Purpose
-        </mat-option>
+        <mat-option value="secure it root ca">Secure IT Root CA</mat-option>
+        <mat-option value="secure it general purpose ca (secure it root ca)">Secure IT Property Owners CA</mat-option>
+        <mat-option value="secure it property owners ca (secure it root ca)">Secure IT General Purpose CA</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -53,8 +52,10 @@
       <div *ngFor="let name of subjectAlternativeName; let i = index; trackBy:trackByFn">
         <mat-form-field style="width: 100%; font-size: 12px" appearance="outline">
           <mat-label>Alternative name no.{{i + 1}}</mat-label>
-          <input matInput [(ngModel)]="subjectAlternativeName[i]">
-          <mat-icon matSuffix color="warn" style="cursor: pointer" (click)="removeInstance(i)">delete</mat-icon>
+          <input required matInput [(ngModel)]="subjectAlternativeName[i]">
+          <mat-icon matSuffix color="warn" style="cursor: pointer" *ngIf="subjectAlternativeName.length > 1"
+                    (click)="removeInstance(i)">delete
+          </mat-icon>
         </mat-form-field>
       </div>
     </div>
@@ -64,5 +65,8 @@
   </div>
   <hr>
   <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-stroked-button style="color: var(--green)" (click)="approve()">Issue</button>
+  <button [disabled]="!validForm()"
+          mat-raised-button style="color: var(--green)"
+          (click)="approve()">Issue
+  </button>
 </div>
