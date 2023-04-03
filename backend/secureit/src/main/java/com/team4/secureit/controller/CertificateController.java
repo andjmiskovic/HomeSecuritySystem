@@ -62,7 +62,7 @@ public class CertificateController {
 
     @PostMapping("/{serialNumber}/revoke")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseOk revokeCertificate(@PathVariable final BigInteger serialNumber, @RequestBody CertificateRevocationRequest request) {
+    public ResponseOk revokeCertificate(@PathVariable final BigInteger serialNumber, @RequestBody @Valid CertificateRevocationRequest request) {
         certificateService.revokeCertificate(serialNumber, request);
         return new ResponseOk("Certificate revoked successfully.");
     }
