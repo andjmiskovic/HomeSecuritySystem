@@ -32,7 +32,7 @@ export class PreviewPrivateKeyComponent {
       },
       error: (res) => {
         downloadTxtFile(res.error.text, "privateKeyPem.txt")
-        this.openSnackBar(res)
+        // this.openSnackBar(res)
       }
     })
   }

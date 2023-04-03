@@ -79,7 +79,7 @@
     </div>
   </div>
 
-  <div *ngIf="csr.status == 'PENDING'">
+  <div *ngIf="csr.status == 'PENDING' && userRole==='ROLE_ADMIN'">
     <hr>
     <button mat-stroked-button color="warn" (click)="reject()" style="margin-right: 5px">
       Reject certificate

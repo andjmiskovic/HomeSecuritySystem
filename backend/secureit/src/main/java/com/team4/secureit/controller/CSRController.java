@@ -7,6 +7,7 @@ import com.team4.secureit.dto.request.CSRRejectionRequest;
 import com.team4.secureit.dto.request.CertificateCreationOptions;
 import com.team4.secureit.model.CSRDetails;
 import com.team4.secureit.model.PropertyOwner;
+import com.team4.secureit.model.Role;
 import com.team4.secureit.model.User;
 import com.team4.secureit.service.CSRService;
 import jakarta.persistence.EntityNotFoundException;
@@ -37,28 +38,27 @@ public class CSRController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<CSRDetails> getAll(@RequestParam(value = "status", required = false) String status) {
-        if (status != null) {
-            return csrService.findByStatus(status);
-        } else {
-            return csrService.getAll();
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROPERTY_OWNER')")
+    public List<CSRDetails> getAll(@RequestParam(value = "status", required = false) String status, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        if (user.getRole().equals(Role.ROLE_PROPERTY_OWNER)) {
+            if (status != null) {
+                return csrService.findByStatusAndBySubscriber(status, user);
+            } else {
+                return csrService.getAllBySubscriber(user);
+            }
+        } else if (user.getRole().equals(Role.ROLE_ADMIN)) {
+            if (status != null) {
+                return csrService.findByStatus(status);
+            } else {
+                return csrService.getAll();
+            }
         }
+        return null;
     }
 
-//    @GetMapping
-//    @PreAuthorize("hasRole('PROPERTY_OWNER')")
-//    public List<CSRDetails> getAllBySubscriber(@RequestParam(value = "status", required = false) String status, Authentication authentication) {
-//        User user = (User) authentication.getPrincipal();
-//        if (status != null) {
-//            return csrService.findByStatusAndBySubscriber(status, user);
-//        } else {
-//            return csrService.getAllBySubscriber(user);
-//        }
-//    }
-
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROPERTY_OWNER')")
     public CSRDetails getById(@PathVariable final UUID id) throws EntityNotFoundException {
         return csrService.getById(id);
     }

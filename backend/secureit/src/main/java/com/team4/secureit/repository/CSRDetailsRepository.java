@@ -11,5 +11,6 @@ import java.util.UUID;
 @Repository
 public interface CSRDetailsRepository extends JpaRepository<CSRDetails, UUID> {
     List<CSRDetails> findByStatus(RequestStatus status);
-//    List<CSRDetails> findAllBy
+    List<CSRDetails> findAllBySubscriberId(UUID id);
+    List<CSRDetails> findAllBySubscriberIdAndStatus(UUID id, RequestStatus status);
 }

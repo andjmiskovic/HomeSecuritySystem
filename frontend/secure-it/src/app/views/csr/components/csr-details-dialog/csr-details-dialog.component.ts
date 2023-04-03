@@ -21,8 +21,10 @@ export class CsrDetailsDialogComponent {
   reason = "";
   options = new CertificateCreationOptions();
   inProcess = "none";
+  userRole: string;
 
   constructor(private csrService: CsrService, public dialog: MatDialog) {
+    this.userRole = localStorage.getItem("userRole") || ""
   }
 
   ngOnInit() {

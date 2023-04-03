@@ -64,12 +64,13 @@ public class CSRService {
         return csrDetailsRepository.findAll();
     }
 
-//    public List<CSRDetails> findByStatusAndBySubscriber(String status, User user) {
-//    }
+    public List<CSRDetails> findByStatusAndBySubscriber(String status, User user) {
+        return csrDetailsRepository.findAllBySubscriberIdAndStatus(user.getId(), RequestStatus.valueOf(status.toUpperCase()));
+    }
 
-//    public List<CSRDetails> getAllBySubscriber(User user) {
-//        return csrDetailsRepository.find
-//    }
+    public List<CSRDetails> getAllBySubscriber(User user) {
+        return csrDetailsRepository.findAllBySubscriberId(user.getId());
+    }
 
     public CSRDetails getById(UUID id) throws EntityNotFoundException {
         return csrDetailsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("CSR not found."));
