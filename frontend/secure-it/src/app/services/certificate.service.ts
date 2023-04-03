@@ -46,4 +46,8 @@ export class CertificateService {
   getPrivateKey(serialNumber: BigInteger, password: string) {
     return this.http.post<string>(`${this.certificatesUrl}/${serialNumber}/privateKey`, {password}, AuthService.getHttpOptions());
   }
+
+  getValidities() {
+    return this.http.get<any[]>(`${this.certificatesUrl}/validities`, AuthService.getHttpOptions());
+  }
 }

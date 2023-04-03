@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
@@ -85,7 +86,7 @@ public class KeyStoreService {
                     try {
                         X509Certificate cert = (X509Certificate) keyStore.getCertificate(alias);
                         return CertificateUtils.convertToDetails(cert, alias, null);
-                    } catch (KeyStoreException ignore) {
+                    } catch (KeyStoreException | CertificateEncodingException | IOException ignore) {
                         return null;
                     }
                 })

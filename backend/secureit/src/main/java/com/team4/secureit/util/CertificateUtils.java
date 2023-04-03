@@ -3,7 +3,12 @@ package com.team4.secureit.util;
 import com.team4.secureit.model.CertificateDetails;
 import com.team4.secureit.model.User;
 import org.bouncycastle.asn1.x509.KeyUsage;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemWriter;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
@@ -13,9 +18,10 @@ public class CertificateUtils {
         return cert.getBasicConstraints() != -1; // -1 indicates not a CA cert, 0 and above indicates CA cert
     }
 
-    public static CertificateDetails convertToDetails(X509Certificate cert, String alias, User subscriber) {
+    public static CertificateDetails convertToDetails(X509Certificate cert, String alias, User subscriber) throws CertificateEncodingException, IOException {
         return new CertificateDetails(
                 cert.getSerialNumber(),
+                certToPEM(cert),
                 alias,
                 cert.getSubjectX500Principal().getName(),
                 cert.getIssuerX500Principal().getName(),
@@ -49,6 +55,15 @@ public class CertificateUtils {
             case "decipherOnly" -> KeyUsage.decipherOnly;
             default -> 0;
         };
+    }
+
+    public static String certToPEM(X509Certificate cert) throws IOException, CertificateEncodingException {
+        PemObject pemObject = new PemObject("CERTIFICATE", cert.getEncoded());
+        StringWriter stringWriter = new StringWriter();
+        try (PemWriter pemWriter = new PemWriter(stringWriter)) {
+            pemWriter.writeObject(pemObject);
+        }
+        return stringWriter.toString();
     }
 
 }

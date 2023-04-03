@@ -36,7 +36,7 @@ export class AuthService {
   }
 
   public getCurrentlyLoggedUser(): Observable<User> {
-    return this.http.get<User>(this.authUrl + '/currently-logged-user', AuthService.getHttpOptions());
+    return this.http.get<User>(this.authUrl + '/me', AuthService.getHttpOptions());
   }
 
 
