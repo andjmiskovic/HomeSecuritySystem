@@ -1,8 +1,9 @@
-import {Component, Input} from '@angular/core';
+import {Component, Inject, Input} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CsrService} from "../../../../services/csr.service";
 import {MatDialogRef} from "@angular/material/dialog";
 import {AuthService} from "../../../../services/auth.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-csr-form',
@@ -14,7 +15,7 @@ export class CsrFormComponent {
   commonName: string = "";
   @Input() dialogRef!: MatDialogRef<CsrFormComponent>;
 
-  constructor(private fb: FormBuilder, private csrService: CsrService, private authService: AuthService) {
+  constructor(@Inject(MatSnackBar) private _snackBar: MatSnackBar, private fb: FormBuilder, private csrService: CsrService, private authService: AuthService) {
     this.csrForm = this.fb.group({
       organization: ['', Validators.required],
       city: ['', Validators.required],
@@ -33,7 +34,13 @@ export class CsrFormComponent {
       const data = this.csrForm.value;
       this.csrService.createCsr(data).subscribe({
         next: (csr) => console.log(csr),
-        error: () => console.error("Error")
+        error: (err) => {
+          console.log(err)
+          this._snackBar.open(err.error.errors.CSRCreationRequest, '', {
+            duration: 3000,
+            panelClass: ['snack-bar']
+          })
+        }
       })
     }
   }

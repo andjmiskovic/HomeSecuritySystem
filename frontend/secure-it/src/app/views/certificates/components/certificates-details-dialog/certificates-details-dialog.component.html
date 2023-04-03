@@ -11,12 +11,10 @@
     <div class="label">Alias:</div>
     <div class="value">{{certificate.alias}}</div>
   </div>
-  <div class="row">
+  <div class="row" *ngIf="certificate.certificateAuthority">
     <div class="label">Certificate authority:</div>
     <div class="value">
-      <span *ngIf="certificate.certificateAuthority"><mat-icon
-        style="color: var(--green)">check_circle</mat-icon></span>
-      <span *ngIf="!certificate.certificateAuthority"><mat-icon style="color: var(--red)">report</mat-icon></span>
+      <span><mat-icon style="color: var(--green)">check_circle</mat-icon></span>
     </div>
   </div>
   <div class="row">
@@ -96,6 +94,6 @@
   </button>
   <button mat-stroked-button color="warn" *ngIf="validity.valid && userRole==='ROLE_PROPERTY_OWNER'"
           (click)="previewPrivateKey(certificate.serialNumber)">
-    Preview private key
+    Download private key
   </button>
 </div>
