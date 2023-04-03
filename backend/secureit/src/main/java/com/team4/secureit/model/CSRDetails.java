@@ -72,7 +72,7 @@ public class CSRDetails {
     @UpdateTimestamp
     private Instant modified;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     private User subscriber;
 }

@@ -53,10 +53,10 @@ public class CSRService {
     private UserRepository userRepository;
 
     @SuppressWarnings("ConstantConditions")
-    public CSRDetails generateAndPersistCSR(CSRCreationRequest request, PropertyOwner propertyOwner) throws OperatorCreationException, IOException {
+    public CSRDetails generateAndPersistCSR(CSRCreationRequest request, User subscriber) throws OperatorCreationException, IOException {
         KeyPair keyPair = generateKeyPair(request.getAlgorithm(), request.getKeySize());
-        PKCS10CertificationRequest csr = generateCSR(request, keyPair, propertyOwner.getEmail());
-        CSRDetails csrDetails = csrToCSRDetails(request, keyPair, csr, propertyOwner);
+        PKCS10CertificationRequest csr = generateCSR(request, keyPair, subscriber.getEmail());
+        CSRDetails csrDetails = csrToCSRDetails(request, keyPair, csr, subscriber);
         return csrDetailsRepository.save(csrDetails);
     }
 
@@ -64,12 +64,12 @@ public class CSRService {
         return csrDetailsRepository.findAll();
     }
 
-    public List<CSRDetails> findByStatusAndBySubscriber(String status, User user) {
-        return csrDetailsRepository.findAllBySubscriberIdAndStatus(user.getId(), RequestStatus.valueOf(status.toUpperCase()));
+    public List<CSRDetails> findByStatusAndBySubscriber(String status, User subscriber) {
+        return csrDetailsRepository.findAllBySubscriberIdAndStatus(subscriber.getId(), RequestStatus.valueOf(status.toUpperCase()));
     }
 
-    public List<CSRDetails> getAllBySubscriber(User user) {
-        return csrDetailsRepository.findAllBySubscriberId(user.getId());
+    public List<CSRDetails> getAllBySubscriber(User subscriber) {
+        return csrDetailsRepository.findAllBySubscriberId(subscriber.getId());
     }
 
     public CSRDetails getById(UUID id) throws EntityNotFoundException {
@@ -100,7 +100,7 @@ public class CSRService {
         csrDetails.setPrivateKeyPem("REDACTED");
         csrDetailsRepository.save(csrDetails);
 
-        User subscriber = userRepository.findByEmail(readRDNsFromCSR(csr, BCStyle.CN)).orElseThrow(UserNotFoundException::new);
+        User subscriber = csrDetails.getSubscriber();
         X509Certificate cert = certificateService.generateCertificate(csr, options);
         certificateDetailsRepository.save(CertificateUtils.convertToDetails(cert, alias, subscriber));
 

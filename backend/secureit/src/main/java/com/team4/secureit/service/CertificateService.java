@@ -38,9 +38,8 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.team4.secureit.util.CertificateUtils.getKeyUsageBitmap;
 
@@ -92,6 +91,20 @@ public class CertificateService {
         } catch (Exception ignored) {
             return null;
         }
+    }
+
+    public Map<String, CertificateValidityResponse> batchCheckCertificateValidity() {
+        return certificateDetailsRepository.findAll().stream()
+                .collect(Collectors.toMap(
+                        certDetail -> certDetail.getSerialNumber().toString(),
+                        certDetail -> {
+                            try {
+                                return checkValidityForSerialNumber(certDetail.getSerialNumber());
+                            } catch (KeyStoreException ignored) {
+                                return new CertificateValidityResponse("Error: Failed to check certificate validity.");
+                            }
+                        })
+                );
     }
 
     public void revokeCertificate(BigInteger serialNumber, CertificateRevocationRequest request) {

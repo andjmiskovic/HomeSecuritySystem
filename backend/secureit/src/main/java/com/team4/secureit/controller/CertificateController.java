@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyStoreException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/certificates")
@@ -53,6 +54,12 @@ public class CertificateController {
         return certificateService.checkValidityForSerialNumber(serialNumber);
     }
 
+    @GetMapping("/validities")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public Map<String, CertificateValidityResponse> batchCheckCertificateValidity() {
+        return certificateService.batchCheckCertificateValidity();
+    }
+
     @PostMapping("/{serialNumber}/revoke")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseOk revokeCertificate(@PathVariable final BigInteger serialNumber, @RequestBody CertificateRevocationRequest request) {
@@ -63,11 +70,11 @@ public class CertificateController {
     @PostMapping("/{serialNumber}/privateKey")
     @PreAuthorize("hasRole('PROPERTY_OWNER')")
     public ResponseEntity<String> getPrivateKey(@PathVariable final BigInteger serialNumber, @RequestBody @Valid LoginVerificationRequest verificationRequest, Authentication authentication) throws IOException {
-        User user = (User) authentication.getPrincipal();
-        String pem = certificateService.getPrivateKey(serialNumber, verificationRequest, user);
+        User subscriber = (User) authentication.getPrincipal();
+        String pem = certificateService.getPrivateKey(serialNumber, verificationRequest, subscriber);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + user.getEmail() + "_priv.pem\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + subscriber.getEmail() + "_priv.pem\"")
                 .contentLength(pem.length())
                 .contentType(MediaType.TEXT_PLAIN)
                 .body(pem);
