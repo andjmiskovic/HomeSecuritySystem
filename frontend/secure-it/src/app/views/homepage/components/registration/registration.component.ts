@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Inject, Output} from '@angular/core';
-import {FormBuilder, Validators} from "@angular/forms";
+import {AbstractControl, FormBuilder, ValidatorFn, Validators} from "@angular/forms";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {AuthService} from "../../../../services/auth.service";
 import {RegisterCredentials} from "../../../../model/RegisterCredentials";
@@ -18,7 +18,7 @@ export class RegistrationComponent {
     nameFormControl: ['name', [Validators.required]],
     lastNameFormControl: ['lastName', [Validators.required]],
     cityFormControl: ['city', [Validators.required]],
-    passwordFormControl: ['password', [Validators.required, Validators.minLength(6)]],
+    passwordFormControl: ['', [Validators.required, Validators.minLength(12), this.passwordValidator()]],
     password2FormControl: ['password2', [Validators.required]]
   });
 
@@ -55,6 +55,20 @@ export class RegistrationComponent {
         error: (message) => this.openSnackBar(message)
       });
     }
+  }
+
+  largePasswordErrorMessage() {
+    return this.formGroup.hasError('invalidPassword', 'passwordFormControl')
+      && !this.formGroup.hasError('required', 'passwordFormControl')
+      && !this.formGroup.hasError('minlength', 'passwordFormControl');
+  }
+
+  passwordValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{12,}$/;
+      const valid = passwordRegex.test(control.value);
+      return valid ? null : {invalidPassword: true};
+    };
   }
 
   openSnackBar(message: string) {

@@ -3,6 +3,7 @@ package com.team4.secureit.dto.request;
 import com.team4.secureit.validation.PasswordsMatch;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -13,7 +14,9 @@ public class RegistrationRequest {
     private String email;
 
     @NotBlank
-    @Size(min = 12, message = "Password must be longer than 12 characters.")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{12,}$",
+            message = "Password must have at least 12 characters, at least one uppercase letter, " +
+                    "one lowercase letter, one digit, and one special character.")
     private String password;
 
     @NotBlank

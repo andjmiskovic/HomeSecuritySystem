@@ -101,6 +101,10 @@ mat-card {
   font-size: 1rem;
 }
 
+mat-error {
+  font-size: 10px;
+}
+
 .no-padding-card {
   padding: 0 !important;
 }
