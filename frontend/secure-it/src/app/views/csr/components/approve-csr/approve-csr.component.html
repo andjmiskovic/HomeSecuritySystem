@@ -1,0 +1,72 @@
+<div style="padding: 20px">
+  <h2>
+    <mat-icon style="color: var(--green)">check</mat-icon>
+    Issue Certificate
+  </h2>
+  <p style="margin-top: -15px"><i>Id: {{id}}</i></p>
+
+  <hr>
+
+  <div style="overflow:scroll; max-height: 450px">
+    <mat-form-field appearance="outline" style="width: 100%; margin-top: 10px">
+      <mat-label>Choose an issuer</mat-label>
+      <mat-select [(ngModel)]="options.issuerAlias">
+        <mat-option value="secure it root ca">Secure IT Root CA</mat-option>
+        <mat-option value="secure it general purpose ca (secure it root ca)">Secure IT Property Owners CA</mat-option>
+        <mat-option value="secure it property owners ca (secure it root ca)">Secure IT General Purpose CA</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 100%">
+      <mat-label>Choose template</mat-label>
+      <mat-select [(ngModel)]="template">
+        <mat-option value="1">SSL Server</mat-option>
+        <mat-option value="2">SSL Client</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <p>Extension details:</p>
+
+    <mat-form-field appearance="outline" style="width: 100%">
+      <mat-label>Key usage</mat-label>
+      <mat-select [formControl]=chosenOptionsFormControl multiple>
+        <mat-select-trigger>
+          {{chosenOptionsFormControl.value?.[0] || ''}}
+          <span *ngIf="(chosenOptionsFormControl.value?.length || 0) > 1">
+        (+{{(chosenOptionsFormControl.value?.length || 0) - 1}} {{chosenOptionsFormControl.value?.length === 2 ? 'other' : 'others'}}
+            )
+      </span>
+        </mat-select-trigger>
+        <mat-option *ngFor="let option of keyUsageOptions" [value]="option[0]">{{option[1]}}
+          <span style="color: var(--gray)">({{option[0]}})</span>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div *ngIf="template === '1'">
+      <p>
+        <span>Subject Alternative names</span>
+        <button style="float: right" mat-flat-button class="reason-link" (click)="addNewInstance()">+ Add new instance
+        </button>
+      </p>
+      <div *ngFor="let name of subjectAlternativeName; let i = index; trackBy:trackByFn">
+        <mat-form-field style="width: 100%; font-size: 12px" appearance="outline">
+          <mat-label>Alternative name no.{{i + 1}}</mat-label>
+          <input required matInput [(ngModel)]="subjectAlternativeName[i]">
+          <mat-icon matSuffix color="warn" style="cursor: pointer" *ngIf="subjectAlternativeName.length > 1"
+                    (click)="removeInstance(i)">delete
+          </mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <mat-checkbox [(ngModel)]="subjectKeyIdentifier">Subject Key Identifier</mat-checkbox>
+    <mat-checkbox [(ngModel)]="authorityKeyIdentifier">Authority Key Identifier</mat-checkbox>
+  </div>
+  <hr>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button [disabled]="!validForm()"
+          mat-raised-button style="color: var(--green)"
+          (click)="approve()">Issue
+  </button>
+</div>

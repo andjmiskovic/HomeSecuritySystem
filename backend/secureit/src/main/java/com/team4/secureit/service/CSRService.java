@@ -1,77 +1,146 @@
 package com.team4.secureit.service;
 
-import com.team4.secureit.dto.response.CSRResponse;
-import com.team4.secureit.model.CertificateSigningRequest;
-import com.team4.secureit.model.IssuerData;
+import com.team4.secureit.dto.request.CSRCreationRequest;
+import com.team4.secureit.dto.request.CertificateCreationOptions;
+import com.team4.secureit.model.CSRDetails;
 import com.team4.secureit.model.RequestStatus;
-import com.team4.secureit.model.SubjectData;
-import com.team4.secureit.repository.CSRRepository;
+import com.team4.secureit.model.User;
+import com.team4.secureit.repository.CSRDetailsRepository;
+import com.team4.secureit.repository.CertificateDetailsRepository;
+import com.team4.secureit.repository.UserRepository;
+import com.team4.secureit.util.CertificateUtils;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.X500NameBuilder;
+import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.bouncycastle.pkcs.PKCS10CertificationRequest;
+import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.security.*;
 import java.security.cert.X509Certificate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static com.team4.secureit.util.CSRUtils.*;
+
 @Service
-@AllArgsConstructor
 public class CSRService {
 
-    private final CSRRepository csrRepository;
-    private final CertificateService certificateService;
+    @Autowired
+    private CertificateService certificateService;
 
-    private List<CSRResponse> csrMapper(List<CertificateSigningRequest> requests) {
-        List<CSRResponse> responses = new ArrayList<>();
-        requests.forEach(request -> responses.add(new CSRResponse(request)));
-        return responses;
+    @Autowired
+    private KeyStoreService keyStoreService;
+
+    @Autowired
+    private CSRDetailsRepository csrDetailsRepository;
+
+    @Autowired
+    private CertificateDetailsRepository certificateDetailsRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @SuppressWarnings("ConstantConditions")
+    public CSRDetails generateAndPersistCSR(CSRCreationRequest request, User subscriber) throws OperatorCreationException, IOException {
+        KeyPair keyPair = generateKeyPair(request.getAlgorithm(), request.getKeySize());
+        PKCS10CertificationRequest csr = generateCSR(request, keyPair, subscriber.getEmail());
+        CSRDetails csrDetails = csrToCSRDetails(request, keyPair, csr, subscriber);
+        return csrDetailsRepository.save(csrDetails);
     }
 
-    public void createCSR(@Valid CertificateSigningRequest csrRequest) {
-        csrRequest.setStatus(RequestStatus.PENDING);
-        csrRequest.setCreated(LocalDateTime.now());
-        csrRepository.save(csrRequest);
+    public List<CSRDetails> getAll() {
+        return csrDetailsRepository.findAll();
     }
 
-    public List<CSRResponse> getAll() {
-        return csrMapper(csrRepository.findAll());
+    public List<CSRDetails> findByStatusAndBySubscriber(String status, User subscriber) {
+        return csrDetailsRepository.findAllBySubscriberIdAndStatus(subscriber.getId(), RequestStatus.valueOf(status.toUpperCase()));
     }
 
-    public List<CSRResponse> getByStatus(String status) {
-        return csrMapper(csrRepository.findByStatus(RequestStatus.valueOf(status)));
+    public List<CSRDetails> getAllBySubscriber(User subscriber) {
+        return csrDetailsRepository.findAllBySubscriberId(subscriber.getId());
     }
 
-    public CSRResponse getById(UUID id) throws EntityNotFoundException {
-        return new CSRResponse(get(id));
+    public CSRDetails getById(UUID id) throws EntityNotFoundException {
+        return csrDetailsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("CSR not found."));
     }
 
-    public CertificateSigningRequest get(UUID id) throws EntityNotFoundException {
-        return csrRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    public List<CSRDetails> findByStatus(String status) {
+        try {
+            return csrDetailsRepository.findByStatus(RequestStatus.valueOf(status.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            return Collections.emptyList();
+        }
     }
 
-    public CSRResponse approve(UUID id, String adminEmail) {
-        CertificateSigningRequest request = get(id);
+    public void issueAndPersistCertificate(UUID id, CertificateCreationOptions options) throws IOException, GeneralSecurityException, OperatorCreationException {
+        CSRDetails csrDetails = getById(id);
+        PKCS10CertificationRequest csr = csrDetailsToCSR(csrDetails);
 
-        request.setStatus(RequestStatus.ACCEPTED);
-        request.setProcessed(LocalDateTime.now());
-        // TODO: create and save certificate
-//        X509Certificate certificate = certificateService.generateCertificate(new SubjectData(), new IssuerData(), request);
+        String alias = csrDetails.getAlias();
+        KeyPair keyPair = new KeyPair(
+                parsePublicKeyFromPEM(csrDetails.getPublicKeyPem(), csrDetails.getAlgorithm()),
+                parsePrivateKeyFromPEM(csrDetails.getPrivateKeyPem())
+        );
 
-        csrRepository.save(request);
-        return new CSRResponse(request);
+        csrDetails.setStatus(RequestStatus.APPROVED);
+        csrDetails.setProcessed(Instant.now());
+        csrDetails.setPrivateKeyPem("REDACTED");
+
+        User subscriber = csrDetails.getSubscriber();
+        X509Certificate cert = certificateService.generateCertificate(csr, options);
+        X509Certificate[] chain = keyStoreService.getCertificateChain(options.getIssuerAlias(), cert);
+
+        keyStoreService.storeKeyPair(keyPair, alias, "keypassword".toCharArray(), chain);
+        certificateDetailsRepository.save(CertificateUtils.convertToDetails(cert, alias, subscriber));
+        csrDetailsRepository.save(csrDetails);
     }
 
-    public CSRResponse reject(UUID id, String reason) {
-        CertificateSigningRequest request = get(id);
+    public void rejectRequest(UUID id, String reason) {
+        CSRDetails request = getById(id);
 
         request.setStatus(RequestStatus.REJECTED);
         request.setRejectionReason(reason);
-        request.setProcessed(LocalDateTime.now());
+        request.setProcessed(Instant.now());
 
-        csrRepository.save(request);
-        return new CSRResponse(request);
+        csrDetailsRepository.save(request);
     }
+
+    private PKCS10CertificationRequest generateCSR(CSRCreationRequest request, KeyPair keyPair, String commonName) throws OperatorCreationException {
+        Security.addProvider(new BouncyCastleProvider());
+
+        X500Name x500Name = new X500NameBuilder()
+                .addRDN(BCStyle.CN, commonName)
+                .addRDN(BCStyle.O, request.getOrganization())
+                .addRDN(BCStyle.L, request.getCity())
+                .addRDN(BCStyle.ST, request.getState())
+                .addRDN(BCStyle.C, request.getCountry())
+                .build();
+
+        JcaPKCS10CertificationRequestBuilder csrBuilder = new JcaPKCS10CertificationRequestBuilder(x500Name, keyPair.getPublic());
+        JcaContentSignerBuilder signerBuilder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
+        ContentSigner contentSigner = signerBuilder.build(keyPair.getPrivate());
+        return csrBuilder.build(contentSigner);
+    }
+
+    private KeyPair generateKeyPair(String algorithm, int keySize) {
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(algorithm);
+            keyPairGenerator.initialize(keySize);
+            return keyPairGenerator.generateKeyPair();
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+    }
+
+
 }

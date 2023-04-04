@@ -21,9 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(
-        prePostEnabled = true
-)
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -87,7 +85,8 @@ public class SecurityConfig {
                 "/swagger-ui.html",
                 "/v2/api-docs",
                 "/webjars/**",
-                "/health"
+                "/health",
+                "/v3/api-docs/**"
         );
     }
 

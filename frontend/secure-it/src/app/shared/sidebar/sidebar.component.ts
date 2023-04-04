@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {Router} from "@angular/router";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-sidebar',
@@ -9,9 +10,8 @@ import {Router} from "@angular/router";
 export class SidebarComponent {
   @Input() currentPage = 'dashboard';
   @Input() userRole = 'ADMIN';
-  isActive = false;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private authService: AuthService) {
   }
 
   navigate(page: string) {
@@ -19,5 +19,14 @@ export class SidebarComponent {
   }
 
   logout() {
+    // this.authService.logout().subscribe({
+    //   next: () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userRole');
+        this.router.navigate(['']);
+      // },
+      // error: (err) => console.error(err)
+    // })
+
   }
 }

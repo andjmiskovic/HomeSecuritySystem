@@ -55,4 +55,4 @@ app:
     templatesLocation: 'templates'
     senderAddress: ${EMAIL_SENDER_ADDRESS}
 server:
-  port: '8000'
+  port: '8001'

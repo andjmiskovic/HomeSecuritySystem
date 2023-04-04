@@ -37,11 +37,11 @@ public class MailingService {
     }
 
     @Async
-    public void sendEmailVerificationMail(PropertyOwner propertyOwner, String token) {
+    public void sendEmailVerificationMail(PropertyOwner propertyOwner) {
         String content = renderTemplate("verification.html",
                 "firstName", propertyOwner.getFirstName(),
                 "email", propertyOwner.getEmail(),
-                "token", token);
+                "code", propertyOwner.getVerificationCode());
 
         sendMail(propertyOwner.getEmail(), "Welcome to Secure IT! Complete verification", content);
     }

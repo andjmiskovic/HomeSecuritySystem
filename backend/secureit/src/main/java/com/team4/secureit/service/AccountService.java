@@ -2,11 +2,16 @@ package com.team4.secureit.service;
 
 import com.team4.secureit.config.AppProperties;
 import com.team4.secureit.dto.request.LoginRequest;
+import com.team4.secureit.dto.request.LoginVerificationRequest;
 import com.team4.secureit.dto.request.RegistrationRequest;
-import com.team4.secureit.dto.response.TokenResponse;
+import com.team4.secureit.dto.request.VerificationRequest;
+import com.team4.secureit.dto.response.LoginResponse;
 import com.team4.secureit.exception.EmailAlreadyInUseException;
+import com.team4.secureit.exception.EmailAlreadyVerifiedException;
+import com.team4.secureit.exception.InvalidVerificationCodeException;
 import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.model.Role;
+import com.team4.secureit.model.User;
 import com.team4.secureit.repository.UserRepository;
 import com.team4.secureit.security.TokenAuthenticationFilter;
 import com.team4.secureit.security.TokenProvider;
@@ -22,6 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.UUID;
 
 @Service
@@ -46,7 +52,9 @@ public class AccountService {
     @Autowired
     private MailingService mailingService;
 
-    public TokenResponse login(LoginRequest loginRequest, HttpServletResponse response) {
+    private final SecureRandom random = new SecureRandom();
+
+    public LoginResponse login(LoginRequest loginRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(),
                 loginRequest.getPassword()
@@ -54,6 +62,7 @@ public class AccountService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String accessToken = tokenProvider.createAccessToken(authentication);
+        Role role = ((User) authentication.getPrincipal()).getRole();
         Integer tokenExpirationSeconds = appProperties.getAuth().getTokenExpirationSeconds();
         CookieUtils.addCookie(
                 response,
@@ -63,7 +72,11 @@ public class AccountService {
         );
 
         Long expiresAt = tokenProvider.readClaims(accessToken).getExpiration().getTime();
-        return new TokenResponse(accessToken, expiresAt);
+        return new LoginResponse(accessToken, expiresAt, role);
+    }
+
+    public boolean verifyLogin(LoginVerificationRequest verificationRequest, User user) {
+        return passwordEncoder.matches(verificationRequest.getPassword(), user.getPassword());
     }
 
     public void logout(HttpServletRequest request, HttpServletResponse response) {
@@ -81,18 +94,34 @@ public class AccountService {
         propertyOwner.setFirstName(registrationRequest.getFirstName());
         propertyOwner.setLastName(registrationRequest.getLastName());
         propertyOwner.setEmailVerified(false);
+        propertyOwner.setVerificationCode(generateVerificationCode());
 
         userRepository.save(propertyOwner);
-
-        mailingService.sendEmailVerificationMail(propertyOwner, "1234");
+        mailingService.sendEmailVerificationMail(propertyOwner);
     }
 
-    public void verifyEmail(String token) {
+    public void verifyEmail(VerificationRequest verificationRequest) {
+        User userToVerify = userRepository.findByVerificationCode(verificationRequest.getCode()).orElseThrow(InvalidVerificationCodeException::new);
 
+        if (userToVerify.isEmailVerified())
+            throw new EmailAlreadyVerifiedException();
+
+        userToVerify.setEmailVerified(true);
+        userRepository.save(userToVerify);
     }
 
     private void checkEmailAvailability(String email) {
         if (userRepository.existsByEmail(email))
             throw new EmailAlreadyInUseException();
+    }
+
+    private String generateVerificationCode() {
+        byte[] bytes = new byte[32];
+        random.nextBytes(bytes);
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
     }
 }

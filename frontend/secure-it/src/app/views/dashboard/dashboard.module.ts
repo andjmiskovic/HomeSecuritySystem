@@ -10,10 +10,14 @@ import {CommonModule} from "@angular/common";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatMenuModule} from "@angular/material/menu";
 import {DashboardContainerComponent} from './container/dashboard-container/dashboard-container.component';
+import {SharedModule} from "../../shared/shared.module";
+import {CsrFormComponent} from './components/csr-form/csr-form.component';
+import {MatSelectModule} from "@angular/material/select";
 
 @NgModule({
   declarations: [
-    DashboardContainerComponent
+    DashboardContainerComponent,
+    CsrFormComponent,
   ],
   imports: [
     MatFormFieldModule,
@@ -27,12 +31,14 @@ import {DashboardContainerComponent} from './container/dashboard-container/dashb
     CommonModule,
     MatSnackBarModule,
     ReactiveFormsModule,
-    MatMenuModule
+    MatMenuModule,
+    SharedModule,
+    MatSelectModule
   ],
   exports: [
     DashboardContainerComponent
   ],
   bootstrap: [DashboardContainerComponent]
 })
-export class HomepageModule {
+export class DashboardModule {
 }

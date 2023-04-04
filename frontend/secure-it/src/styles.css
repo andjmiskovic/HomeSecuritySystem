@@ -113,3 +113,11 @@ button:focus,
 mat-form-field {
   outline: none;
 }
+
+.requestStatus {
+  border-radius: 5px;
+  padding: 5px;
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+}

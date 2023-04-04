@@ -11,14 +11,10 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatCardModule} from "@angular/material/card";
-import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
-import {MatTableModule} from "@angular/material/table";
-import {MatPaginatorModule} from "@angular/material/paginator";
-import {MatSortModule} from "@angular/material/sort";
 import {MatChipsModule} from "@angular/material/chips";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
-import { SidebarComponent } from './sidebar/sidebar.component';
+import {SidebarComponent} from './sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -38,17 +34,13 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     MatInputModule,
     ReactiveFormsModule,
     MatCardModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
     MatChipsModule,
     MatExpansionModule,
     MatSlideToggleModule,
   ],
-    exports: [
-        SidebarComponent
-    ],
+  exports: [
+    SidebarComponent
+  ],
 })
 export class SharedModule {
 }

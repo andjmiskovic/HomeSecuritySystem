@@ -4,7 +4,7 @@ import com.team4.secureit.dto.request.RegistrationRequest;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class PasswordsMatchValidator implements ConstraintValidator<PasswordsMatch, Object> {
+public class PasswordsMatchValidator implements ConstraintValidator<PasswordsMatch, RegistrationRequest> {
 
     @Override
     public void initialize(PasswordsMatch constraintAnnotation) {
@@ -12,10 +12,8 @@ public class PasswordsMatchValidator implements ConstraintValidator<PasswordsMat
     }
 
     @Override
-    public boolean isValid(Object o, ConstraintValidatorContext constraintValidatorContext) {
-        if (o instanceof RegistrationRequest dto)
-            return passwordsMatch(dto.getPassword(), dto.getPasswordConfirmation());
-        return false;
+    public boolean isValid(RegistrationRequest request, ConstraintValidatorContext constraintValidatorContext) {
+        return passwordsMatch(request.getPassword(), request.getPasswordConfirmation());
     }
 
     private Boolean passwordsMatch(String password, String confirmation) {

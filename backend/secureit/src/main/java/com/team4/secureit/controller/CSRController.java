@@ -1,52 +1,78 @@
 package com.team4.secureit.controller;
 
+import com.team4.secureit.api.ResponseCreated;
 import com.team4.secureit.api.ResponseOk;
-import com.team4.secureit.dto.response.CSRResponse;
-import com.team4.secureit.model.CertificateSigningRequest;
+import com.team4.secureit.dto.request.CSRCreationRequest;
+import com.team4.secureit.dto.request.CSRRejectionRequest;
+import com.team4.secureit.dto.request.CertificateCreationOptions;
+import com.team4.secureit.model.CSRDetails;
+import com.team4.secureit.model.Role;
+import com.team4.secureit.model.User;
 import com.team4.secureit.service.CSRService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequiredArgsConstructor
-@RequestMapping(path = "/csr")
+@RequestMapping(path = "/csrs")
 public class CSRController {
 
-    private final CSRService csrService;
+    @Autowired
+    private CSRService csrService;
 
-    @PostMapping()
-    public ResponseOk create(@RequestBody @Valid final CertificateSigningRequest csrRequest) {
-        this.csrService.createCSR(csrRequest);
-        return new ResponseOk("Successfully created CSR.");
+    @PostMapping
+    @PreAuthorize("hasRole('PROPERTY_OWNER')")
+    public ResponseCreated createCSR(@RequestBody @Valid final CSRCreationRequest csrCreationRequest, Authentication authentication) throws OperatorCreationException, IOException {
+        User subscriber = (User) authentication.getPrincipal();
+        CSRDetails csrDetails = csrService.generateAndPersistCSR(csrCreationRequest, subscriber);
+        return new ResponseCreated("Successfully created CSR.", csrDetails.getId());
     }
 
-    @GetMapping()
-    public List<CSRResponse> getAll() {
-        return this.csrService.getAll();
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROPERTY_OWNER')")
+    public List<CSRDetails> getAll(@RequestParam(value = "status", required = false) String status, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        if (user.getRole().equals(Role.ROLE_PROPERTY_OWNER)) {
+            if (status != null) {
+                return csrService.findByStatusAndBySubscriber(status, user);
+            } else {
+                return csrService.getAllBySubscriber(user);
+            }
+        } else if (user.getRole().equals(Role.ROLE_ADMIN)) {
+            if (status != null) {
+                return csrService.findByStatus(status);
+            } else {
+                return csrService.getAll();
+            }
+        }
+        return null;
     }
 
-    @GetMapping("/all/{status}")
-    public List<CSRResponse> getAll(@PathVariable String status) {
-        return this.csrService.getByStatus(status);
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROPERTY_OWNER')")
+    public CSRDetails getById(@PathVariable final UUID id) throws EntityNotFoundException {
+        return csrService.getById(id);
     }
 
-    @GetMapping("{id}")
-    public CSRResponse get(@PathVariable final UUID id) throws EntityNotFoundException {
-        return this.csrService.getById(id);
+    @PostMapping("/{id}/certificate")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseOk issueCertificate(@PathVariable final UUID id, @RequestBody @Valid final CertificateCreationOptions options) throws Exception {
+        csrService.issueAndPersistCertificate(id, options);
+        return new ResponseOk("CSR approved successfully.");
     }
 
-    @PutMapping("approve/{id}")
-    public CSRResponse approve(@PathVariable final UUID id, @RequestBody final String adminEmail) throws EntityNotFoundException {
-        return this.csrService.approve(id, adminEmail);
-    }
-
-    @PutMapping("reject/{id}")
-    public CSRResponse reject(@PathVariable final UUID id, @RequestBody final String rejectionReason) throws EntityNotFoundException {
-        return this.csrService.reject(id, rejectionReason);
+    @PostMapping("/{id}/reject")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseOk rejectRequest(@PathVariable final UUID id, @RequestBody @Valid final CSRRejectionRequest request) throws EntityNotFoundException {
+        csrService.rejectRequest(id, request.getRejectionReason());
+        return new ResponseOk("CSR rejected successfully.");
     }
 }
