@@ -9,7 +9,6 @@ import {
 } from "./views/dashboard/container/dashboard-container/dashboard-container.component";
 import {CertificateRequestsComponent} from "./views/csr/container/certificate-requests/certificate-requests.component";
 import {AuthGuard} from "./model/AuthGuard";
-import {VerificationCodeComponent} from "./views/homepage/components/verification-code/verification-code.component";
 import {VerificationScreenComponent} from "./views/verification-screen/verification-screen.component";
 
 const routes: Routes = [

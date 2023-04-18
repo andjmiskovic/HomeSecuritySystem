@@ -13,11 +13,19 @@ import {DashboardContainerComponent} from './container/dashboard-container/dashb
 import {SharedModule} from "../../shared/shared.module";
 import {CsrFormComponent} from './components/csr-form/csr-form.component';
 import {MatSelectModule} from "@angular/material/select";
+import { UsersComponent } from './components/users/users.component';
+import { RegisterNewUserDialogComponent } from './components/register-new-user-dialog/register-new-user-dialog.component';
+import { EditUserDialogComponent } from './components/edit-user-dialog/edit-user-dialog.component';
+import {MatTableModule} from "@angular/material/table";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
     DashboardContainerComponent,
     CsrFormComponent,
+    UsersComponent,
+    RegisterNewUserDialogComponent,
+    EditUserDialogComponent,
   ],
   imports: [
     MatFormFieldModule,
@@ -33,7 +41,9 @@ import {MatSelectModule} from "@angular/material/select";
     ReactiveFormsModule,
     MatMenuModule,
     SharedModule,
-    MatSelectModule
+    MatSelectModule,
+    MatTableModule,
+    MatTooltipModule
   ],
   exports: [
     DashboardContainerComponent

@@ -1,6 +1,5 @@
 import {Component, ViewChild, Input} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
-import {CsrFormComponent} from "../../../dashboard/components/csr-form/csr-form.component";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {CsrService} from "../../../../services/csr.service";
