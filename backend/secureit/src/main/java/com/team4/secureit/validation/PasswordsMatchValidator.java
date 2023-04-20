@@ -1,6 +1,7 @@
 package com.team4.secureit.validation;
 
 import com.team4.secureit.dto.request.RegistrationRequest;
+import com.team4.secureit.util.PasswordChecker;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -13,7 +14,8 @@ public class PasswordsMatchValidator implements ConstraintValidator<PasswordsMat
 
     @Override
     public boolean isValid(RegistrationRequest request, ConstraintValidatorContext constraintValidatorContext) {
-        return passwordsMatch(request.getPassword(), request.getPasswordConfirmation());
+        return passwordsMatch(request.getPassword(), request.getPasswordConfirmation())
+                && !PasswordChecker.isCommonPassword(request.getPassword());
     }
 
     private Boolean passwordsMatch(String password, String confirmation) {
