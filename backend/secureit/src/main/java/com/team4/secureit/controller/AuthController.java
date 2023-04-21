@@ -1,6 +1,7 @@
 package com.team4.secureit.controller;
 
 import com.team4.secureit.api.ResponseOk;
+import com.team4.secureit.dto.request.UserDetailsRequest;
 import com.team4.secureit.dto.request.LoginRequest;
 import com.team4.secureit.dto.request.RegistrationRequest;
 import com.team4.secureit.dto.request.VerificationRequest;
@@ -38,6 +39,13 @@ public class AuthController {
     public ResponseOk register(@Valid @RequestBody RegistrationRequest registrationRequest) {
         accountService.registerPropertyOwner(registrationRequest);
         return new ResponseOk("User registered successfully.");
+    }
+
+    @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseOk create(@Valid @RequestBody UserDetailsRequest createUserRequest) {
+        accountService.createPropertyOwner(createUserRequest);
+        return new ResponseOk("User created successfully.");
     }
 
     @PostMapping("/register/verify")

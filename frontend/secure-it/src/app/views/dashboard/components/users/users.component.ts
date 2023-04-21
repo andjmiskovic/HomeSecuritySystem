@@ -4,8 +4,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {UserListItem} from "../../model/UserListItem";
 import {User} from "../../../../model/User";
 import {UserService} from "../../../../services/user.service";
-import {RegisterNewUserDialogComponent} from "../register-new-user-dialog/register-new-user-dialog.component";
-import {EditUserDialogComponent} from "../edit-user-dialog/edit-user-dialog.component";
+import {UserDetailsDialogComponent} from "../user-details-dialog/user-details-dialog.component";
 
 @Component({
   selector: 'app-users',
@@ -16,7 +15,6 @@ export class UsersComponent implements OnInit {
   displayedColumns: string[] = ['name', 'email', 'type', 'requestedChanges'];
   userList: MatTableDataSource<UserListItem> = new MatTableDataSource<UserListItem>();
   propertyOwners: User[] = [];
-  filterUsersByRequests = false;
 
   constructor(private userService: UserService, private dialog: MatDialog) {
   }
@@ -27,37 +25,33 @@ export class UsersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getUsers(false);
+    this.getUsers();
   }
 
-  public getUsers(filterByRequests: boolean) {
-    this.filterUsersByRequests = filterByRequests;
+  public getUsers() {
     this.userService.getPropertyOwners().subscribe((propertyOwners) => {
       this.propertyOwners = propertyOwners;
-      this.userList = new MatTableDataSource<UserListItem>(this.usersToUserListItems(this.propertyOwners));
+      this.userList = new MatTableDataSource<UserListItem>(UsersComponent.usersToUserListItems(this.propertyOwners));
     });
   }
 
   registerNewUser() {
-    const dialogRef = this.dialog.open(RegisterNewUserDialogComponent, {
-      width: '600px',
-      height: '600px'
-    });
-    dialogRef.afterClosed().subscribe(() => this.getUsers(false))
+    const dialogRef = this.dialog.open(UserDetailsDialogComponent);
+    dialogRef.componentInstance.mode = 'create';
+    dialogRef.afterClosed().subscribe(() => this.getUsers())
   }
 
   openUsersProfileDialog(element: UserListItem) {
-    const dialogRef = this.dialog.open(EditUserDialogComponent, {panelClass: 'no-padding-card'});
-    // dialogRef.componentInstance.userEmail = element.email;
-    // dialogRef.componentInstance.userRole = 'ADMIN';
+    const dialogRef = this.dialog.open(UserDetailsDialogComponent, {panelClass: 'no-padding-card'});
+    dialogRef.componentInstance.userEmail = element.email;
+    dialogRef.componentInstance.mode = 'edit';
+    dialogRef.afterClosed().subscribe(() => this.getUsers())
   }
 
-  private usersToUserListItems(users: User[]): UserListItem[] {
+  private static usersToUserListItems(users: User[]): UserListItem[] {
     const userList: UserListItem[] = [];
     for (let i = 0; i < users.length; i++) {
-      if (!this.filterUsersByRequests) {
-        userList.push(new UserListItem(users[i].email, users[i].firstName + ' ' + users[i].lastName, "tenant"));
-      }
+      userList.push(new UserListItem(users[i].email, users[i].firstName + ' ' + users[i].lastName));
     }
     return userList;
   }

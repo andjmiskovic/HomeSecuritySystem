@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from "rxjs";
 import {LoginResponseDto} from '../model/LoginResponseDto';
 import {LoginCredentials} from '../model/LoginCredentials';
-import {RegisterCredentials} from '../model/RegisterCredentials';
+import {CreateUserCredentials, RegisterCredentials} from '../model/RegisterCredentials';
 import {User} from '../model/User';
 import {environment} from "../environment.development";
 
@@ -26,6 +26,10 @@ export class AuthService {
     return this.http.post<string>(this.authUrl + '/register', customer, AuthService.getHttpOptions());
   }
 
+  public createUser(customer: CreateUserCredentials) {
+    return this.http.post<string>(this.authUrl + '/create', customer, AuthService.getHttpOptions());
+  }
+
   public verify(verificationCode: String): Observable<string> {
     return this.http.post<string>(this.authUrl + '/register/verify', {code: verificationCode}, AuthService.getHttpOptions());
   }
@@ -38,7 +42,6 @@ export class AuthService {
   public getCurrentlyLoggedUser(): Observable<User> {
     return this.http.get<User>(this.authUrl + '/me', AuthService.getHttpOptions());
   }
-
 
   public static getHttpOptions(params: HttpParams = new HttpParams()) {
     return {

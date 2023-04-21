@@ -1,10 +1,7 @@
 package com.team4.secureit.service;
 
 import com.team4.secureit.config.AppProperties;
-import com.team4.secureit.dto.request.LoginRequest;
-import com.team4.secureit.dto.request.LoginVerificationRequest;
-import com.team4.secureit.dto.request.RegistrationRequest;
-import com.team4.secureit.dto.request.VerificationRequest;
+import com.team4.secureit.dto.request.*;
 import com.team4.secureit.dto.response.LoginResponse;
 import com.team4.secureit.exception.EmailAlreadyInUseException;
 import com.team4.secureit.exception.EmailAlreadyVerifiedException;
@@ -86,16 +83,16 @@ public class AccountService {
     public void registerPropertyOwner(RegistrationRequest registrationRequest) {
         checkEmailAvailability(registrationRequest.getEmail());
 
-        PropertyOwner propertyOwner = new PropertyOwner();
-        propertyOwner.setId(UUID.randomUUID());
+        PropertyOwner propertyOwner = populatePropertyOwner(registrationRequest);
+//        propertyOwner.setId(UUID.randomUUID());
         propertyOwner.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         propertyOwner.setRole(Role.ROLE_PROPERTY_OWNER);
-        propertyOwner.setEmail(registrationRequest.getEmail());
-        propertyOwner.setFirstName(registrationRequest.getFirstName());
-        propertyOwner.setLastName(registrationRequest.getLastName());
-        propertyOwner.setEmailVerified(false);
-        propertyOwner.setVerificationCode(generateVerificationCode());
-
+//        propertyOwner.setEmail(registrationRequest.getEmail());
+//        propertyOwner.setFirstName(registrationRequest.getFirstName());
+//        propertyOwner.setLastName(registrationRequest.getLastName());
+//        propertyOwner.setEmailVerified(false);
+//        propertyOwner.setVerificationCode(generateVerificationCode());
+//        propertyOwner.setCity(registrationRequest.getCity());
         userRepository.save(propertyOwner);
         mailingService.sendEmailVerificationMail(propertyOwner);
     }
@@ -123,5 +120,27 @@ public class AccountService {
             sb.append(String.format("%02x", b));
         }
         return sb.toString();
+    }
+
+    public void createPropertyOwner(UserDetailsRequest createUserRequest) {
+        checkEmailAvailability(createUserRequest.getEmail());
+        PropertyOwner propertyOwner = populatePropertyOwner(createUserRequest);
+
+        userRepository.save(propertyOwner);
+        mailingService.sendEmailVerificationMail(propertyOwner);
+    }
+
+    private PropertyOwner populatePropertyOwner(UserDetailsRequest createUserRequest) {
+        PropertyOwner propertyOwner = new PropertyOwner();
+        propertyOwner.setId(UUID.randomUUID());
+        propertyOwner.setRole(Role.ROLE_PROPERTY_OWNER);
+        propertyOwner.setEmail(createUserRequest.getEmail());
+        propertyOwner.setFirstName(createUserRequest.getFirstName());
+        propertyOwner.setLastName(createUserRequest.getLastName());
+        propertyOwner.setEmailVerified(false);
+        propertyOwner.setVerificationCode(generateVerificationCode());
+        propertyOwner.setCity(createUserRequest.getCity());
+        propertyOwner.setPhoneNumber(createUserRequest.getPhoneNumber());
+        return propertyOwner;
     }
 }

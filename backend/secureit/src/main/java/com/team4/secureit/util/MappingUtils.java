@@ -1,5 +1,6 @@
 package com.team4.secureit.util;
 
+import com.team4.secureit.dto.response.UserDetailResponse;
 import com.team4.secureit.dto.response.UserInfoResponse;
 import com.team4.secureit.model.PropertyOwner;
 import org.modelmapper.ModelMapper;
@@ -18,5 +19,9 @@ public class MappingUtils {
         return users.stream()
                 .map(MappingUtils::toUserInfoResponse)
                 .collect(Collectors.toList());
+    }
+
+    public static UserDetailResponse toUserDetailsResponse(PropertyOwner propertyOwner) {
+        return modelMapper.map(propertyOwner, UserDetailResponse.class);
     }
 }

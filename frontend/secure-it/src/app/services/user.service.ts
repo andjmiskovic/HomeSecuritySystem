@@ -1,12 +1,10 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Observable} from "rxjs";
-import {LoginResponseDto} from '../model/LoginResponseDto';
-import {LoginCredentials} from '../model/LoginCredentials';
-import {RegisterCredentials} from '../model/RegisterCredentials';
-import {User} from '../model/User';
+import {User, UserDetails} from '../model/User';
 import {environment} from "../environment.development";
 import {AuthService} from "./auth.service";
+import {CreateUserCredentials} from "../model/RegisterCredentials";
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +19,14 @@ export class UserService {
 
   public getPropertyOwners(): Observable<User[]> {
     return this.http.get<User[]>(this.userUrl, AuthService.getHttpOptions());
+  }
+
+  public getPropertyOwner(userEmail: string): Observable<UserDetails> {
+    return this.http.get<UserDetails>(this.userUrl + '/' + userEmail, AuthService.getHttpOptions());
+  }
+
+  public editPropertyOwner(requestBody: CreateUserCredentials) {
+    return this.http.put<string>(this.userUrl, requestBody, AuthService.getHttpOptions());
   }
 
 }
