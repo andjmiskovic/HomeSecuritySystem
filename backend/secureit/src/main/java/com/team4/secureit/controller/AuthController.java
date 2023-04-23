@@ -1,10 +1,7 @@
 package com.team4.secureit.controller;
 
 import com.team4.secureit.api.ResponseOk;
-import com.team4.secureit.dto.request.UserDetailsRequest;
-import com.team4.secureit.dto.request.LoginRequest;
-import com.team4.secureit.dto.request.RegistrationRequest;
-import com.team4.secureit.dto.request.VerificationRequest;
+import com.team4.secureit.dto.request.*;
 import com.team4.secureit.dto.response.LoginResponse;
 import com.team4.secureit.dto.response.UserInfoResponse;
 import com.team4.secureit.model.User;
@@ -16,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigInteger;
 
 @RestController
 @RequestMapping(value = "/auth")
@@ -59,5 +58,16 @@ public class AuthController {
     public UserInfoResponse getLoggedUserInfo(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return new UserInfoResponse(user);
+    }
+
+    @GetMapping("/is-password-set/{verificationCode}")
+    public boolean isPasswordSet(@PathVariable String verificationCode) {
+        return accountService.isPasswordSet(verificationCode);
+    }
+
+    @PutMapping("/set-password")
+    public ResponseOk setPassword(@RequestBody SetPasswordRequest setPasswordRequest) {
+        accountService.setPassword(setPasswordRequest);
+        return new ResponseOk("Password set successfully. User is verified.");
     }
 }

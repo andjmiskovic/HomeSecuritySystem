@@ -36,6 +36,9 @@ public abstract class User implements UserDetails {
     @Column(nullable = false)
     private boolean emailVerified = false;
 
+    @Column(nullable = false)
+    private boolean passwordSet = false;
+
     private String password;
 
     @Column(unique = true)

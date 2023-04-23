@@ -6,6 +6,7 @@ import {LoginCredentials} from '../model/LoginCredentials';
 import {CreateUserCredentials, RegisterCredentials} from '../model/RegisterCredentials';
 import {User} from '../model/User';
 import {environment} from "../environment.development";
+import {SetPasswordRequest} from "../model/SetPasswordRequest";
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +44,14 @@ export class AuthService {
     return this.http.get<User>(this.authUrl + '/me', AuthService.getHttpOptions());
   }
 
+  public getIsPasswordSet(verificationCode: String): Observable<boolean> {
+    return this.http.get<boolean>(this.authUrl + '/is-password-set/' + verificationCode, AuthService.getHttpOptions());
+  }
+
+  public setPassword(requestBody: SetPasswordRequest): Observable<boolean> {
+    return this.http.put<boolean>(this.authUrl + '/set-password', requestBody, AuthService.getHttpOptions());
+  }
+
   public static getHttpOptions(params: HttpParams = new HttpParams()) {
     return {
       headers: new HttpHeaders({
@@ -57,4 +66,6 @@ export class AuthService {
   public isLoggedIn(): boolean {
     return localStorage.getItem('token') !== null;
   }
+
+
 }

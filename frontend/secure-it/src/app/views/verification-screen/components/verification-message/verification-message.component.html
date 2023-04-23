@@ -1,0 +1,18 @@
+<div class="example-card">
+  <mat-card style="margin: 0 10px; display: inline-block;" *ngIf="!isInvalidVerificationCode">
+    <mat-card-header>
+      <mat-card-title>Congratulations</mat-card-title>
+      <mat-card-subtitle>You have successfully verified your email</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-footer>
+      <button mat-raised-button (click)="navigate()" color="primary" style="margin-top: 10px">Login</button>
+    </mat-card-footer>
+  </mat-card>
+
+  <mat-card style="margin: 0 10px; display: inline-block;" *ngIf="isInvalidVerificationCode">
+    <mat-card-header>
+      <mat-card-title>There was a problem in verification your profile.</mat-card-title>
+      <mat-card-subtitle>Please contact our customer support</mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+</div>

@@ -3,9 +3,11 @@ package com.team4.secureit.service;
 import com.team4.secureit.config.AppProperties;
 import com.team4.secureit.dto.request.*;
 import com.team4.secureit.dto.response.LoginResponse;
+import com.team4.secureit.dto.response.UserInfoResponse;
 import com.team4.secureit.exception.EmailAlreadyInUseException;
 import com.team4.secureit.exception.EmailAlreadyVerifiedException;
 import com.team4.secureit.exception.InvalidVerificationCodeException;
+import com.team4.secureit.exception.PasswordsDoNotMatchException;
 import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.model.Role;
 import com.team4.secureit.model.User;
@@ -84,15 +86,8 @@ public class AccountService {
         checkEmailAvailability(registrationRequest.getEmail());
 
         PropertyOwner propertyOwner = populatePropertyOwner(registrationRequest);
-//        propertyOwner.setId(UUID.randomUUID());
         propertyOwner.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         propertyOwner.setRole(Role.ROLE_PROPERTY_OWNER);
-//        propertyOwner.setEmail(registrationRequest.getEmail());
-//        propertyOwner.setFirstName(registrationRequest.getFirstName());
-//        propertyOwner.setLastName(registrationRequest.getLastName());
-//        propertyOwner.setEmailVerified(false);
-//        propertyOwner.setVerificationCode(generateVerificationCode());
-//        propertyOwner.setCity(registrationRequest.getCity());
         userRepository.save(propertyOwner);
         mailingService.sendEmailVerificationMail(propertyOwner);
     }
@@ -125,7 +120,7 @@ public class AccountService {
     public void createPropertyOwner(UserDetailsRequest createUserRequest) {
         checkEmailAvailability(createUserRequest.getEmail());
         PropertyOwner propertyOwner = populatePropertyOwner(createUserRequest);
-
+        propertyOwner.setPasswordSet(false);
         userRepository.save(propertyOwner);
         mailingService.sendEmailVerificationMail(propertyOwner);
     }
@@ -142,5 +137,25 @@ public class AccountService {
         propertyOwner.setCity(createUserRequest.getCity());
         propertyOwner.setPhoneNumber(createUserRequest.getPhoneNumber());
         return propertyOwner;
+    }
+
+    public boolean isPasswordSet(String verificationCode) {
+        User user = userRepository.findByVerificationCode(verificationCode).orElseThrow(InvalidVerificationCodeException::new);
+
+        if (user.isEmailVerified())
+            throw new EmailAlreadyVerifiedException();
+        return user.isPasswordSet();
+    }
+
+    public void setPassword(SetPasswordRequest setPasswordRequest) {
+        User userToVerify = userRepository.findByVerificationCode(setPasswordRequest.getVerificationCode()).orElseThrow(InvalidVerificationCodeException::new);
+        if (!setPasswordRequest.getPassword().equals(setPasswordRequest.getPasswordConfirmation()))
+            throw new PasswordsDoNotMatchException();
+        if (userToVerify.isEmailVerified())
+            throw new EmailAlreadyVerifiedException();
+        userToVerify.setEmailVerified(true);
+        userToVerify.setPassword(passwordEncoder.encode(setPasswordRequest.getPassword()));
+        userToVerify.setPasswordSet(true);
+        userRepository.save(userToVerify);
     }
 }

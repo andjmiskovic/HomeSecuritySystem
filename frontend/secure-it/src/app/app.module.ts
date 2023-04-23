@@ -15,42 +15,43 @@ import {MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatSortModule} from "@angular/material/sort";
 import {MatInputModule} from "@angular/material/input";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {DashboardModule} from "./views/dashboard/dashboard.module";
 import {CertificatesModule} from "./views/certificates/certificates.module";
 import {CsrModule} from "./views/csr/csr.module";
-import { VerificationScreenComponent } from './views/verification-screen/verification-screen.component';
 import {MatCardModule} from "@angular/material/card";
+import {VerificationpageModule} from "./views/verification-screen/verificationpage.module";
 
 @NgModule({
   declarations: [
     AppComponent,
     NotFoundPageComponent,
     NotAuthorizedPageComponent,
-    VerificationScreenComponent,
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        HomepageModule,
-        HttpClientModule,
-        MatButtonModule,
-        MatIconModule,
-        MatSelectModule,
-        SharedModule,
-        BrowserAnimationsModule,
-        MatProgressSpinnerModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatSortModule,
-        MatInputModule,
-        FormsModule,
-        DashboardModule,
-        CertificatesModule,
-        CsrModule,
-        MatCardModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HomepageModule,
+    VerificationpageModule,
+    HttpClientModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+    SharedModule,
+    BrowserAnimationsModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatInputModule,
+    FormsModule,
+    DashboardModule,
+    CertificatesModule,
+    CsrModule,
+    MatCardModule,
+    ReactiveFormsModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
