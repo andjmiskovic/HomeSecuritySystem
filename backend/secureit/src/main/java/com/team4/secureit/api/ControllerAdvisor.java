@@ -43,6 +43,12 @@ public class ControllerAdvisor {
         return new ResponseError(HttpStatus.CONFLICT, "Email address is already verified.");
     }
 
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(PasswordsDoNotMatchException.class)
+    public ResponseError handlePasswordsDoNotMatchException(PasswordsDoNotMatchException e) {
+        return new ResponseError(HttpStatus.CONFLICT, "Passwords do not match.");
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidVerificationCodeException.class)
     public ResponseError handleInvalidVerificationCodeException(InvalidVerificationCodeException e) {

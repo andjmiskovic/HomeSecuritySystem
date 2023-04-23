@@ -7,4 +7,5 @@
           (click)="openNewCertificateDialog()">
     New Certificate Request
   </button>
+  <app-users *ngIf="userRole==='ROLE_ADMIN'"></app-users>
 </div>

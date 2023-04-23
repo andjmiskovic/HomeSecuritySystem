@@ -1,14 +1,13 @@
 package com.team4.secureit.service;
 
 import com.team4.secureit.config.AppProperties;
-import com.team4.secureit.dto.request.LoginRequest;
-import com.team4.secureit.dto.request.LoginVerificationRequest;
-import com.team4.secureit.dto.request.RegistrationRequest;
-import com.team4.secureit.dto.request.VerificationRequest;
+import com.team4.secureit.dto.request.*;
 import com.team4.secureit.dto.response.LoginResponse;
+import com.team4.secureit.dto.response.UserInfoResponse;
 import com.team4.secureit.exception.EmailAlreadyInUseException;
 import com.team4.secureit.exception.EmailAlreadyVerifiedException;
 import com.team4.secureit.exception.InvalidVerificationCodeException;
+import com.team4.secureit.exception.PasswordsDoNotMatchException;
 import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.model.Role;
 import com.team4.secureit.model.User;
@@ -86,16 +85,9 @@ public class AccountService {
     public void registerPropertyOwner(RegistrationRequest registrationRequest) {
         checkEmailAvailability(registrationRequest.getEmail());
 
-        PropertyOwner propertyOwner = new PropertyOwner();
-        propertyOwner.setId(UUID.randomUUID());
+        PropertyOwner propertyOwner = populatePropertyOwner(registrationRequest);
         propertyOwner.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         propertyOwner.setRole(Role.ROLE_PROPERTY_OWNER);
-        propertyOwner.setEmail(registrationRequest.getEmail());
-        propertyOwner.setFirstName(registrationRequest.getFirstName());
-        propertyOwner.setLastName(registrationRequest.getLastName());
-        propertyOwner.setEmailVerified(false);
-        propertyOwner.setVerificationCode(generateVerificationCode());
-
         userRepository.save(propertyOwner);
         mailingService.sendEmailVerificationMail(propertyOwner);
     }
@@ -123,5 +115,47 @@ public class AccountService {
             sb.append(String.format("%02x", b));
         }
         return sb.toString();
+    }
+
+    public void createPropertyOwner(UserDetailsRequest createUserRequest) {
+        checkEmailAvailability(createUserRequest.getEmail());
+        PropertyOwner propertyOwner = populatePropertyOwner(createUserRequest);
+        propertyOwner.setPasswordSet(false);
+        userRepository.save(propertyOwner);
+        mailingService.sendEmailVerificationMail(propertyOwner);
+    }
+
+    private PropertyOwner populatePropertyOwner(UserDetailsRequest createUserRequest) {
+        PropertyOwner propertyOwner = new PropertyOwner();
+        propertyOwner.setId(UUID.randomUUID());
+        propertyOwner.setRole(Role.ROLE_PROPERTY_OWNER);
+        propertyOwner.setEmail(createUserRequest.getEmail());
+        propertyOwner.setFirstName(createUserRequest.getFirstName());
+        propertyOwner.setLastName(createUserRequest.getLastName());
+        propertyOwner.setEmailVerified(false);
+        propertyOwner.setVerificationCode(generateVerificationCode());
+        propertyOwner.setCity(createUserRequest.getCity());
+        propertyOwner.setPhoneNumber(createUserRequest.getPhoneNumber());
+        return propertyOwner;
+    }
+
+    public boolean isPasswordSet(String verificationCode) {
+        User user = userRepository.findByVerificationCode(verificationCode).orElseThrow(InvalidVerificationCodeException::new);
+
+        if (user.isEmailVerified())
+            throw new EmailAlreadyVerifiedException();
+        return user.isPasswordSet();
+    }
+
+    public void setPassword(SetPasswordRequest setPasswordRequest) {
+        User userToVerify = userRepository.findByVerificationCode(setPasswordRequest.getVerificationCode()).orElseThrow(InvalidVerificationCodeException::new);
+        if (!setPasswordRequest.getPassword().equals(setPasswordRequest.getPasswordConfirmation()))
+            throw new PasswordsDoNotMatchException();
+        if (userToVerify.isEmailVerified())
+            throw new EmailAlreadyVerifiedException();
+        userToVerify.setEmailVerified(true);
+        userToVerify.setPassword(passwordEncoder.encode(setPasswordRequest.getPassword()));
+        userToVerify.setPasswordSet(true);
+        userRepository.save(userToVerify);
     }
 }

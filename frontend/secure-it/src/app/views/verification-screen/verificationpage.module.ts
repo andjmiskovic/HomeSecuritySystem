@@ -9,21 +9,17 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {CommonModule} from "@angular/common";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatMenuModule} from "@angular/material/menu";
-import {DashboardContainerComponent} from './container/dashboard-container/dashboard-container.component';
-import {SharedModule} from "../../shared/shared.module";
-import {CsrFormComponent} from './components/csr-form/csr-form.component';
-import {MatSelectModule} from "@angular/material/select";
-import { UsersComponent } from './components/users/users.component';
-import {MatTableModule} from "@angular/material/table";
-import {MatTooltipModule} from "@angular/material/tooltip";
-import { UserDetailsDialogComponent } from './components/user-details-dialog/user-details-dialog.component';
+import {EnterPasswordComponent} from "./components/enter-password/enter-password.component";
+import {
+  VerificationScreenContainerComponent
+} from "./container/verification-screen-container/verification-screen-container.component";
+import {VerificationMessageComponent} from "./components/verification-message/verification-message.component";
 
 @NgModule({
   declarations: [
-    DashboardContainerComponent,
-    CsrFormComponent,
-    UsersComponent,
-    UserDetailsDialogComponent,
+    EnterPasswordComponent,
+    VerificationScreenContainerComponent,
+    VerificationMessageComponent,
   ],
   imports: [
     MatFormFieldModule,
@@ -37,16 +33,13 @@ import { UserDetailsDialogComponent } from './components/user-details-dialog/use
     CommonModule,
     MatSnackBarModule,
     ReactiveFormsModule,
-    MatMenuModule,
-    SharedModule,
-    MatSelectModule,
-    MatTableModule,
-    MatTooltipModule
+    MatMenuModule
   ],
   exports: [
-    DashboardContainerComponent
+    EnterPasswordComponent,
+    VerificationMessageComponent
   ],
-  bootstrap: [DashboardContainerComponent]
+  bootstrap: [VerificationScreenContainerComponent]
 })
-export class DashboardModule {
+export class VerificationpageModule {
 }

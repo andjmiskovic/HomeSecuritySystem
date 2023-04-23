@@ -7,3 +7,11 @@ export class RegisterCredentials {
   city!: string;
   passwordConfirmation!: string;
 }
+
+export class CreateUserCredentials {
+  email!: string;
+  firstName!: string;
+  lastName!: string;
+  phoneNumber!: string;
+  city!: string;
+}
