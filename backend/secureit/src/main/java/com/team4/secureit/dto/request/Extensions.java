@@ -1,5 +1,6 @@
 package com.team4.secureit.dto.request;
 
+import com.team4.secureit.validation.NoHTMLTags;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -10,9 +11,9 @@ import java.util.List;
 public class Extensions {
 
     @NotNull
-    private List<String> keyUsage;
+    private List<@NoHTMLTags String> keyUsage;
 
-    private List<@NotBlank String> subjectAlternativeName;
+    private List<@NotBlank @NoHTMLTags String> subjectAlternativeName;
 
     private Boolean subjectKeyIdentifier;
 
