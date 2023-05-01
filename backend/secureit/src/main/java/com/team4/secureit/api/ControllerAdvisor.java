@@ -91,4 +91,16 @@ public class ControllerAdvisor {
     public ResponseError handleLockedException(LockedException e) {
         return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler(Missing2FaCodeException.class)
+    public ResponseError handleMissing2FaCodeException(Missing2FaCodeException e) {
+        return new ResponseError(HttpStatus.OK, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(Invalid2FaCodeException.class)
+    public ResponseError handleInvalid2FaCodeException(Invalid2FaCodeException e) {
+        return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
+    }
 }

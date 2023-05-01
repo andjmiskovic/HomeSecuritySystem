@@ -11,4 +11,6 @@ public class LoginRequest {
 
     @NotBlank
     private String password;
+
+    private String code;
 }

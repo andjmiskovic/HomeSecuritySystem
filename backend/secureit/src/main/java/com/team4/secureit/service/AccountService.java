@@ -3,10 +3,7 @@ package com.team4.secureit.service;
 import com.team4.secureit.config.AppProperties;
 import com.team4.secureit.dto.request.*;
 import com.team4.secureit.dto.response.LoginResponse;
-import com.team4.secureit.exception.EmailAlreadyInUseException;
-import com.team4.secureit.exception.EmailAlreadyVerifiedException;
-import com.team4.secureit.exception.InvalidVerificationCodeException;
-import com.team4.secureit.exception.PasswordsDoNotMatchException;
+import com.team4.secureit.exception.*;
 import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.model.Role;
 import com.team4.secureit.model.User;
@@ -57,6 +54,12 @@ public class AccountService {
                 loginRequest.getEmail(),
                 loginRequest.getPassword()
         ));
+
+        if (loginRequest.getCode() == null)
+            throw new Missing2FaCodeException("Please provide 2FA code along with the credentials to authenticate.");
+
+        if (!verify2FA(loginRequest.getCode()))
+            throw new Invalid2FaCodeException("Invalid 2FA code.");
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String accessToken = tokenProvider.createAccessToken(authentication);
@@ -159,5 +162,9 @@ public class AccountService {
         userToVerify.setPassword(passwordEncoder.encode(setPasswordRequest.getPassword()));
         userToVerify.setPasswordSet(true);
         userRepository.save(userToVerify);
+    }
+
+    private boolean verify2FA(String code) {
+        return code.equals("123456");
     }
 }
