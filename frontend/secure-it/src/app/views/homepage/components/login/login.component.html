@@ -31,14 +31,18 @@
           </mat-error>
         </mat-form-field>
       </p>
-<!--      <p>Enter 6-digit verification code:</p>-->
-<!--      <app-verification-code></app-verification-code>-->
+      <div *ngIf="twoFactorAuth">
+        <p>Enter 6-digit verification code:</p>
+        <app-verification-code (verificationCodeChange)="onVerificationCodeChange($event)"></app-verification-code>
+      </div>
+      <p *ngIf="loginFailed" style="color: var(--red)">Authentication failed.</p>
       <button mat-raised-button type="submit" id="loginBtn" [disabled]="formGroup.invalid"
               color="primary"
               style="width: 100%; margin-top: 20px;" (click)="login()">Login
       </button>
     </form>
-    <a mat-button style="width: 100%; margin-top: 5px" (click)="switchToRegisterForm()">Don't have an account? Create one <i
-      class="material-icons">arrow_forward</i></a>
+    <a mat-button style="width: 100%; margin-top: 5px" (click)="switchToRegisterForm()">Don't have an account? Create
+      one <i
+        class="material-icons">arrow_forward</i></a>
   </mat-card-content>
 </mat-card>

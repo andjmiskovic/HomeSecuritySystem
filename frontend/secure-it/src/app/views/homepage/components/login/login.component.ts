@@ -22,6 +22,9 @@ export class LoginComponent {
 
   email = "";
   password = "";
+  code = "";
+  twoFactorAuth = false;
+  loginFailed = false;
 
   constructor(@Inject(MatSnackBar) private _snackBar: MatSnackBar, private _formBuilder: FormBuilder, private authService: AuthService, private router: Router) {
   }
@@ -31,15 +34,44 @@ export class LoginComponent {
   }
 
   login() {
+    if (this.twoFactorAuth) {
+      this.login2Factor();
+    } else {
+      this.loginFirstStep();
+    }
+  }
+
+  loginFirstStep() {
     let loginCredentials: LoginCredentials = {
       email: this.email,
-      password: this.password
+      password: this.password,
+      code: undefined
+    }
+    this.authService.login(loginCredentials).subscribe({
+      next: (auth) => {
+        console.log(auth)
+        this.twoFactorAuth = true;
+        this.loginFailed = false;
+      }, error: () => {
+        this.loginFailed = true;
+      }
+    })
+  }
+
+  login2Factor() {
+    let loginCredentials: LoginCredentials = {
+      email: this.email,
+      password: this.password,
+      code: this.code
     }
     this.authService.login(loginCredentials).subscribe({
       next: (loginResponse) => {
         localStorage.setItem('token', "Bearer " + loginResponse.accessToken);
         localStorage.setItem('userRole', loginResponse.role);
-        this.router.navigate(['/dashboard'])
+        this.router.navigate(['/dashboard']);
+        this.loginFailed = false;
+      }, error: () => {
+        this.loginFailed = true;
       }
     })
   }
@@ -51,4 +83,8 @@ export class LoginComponent {
     })
   }
 
+  onVerificationCodeChange(code: string[]) {
+    this.code = code.toString();
+    console.log(this.code)
+  }
 }

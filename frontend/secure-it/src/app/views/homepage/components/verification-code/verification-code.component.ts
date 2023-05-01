@@ -1,4 +1,4 @@
-import {Component, HostListener} from '@angular/core';
+import {Component, EventEmitter, HostListener, Output} from '@angular/core';
 
 @Component({
   selector: 'app-verification-code',
@@ -6,6 +6,14 @@ import {Component, HostListener} from '@angular/core';
   styleUrls: ['./verification-code.component.css']
 })
 export class VerificationCodeComponent {
+
+  verificationCode: string[] = ['', '', '', '', '', ''];
+  @Output() verificationCodeChange = new EventEmitter<string[]>();
+
+  onVerificationCodeChange() {
+    this.verificationCodeChange.emit(this.verificationCode);
+  }
+
   @HostListener('keyup', ['$event.target'])
   goToNextInput(target: HTMLInputElement): void {
     const event = window.event as KeyboardEvent;
