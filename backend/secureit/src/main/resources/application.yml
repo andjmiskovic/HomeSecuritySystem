@@ -49,6 +49,10 @@ app:
   auth:
     tokenSecret: ${TOKEN_SECRET}
     tokenExpirationSeconds: 864000
+    loginAttemptLimit: 5
+    # Durations are in expressed of minutes
+    loginAttemptTimeWindow: 2
+    lockoutDuration: 20
   cors:
     allowedOrigins: http://localhost:4200, http://127.0.0.1:4200
   mailing:

@@ -57,7 +57,8 @@ public abstract class User implements UserDetails {
     @Column(nullable = false)
     private Integer loginAttempts = 0;
 
-    private Instant lastLoginAttempt;
+    @Column(nullable = false)
+    private Instant lastLoginAttempt = Instant.MIN;
 
     @Column(nullable = false)
     private Instant lockedUntil = Instant.MAX;
@@ -104,8 +105,8 @@ public abstract class User implements UserDetails {
         return Instant.now().isBefore(lockedUntil);
     }
 
-    public void lockAccount(int length, TemporalUnit temporalUnit, String reason) {
-        setLockedUntil(Instant.now().plus(length, temporalUnit));
+    public void lockAccount(int duration, TemporalUnit temporalUnit, String reason) {
+        setLockedUntil(Instant.now().plus(duration, temporalUnit));
         setLockReason(reason);
     }
 

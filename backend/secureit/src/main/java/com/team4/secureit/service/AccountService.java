@@ -11,6 +11,7 @@ import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.model.Role;
 import com.team4.secureit.model.User;
 import com.team4.secureit.repository.UserRepository;
+import com.team4.secureit.security.AuthenticationManagerWrapper;
 import com.team4.secureit.security.TokenAuthenticationFilter;
 import com.team4.secureit.security.TokenProvider;
 import com.team4.secureit.util.CookieUtils;
@@ -18,8 +19,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,7 +33,7 @@ import java.util.UUID;
 public class AccountService {
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private AuthenticationManagerWrapper authenticationManager;
 
     @Autowired
     private UserRepository userRepository;
@@ -59,10 +58,6 @@ public class AccountService {
                 loginRequest.getPassword()
         ));
 
-        User user = (User) authentication.getPrincipal();
-        if (user.isLocked())
-            throw new LockedException(user.getLockReason());
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String accessToken = tokenProvider.createAccessToken(authentication);
         Integer tokenExpirationSeconds = appProperties.getAuth().getTokenExpirationSeconds();
@@ -73,6 +68,7 @@ public class AccountService {
                 tokenExpirationSeconds
         );
 
+        User user = (User) authentication.getPrincipal();
         Long expiresAt = tokenProvider.readClaims(accessToken).getExpiration().getTime();
         return new LoginResponse(accessToken, expiresAt, user.getRole());
     }
