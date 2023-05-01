@@ -88,6 +88,7 @@ public class AccountService {
         PropertyOwner propertyOwner = populatePropertyOwner(registrationRequest);
         propertyOwner.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         propertyOwner.setRole(Role.ROLE_PROPERTY_OWNER);
+        propertyOwner.setLockReason("Email address for this account has not been verified.");
         userRepository.save(propertyOwner);
         mailingService.sendEmailVerificationMail(propertyOwner);
     }
@@ -98,6 +99,8 @@ public class AccountService {
         if (userToVerify.isEmailVerified())
             throw new EmailAlreadyVerifiedException();
 
+        userToVerify.setIsLocked(false);
+        userToVerify.setLockReason(null);
         userToVerify.setEmailVerified(true);
         userRepository.save(userToVerify);
     }
@@ -153,6 +156,8 @@ public class AccountService {
             throw new PasswordsDoNotMatchException();
         if (userToVerify.isEmailVerified())
             throw new EmailAlreadyVerifiedException();
+        userToVerify.setIsLocked(false);
+        userToVerify.setLockReason(null);
         userToVerify.setEmailVerified(true);
         userToVerify.setPassword(passwordEncoder.encode(setPasswordRequest.getPassword()));
         userToVerify.setPasswordSet(true);

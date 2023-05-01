@@ -4,6 +4,7 @@ import com.team4.secureit.exception.*;
 import io.jsonwebtoken.JwtException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -82,6 +83,12 @@ public class ControllerAdvisor {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(JwtException.class)
     public ResponseError handleJwtExceptions(JwtException e) {
+        return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(LockedException.class)
+    public ResponseError handleLockedException(LockedException e) {
         return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 }

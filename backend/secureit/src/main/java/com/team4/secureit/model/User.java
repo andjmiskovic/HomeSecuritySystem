@@ -53,6 +53,16 @@ public abstract class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(nullable = false)
+    private Integer loginAttempts = 0;
+
+    private Instant lastLoginAttempt;
+
+    @Column(nullable = false)
+    private Boolean isLocked = true;
+
+    private String lockReason;
+
     @CreationTimestamp
     private Instant created;
 
@@ -71,7 +81,7 @@ public abstract class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return emailVerified;
+        return true;
     }
 
     @Override
