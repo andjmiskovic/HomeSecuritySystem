@@ -99,7 +99,7 @@ public class AccountService {
         if (userToVerify.isEmailVerified())
             throw new EmailAlreadyVerifiedException();
 
-        userToVerify.setIsLocked(false);
+        userToVerify.setLocked(false);
         userToVerify.setLockReason(null);
         userToVerify.setEmailVerified(true);
         userRepository.save(userToVerify);
@@ -156,7 +156,7 @@ public class AccountService {
             throw new PasswordsDoNotMatchException();
         if (userToVerify.isEmailVerified())
             throw new EmailAlreadyVerifiedException();
-        userToVerify.setIsLocked(false);
+        userToVerify.setLocked(false);
         userToVerify.setLockReason(null);
         userToVerify.setEmailVerified(true);
         userToVerify.setPassword(passwordEncoder.encode(setPasswordRequest.getPassword()));

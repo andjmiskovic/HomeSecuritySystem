@@ -3,12 +3,19 @@ package com.team4.secureit.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team4.secureit.api.ResponseError;
 import com.team4.secureit.exception.InvalidAccessTokenException;
+import com.team4.secureit.model.User;
 import com.team4.secureit.util.CookieUtils;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,12 +23,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,12 +51,16 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             UUID userId = tokenProvider.getUserIdFromToken(token);
 
             UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+            User user = (User) userDetails;
+            if (user.isLocked())
+                throw new LockedException(user.getLockReason());
+
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
-        } catch (InvalidAccessTokenException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+        } catch (LockedException | InvalidAccessTokenException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
             sendResponse(response, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         } catch (Exception e) {
             sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error has occurred.");

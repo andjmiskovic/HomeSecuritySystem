@@ -59,7 +59,7 @@ public abstract class User implements UserDetails {
     private Instant lastLoginAttempt;
 
     @Column(nullable = false)
-    private Boolean isLocked = true;
+    private boolean isLocked = true;
 
     private String lockReason;
 

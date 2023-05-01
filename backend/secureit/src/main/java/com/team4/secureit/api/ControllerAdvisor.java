@@ -85,10 +85,4 @@ public class ControllerAdvisor {
     public ResponseError handleJwtExceptions(JwtException e) {
         return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
-
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(LockedException.class)
-    public ResponseError handleLockedException(LockedException e) {
-        return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
-    }
 }
