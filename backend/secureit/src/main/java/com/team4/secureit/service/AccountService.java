@@ -3,7 +3,6 @@ package com.team4.secureit.service;
 import com.team4.secureit.config.AppProperties;
 import com.team4.secureit.dto.request.*;
 import com.team4.secureit.dto.response.LoginResponse;
-import com.team4.secureit.dto.response.UserInfoResponse;
 import com.team4.secureit.exception.EmailAlreadyInUseException;
 import com.team4.secureit.exception.EmailAlreadyVerifiedException;
 import com.team4.secureit.exception.InvalidVerificationCodeException;
@@ -20,6 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,9 +59,12 @@ public class AccountService {
                 loginRequest.getPassword()
         ));
 
+        User user = (User) authentication.getPrincipal();
+        if (user.isLocked())
+            throw new LockedException(user.getLockReason());
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String accessToken = tokenProvider.createAccessToken(authentication);
-        Role role = ((User) authentication.getPrincipal()).getRole();
         Integer tokenExpirationSeconds = appProperties.getAuth().getTokenExpirationSeconds();
         CookieUtils.addCookie(
                 response,
@@ -71,7 +74,7 @@ public class AccountService {
         );
 
         Long expiresAt = tokenProvider.readClaims(accessToken).getExpiration().getTime();
-        return new LoginResponse(accessToken, expiresAt, role);
+        return new LoginResponse(accessToken, expiresAt, user.getRole());
     }
 
     public boolean verifyLogin(LoginVerificationRequest verificationRequest, User user) {
@@ -88,7 +91,7 @@ public class AccountService {
         PropertyOwner propertyOwner = populatePropertyOwner(registrationRequest);
         propertyOwner.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         propertyOwner.setRole(Role.ROLE_PROPERTY_OWNER);
-        propertyOwner.setLockReason("Email address for this account has not been verified.");
+        propertyOwner.lockAccount("Email address for this account has not been verified.");
         userRepository.save(propertyOwner);
         mailingService.sendEmailVerificationMail(propertyOwner);
     }
@@ -99,8 +102,7 @@ public class AccountService {
         if (userToVerify.isEmailVerified())
             throw new EmailAlreadyVerifiedException();
 
-        userToVerify.setLocked(false);
-        userToVerify.setLockReason(null);
+        userToVerify.unlockAccount();
         userToVerify.setEmailVerified(true);
         userRepository.save(userToVerify);
     }
@@ -156,8 +158,7 @@ public class AccountService {
             throw new PasswordsDoNotMatchException();
         if (userToVerify.isEmailVerified())
             throw new EmailAlreadyVerifiedException();
-        userToVerify.setLocked(false);
-        userToVerify.setLockReason(null);
+        userToVerify.unlockAccount();
         userToVerify.setEmailVerified(true);
         userToVerify.setPassword(passwordEncoder.encode(setPasswordRequest.getPassword()));
         userToVerify.setPasswordSet(true);

@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
+import java.time.temporal.TemporalUnit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
@@ -59,7 +60,7 @@ public abstract class User implements UserDetails {
     private Instant lastLoginAttempt;
 
     @Column(nullable = false)
-    private boolean isLocked = true;
+    private Instant lockedUntil = Instant.MAX;
 
     private String lockReason;
 
@@ -97,5 +98,24 @@ public abstract class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(this.role.toAuthority());
+    }
+
+    public boolean isLocked() {
+        return Instant.now().isBefore(lockedUntil);
+    }
+
+    public void lockAccount(int length, TemporalUnit temporalUnit, String reason) {
+        setLockedUntil(Instant.now().plus(length, temporalUnit));
+        setLockReason(reason);
+    }
+
+    public void lockAccount(String reason) {
+        setLockedUntil(Instant.MAX);
+        setLockReason(reason);
+    }
+
+    public void unlockAccount() {
+        setLockedUntil(Instant.MIN);
+        setLockReason(null);
     }
 }
