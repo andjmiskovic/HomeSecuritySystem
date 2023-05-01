@@ -12,9 +12,12 @@ import com.team4.secureit.security.AuthenticationManagerWrapper;
 import com.team4.secureit.security.TokenAuthenticationFilter;
 import com.team4.secureit.security.TokenProvider;
 import com.team4.secureit.util.CookieUtils;
+import de.taimos.totp.TOTP;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
+import org.apache.commons.codec.binary.Base32;
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -54,11 +57,12 @@ public class AccountService {
                 loginRequest.getEmail(),
                 loginRequest.getPassword()
         ));
+        User user = (User) authentication.getPrincipal();
 
         if (loginRequest.getCode() == null)
             throw new Missing2FaCodeException("Please provide 2FA code along with the credentials to authenticate.");
 
-        if (!verify2FA(loginRequest.getCode()))
+        if (!verify2FA(loginRequest.getCode(), user))
             throw new Invalid2FaCodeException("Invalid 2FA code.");
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -71,7 +75,6 @@ public class AccountService {
                 tokenExpirationSeconds
         );
 
-        User user = (User) authentication.getPrincipal();
         Long expiresAt = tokenProvider.readClaims(accessToken).getExpiration().getTime();
         return new LoginResponse(accessToken, expiresAt, user.getRole());
     }
@@ -111,16 +114,6 @@ public class AccountService {
             throw new EmailAlreadyInUseException();
     }
 
-    private String generateVerificationCode() {
-        byte[] bytes = new byte[32];
-        random.nextBytes(bytes);
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02x", b));
-        }
-        return sb.toString();
-    }
-
     public void createPropertyOwner(UserDetailsRequest createUserRequest) {
         checkEmailAvailability(createUserRequest.getEmail());
         PropertyOwner propertyOwner = populatePropertyOwner(createUserRequest);
@@ -138,6 +131,7 @@ public class AccountService {
         propertyOwner.setLastName(createUserRequest.getLastName());
         propertyOwner.setEmailVerified(false);
         propertyOwner.setVerificationCode(generateVerificationCode());
+        propertyOwner.setTwoFactorKey(generateTwoFactorKey());
         propertyOwner.setCity(createUserRequest.getCity());
         propertyOwner.setPhoneNumber(createUserRequest.getPhoneNumber());
         return propertyOwner;
@@ -164,7 +158,27 @@ public class AccountService {
         userRepository.save(userToVerify);
     }
 
-    private boolean verify2FA(String code) {
-        return code.equals("123456");
+    private String generateVerificationCode() {
+        byte[] bytes = new byte[32];
+        random.nextBytes(bytes);
+        return Hex.encodeHexString(bytes);
+    }
+
+    private String generateTwoFactorKey() {
+        byte[] bytes = new byte[20];
+        random.nextBytes(bytes);
+        Base32 base32 = new Base32();
+        return base32.encodeToString(bytes);
+    }
+
+    private String getTOTPCode(String secretKey) {
+        Base32 base32 = new Base32();
+        byte[] bytes = base32.decode(secretKey);
+        String hexKey = Hex.encodeHexString(bytes);
+        return TOTP.getOTP(hexKey);
+    }
+
+    private boolean verify2FA(String code, User user) {
+        return code.equals(getTOTPCode(user.getTwoFactorKey()));
     }
 }

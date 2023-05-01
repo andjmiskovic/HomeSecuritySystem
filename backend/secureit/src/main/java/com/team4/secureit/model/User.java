@@ -46,6 +46,9 @@ public abstract class User implements UserDetails {
     private String verificationCode;
 
     @Column(nullable = false)
+    private String twoFactorKey;
+
+    @Column(nullable = false)
     private String phoneNumber;
 
     @Column(nullable = false)
