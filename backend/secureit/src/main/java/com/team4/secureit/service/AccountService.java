@@ -25,6 +25,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.UUID;
 
@@ -180,5 +182,17 @@ public class AccountService {
 
     private boolean verify2FA(String code, User user) {
         return code.equals(getTOTPCode(user.getTwoFactorKey()));
+    }
+
+    private String generateGoogleAuthenticatorLink(User user) {
+        String issuer = "Secure IT Inc.";
+        String accountName = URLEncoder.encode(user.getFirstName() + " " + user.getLastName(), StandardCharsets.UTF_8);
+        String secret = user.getTwoFactorKey();
+        String algorithm = "SHA1";
+        int digits = 6;
+        int period = 30;
+
+        return String.format("otpauth://totp/%s:%s?secret=%s&issuer=%s&algorithm=%s&digits=%d&period=%d",
+                issuer, accountName, secret, issuer, algorithm, digits, period);
     }
 }
