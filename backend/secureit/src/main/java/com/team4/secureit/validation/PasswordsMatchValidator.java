@@ -7,15 +7,18 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class PasswordsMatchValidator implements ConstraintValidator<PasswordsMatch, RegistrationRequest> {
 
+    private PasswordChecker commonPasswordChecker;
+
     @Override
     public void initialize(PasswordsMatch constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
+        this.commonPasswordChecker = new PasswordChecker();
     }
 
     @Override
     public boolean isValid(RegistrationRequest request, ConstraintValidatorContext constraintValidatorContext) {
         return passwordsMatch(request.getPassword(), request.getPasswordConfirmation())
-                && !PasswordChecker.isCommonPassword(request.getPassword());
+                && commonPasswordChecker.isCommonPassword(request.getPassword());
     }
 
     private Boolean passwordsMatch(String password, String confirmation) {
