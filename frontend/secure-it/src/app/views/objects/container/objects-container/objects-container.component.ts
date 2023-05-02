@@ -14,7 +14,7 @@ export class ObjectsContainerComponent {
 
   constructor(private objectsService: ObjectsService) {
   }
-  
+
   applySearchFilter($event: KeyboardEvent) {
     this.getCards();
   }

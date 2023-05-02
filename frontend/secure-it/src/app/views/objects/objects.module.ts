@@ -14,13 +14,11 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import { ObjectsContainerComponent } from './container/objects-container/objects-container.component';
-import { ObjectsListComponent } from './components/objects-list/objects-list.component';
 import { ObjectCardComponent } from './components/object-card/object-card.component';
 
 @NgModule({
   declarations: [
     ObjectsContainerComponent,
-    ObjectsListComponent,
     ObjectCardComponent
   ],
   imports: [
@@ -42,9 +40,8 @@ import { ObjectCardComponent } from './components/object-card/object-card.compon
     MatPaginatorModule
   ],
   exports: [
-    ObjectsListComponent
-  ],
-  bootstrap: [ObjectsListComponent]
+    ObjectsContainerComponent
+  ]
 })
 export class ObjectsModule {
 }
