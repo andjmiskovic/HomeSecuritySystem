@@ -8,17 +8,23 @@
       </a>
       <span class="tooltip">Dashboard</span>
     </li>
-    <li *ngIf="userRole == 'ADMIN'">
+    <li>
       <a (click)="navigate('/certificates')" [ngClass]="{ 'currentPage': currentPage === 'certificates' }">
         <mat-icon>article</mat-icon>
       </a>
       <span class="tooltip">Certificates</span>
     </li>
-    <li *ngIf="userRole == 'ADMIN'">
+    <li>
       <a (click)="navigate('/requests')" [ngClass]="{ 'currentPage': currentPage === 'requests' }">
         <mat-icon>dehaze</mat-icon>
       </a>
       <span class="tooltip">CSRs</span>
+    </li>
+    <li>
+      <a (click)="navigate('/objects')" [ngClass]="{ 'currentPage': currentPage === 'objects' }">
+        <mat-icon>dehaze</mat-icon>
+      </a>
+      <span class="tooltip">Objects</span>
     </li>
     <li>
       <a (click)="logout()">
