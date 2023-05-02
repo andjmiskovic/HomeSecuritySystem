@@ -15,6 +15,7 @@ export class PropertiesContainerComponent {
   public fileTypes = Object.values(PropertyType);
 
   constructor(private propertiesService: PropertyService) {
+    this.getCards();
   }
 
   getCards() {

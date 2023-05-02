@@ -13,7 +13,7 @@ export class PropertyService {
   private readonly objectsUrl: string;
 
   constructor(private http: HttpClient) {
-    this.objectsUrl = environment.apiUrl + '/properties';
+    this.objectsUrl = environment.apiUrl + '/property';
   }
 
   public getObjects(search: string, type: PropertyType | undefined): Observable<BasicPropertyDetails[]> {
