@@ -25,8 +25,13 @@ export class UserService {
     return this.http.get<UserDetails>(this.userUrl + '/' + userEmail, AuthService.getHttpOptions());
   }
 
+  public deleteUser(email: string): Observable<boolean> {
+    return this.http.delete<boolean>(this.userUrl + "/" + email, AuthService.getHttpOptions())
+  }
+
   public editPropertyOwner(requestBody: CreateUserCredentials) {
     return this.http.put<string>(this.userUrl, requestBody, AuthService.getHttpOptions());
   }
+
 
 }

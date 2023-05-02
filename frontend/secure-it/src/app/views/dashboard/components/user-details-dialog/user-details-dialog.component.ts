@@ -101,4 +101,13 @@ export class UserDetailsDialogComponent implements OnInit {
     })
   }
 
+  deleteUser() {
+    this.userService.deleteUser(this.email).subscribe({
+      next: () => {
+        this.openSnackBar("Successfully deleted user")
+        this.dialogRef.close();
+      },
+      error: (message) => this.openSnackBar(message)
+    });
+  }
 }
