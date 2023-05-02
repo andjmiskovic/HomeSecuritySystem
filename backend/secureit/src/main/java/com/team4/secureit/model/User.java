@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -17,6 +19,8 @@ import java.util.UUID;
 @Entity
 @Data
 @Table(name = "USERS")
+@SQLDelete(sql = "UPDATE USERS SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @NoArgsConstructor
 public abstract class User implements UserDetails {
@@ -62,6 +66,9 @@ public abstract class User implements UserDetails {
 
     @Column(nullable = false)
     private Instant lastLoginAttempt = Instant.MIN;
+
+    @Column(nullable = false)
+    private boolean deleted = Boolean.FALSE;;
 
     @Column(nullable = false)
     private Instant lockedUntil = Instant.MAX;

@@ -39,4 +39,11 @@ public class UserService {
         propertyOwnerRepository.save(propertyOwner);
         return MappingUtils.toUserDetailsResponse(propertyOwner);
     }
+
+    public void deleteUser(String userEmail) {
+        PropertyOwner propertyOwner = propertyOwnerRepository.findByEmail(userEmail)
+                .orElseThrow(UserNotFoundException::new);
+        propertyOwner.setDeleted(true);
+        propertyOwnerRepository.save(propertyOwner);
+    }
 }
