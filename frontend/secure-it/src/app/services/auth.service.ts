@@ -35,7 +35,6 @@ export class AuthService {
     return this.http.post<string>(this.authUrl + '/register/verify', {code: verificationCode}, AuthService.getHttpOptions());
   }
 
-
   public logout(): Observable<void> {
     return this.http.post<void>(this.authUrl + '/logout/' + (localStorage.getItem('token') as string).split(" ")[1], AuthService.getHttpOptions());
   }
