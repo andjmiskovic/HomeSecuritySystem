@@ -14,6 +14,8 @@ export class ObjectsContainerComponent {
   objects: BasicObjectDetails[] = [];
 
   constructor(private objectsService: ObjectsService) {
+    console.log("Evo me")
+    this.getCards();
   }
 
   applySearchFilter($event: KeyboardEvent) {
@@ -21,10 +23,17 @@ export class ObjectsContainerComponent {
   }
 
   getCards() {
-    this.objectsService.getObjects(this.searchFilter, this.type).subscribe({
-      next: (objects) => this.objects = objects,
-      error: err => console.error(err)
-    })
+    this.objectsService.getObjects(this.searchFilter, this.type).subscribe((res) => {
+        console.log(res)
+      }
+    //   {
+    //   next: (objects) => {
+    //     this.objects = objects
+    //     console.log(objects)
+    //   },
+    //   error: err => console.error(err)
+    // }
+    )
   }
 
   selectedFilterChange($event: MatSelectChange) {
