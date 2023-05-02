@@ -22,6 +22,6 @@ export class PropertyService {
     if (type != undefined)
       queryParams = queryParams.append("type", type);
     console.log(queryParams)
-    return this.http.get<BasicPropertyDetails[]>(this.objectsUrl, AuthService.getHttpOptions(queryParams));
+    return this.http.get<BasicPropertyDetails[]>(this.objectsUrl + "/all", AuthService.getHttpOptions(queryParams));
   }
 }
