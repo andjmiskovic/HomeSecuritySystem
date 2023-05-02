@@ -35,7 +35,6 @@ export class AuthService {
     return this.http.post<string>(this.authUrl + '/register/verify', {code: verificationCode}, AuthService.getHttpOptions());
   }
 
-
   public logout(): Observable<void> {
     return this.http.post<void>(this.authUrl + '/logout', {}, AuthService.getHttpOptions());
   }
@@ -66,6 +65,7 @@ export class AuthService {
   public isLoggedIn(): boolean {
     return localStorage.getItem('userRole') !== null;
   }
+
 
 
 }

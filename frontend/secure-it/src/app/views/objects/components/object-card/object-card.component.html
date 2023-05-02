@@ -1,0 +1,15 @@
+<mat-card class="example-card">
+  <mat-card-header>
+    <p>{{object.type}}</p>
+    <mat-card-title>{{object.id}}</mat-card-title>
+  </mat-card-header>
+  <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+  <mat-card-content>
+    <p>Address: {{object.address}}</p>
+    <p>Owner: {{object.owner.firstName}} {{object.owner.lastName}}</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button>LIKE</button>
+    <button mat-button>SHARE</button>
+  </mat-card-actions>
+</mat-card>
