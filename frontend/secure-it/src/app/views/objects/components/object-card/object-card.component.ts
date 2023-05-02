@@ -16,4 +16,8 @@ export class ObjectCardComponent implements OnInit {
   ngOnInit() {
 
   }
+
+  objectDetails(id: string) {
+    // TODO
+  }
 }

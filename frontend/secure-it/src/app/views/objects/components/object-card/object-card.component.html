@@ -9,7 +9,6 @@
     <p>Owner: {{object.owner.firstName}} {{object.owner.lastName}}</p>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button>LIKE</button>
-    <button mat-button>SHARE</button>
+    <button mat-button (click)="objectDetails(object.id)">VIEW DETAILS</button>
   </mat-card-actions>
 </mat-card>
