@@ -19,14 +19,12 @@ export class SidebarComponent {
   }
 
   logout() {
-    // this.authService.logout().subscribe({
-    //   next: () => {
-        localStorage.removeItem('token');
+    this.authService.logout().subscribe({
+      next: () => {
         localStorage.removeItem('userRole');
         this.router.navigate(['']);
-      // },
-      // error: (err) => console.error(err)
-    // })
-
+      },
+      error: (err) => console.error(err)
+    })
   }
 }
