@@ -1,7 +1,9 @@
 package com.team4.secureit.service;
 
+import com.google.zxing.WriterException;
 import com.team4.secureit.config.AppProperties;
 import com.team4.secureit.model.PropertyOwner;
+import com.team4.secureit.model.User;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.apache.commons.io.FileUtils;
@@ -19,6 +21,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.team4.secureit.util.LoginUtils.generateGoogleAuthenticatorLink;
+import static com.team4.secureit.util.LoginUtils.generateQRCodeBase64;
 
 @Service
 public class MailingService {
@@ -44,6 +49,20 @@ public class MailingService {
                 "code", propertyOwner.getVerificationCode());
 
         sendMail(propertyOwner.getEmail(), "Welcome to Secure IT! Complete verification", content);
+    }
+
+    @Async
+    public void sendTwoFactorSetupKey(User user) {
+        try {
+            String content = renderTemplate("2fa.html",
+                    "firstName", user.getFirstName(),
+                    "secretKey", user.getTwoFactorKey(),
+                    "qrcode", generateQRCodeBase64(generateGoogleAuthenticatorLink(user)));
+
+            sendMail(user.getEmail(), "Set up Two-Factor Authentication for Your Account", content);
+        } catch (WriterException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void sendMail(String to, String subject, String body) {
