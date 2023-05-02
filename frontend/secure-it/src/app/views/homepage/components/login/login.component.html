@@ -33,6 +33,7 @@
       </p>
       <div *ngIf="twoFactorAuth">
         <p>Enter 6-digit verification code:</p>
+<!--        <input [(ngModel)]="code">-->
         <app-verification-code (verificationCodeChange)="onVerificationCodeChange($event)"></app-verification-code>
       </div>
       <p *ngIf="loginFailed" style="color: var(--red)">Authentication failed.</p>

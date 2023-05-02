@@ -31,6 +31,8 @@ export class VerificationCodeComponent {
       const inputs = document.querySelectorAll('input[tabindex]');
       sib = inputs[0] as HTMLInputElement;
     }
+
+    if (!sib) return
     sib.select();
     sib.focus();
   }

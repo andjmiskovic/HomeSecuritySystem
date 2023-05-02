@@ -84,7 +84,6 @@ export class LoginComponent {
   }
 
   onVerificationCodeChange(code: string[]) {
-    this.code = code.toString();
-    console.log(this.code)
+    this.code = code.join("")
   }
 }
