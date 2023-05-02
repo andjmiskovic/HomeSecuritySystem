@@ -9,9 +9,10 @@ import {AuthService} from "../../services/auth.service";
 })
 export class SidebarComponent {
   @Input() currentPage = 'dashboard';
-  @Input() userRole = 'ADMIN';
+  userRole = 'ROLE_ADMIN';
 
   constructor(private router: Router, private authService: AuthService) {
+    this.userRole = localStorage.getItem("userRole")!;
   }
 
   navigate(page: string) {
