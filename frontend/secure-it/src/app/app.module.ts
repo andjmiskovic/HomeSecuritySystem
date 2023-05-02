@@ -22,7 +22,7 @@ import {CertificatesModule} from "./views/certificates/certificates.module";
 import {CsrModule} from "./views/csr/csr.module";
 import {MatCardModule} from "@angular/material/card";
 import {VerificationpageModule} from "./views/verification-screen/verificationpage.module";
-import {ObjectsModule} from "./views/objects/objects.module";
+import {PropertiesModule} from "./views/objects/properties.module";
 
 @NgModule({
   declarations: [
@@ -52,7 +52,7 @@ import {ObjectsModule} from "./views/objects/objects.module";
     CsrModule,
     MatCardModule,
     ReactiveFormsModule,
-    ObjectsModule
+    PropertiesModule
   ],
   providers: [],
   bootstrap: [AppComponent]

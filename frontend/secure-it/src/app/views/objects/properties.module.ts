@@ -13,13 +13,13 @@ import {SharedModule} from "../../shared/shared.module";
 import {MatSelectModule} from "@angular/material/select";
 import {MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
-import { ObjectsContainerComponent } from './container/objects-container/objects-container.component';
-import { ObjectCardComponent } from './components/object-card/object-card.component';
+import {PropertiesContainerComponent} from './container/properties-container/properties-container.component';
+import {PropertyCardComponent} from './components/property-card/property-card.component';
 
 @NgModule({
   declarations: [
-    ObjectsContainerComponent,
-    ObjectCardComponent
+    PropertiesContainerComponent,
+    PropertyCardComponent
   ],
   imports: [
     MatFormFieldModule,
@@ -40,8 +40,8 @@ import { ObjectCardComponent } from './components/object-card/object-card.compon
     MatPaginatorModule
   ],
   exports: [
-    ObjectsContainerComponent
+    PropertiesContainerComponent
   ]
 })
-export class ObjectsModule {
+export class PropertiesModule {
 }
