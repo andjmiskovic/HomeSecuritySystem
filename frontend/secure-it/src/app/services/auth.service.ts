@@ -36,7 +36,7 @@ export class AuthService {
   }
 
   public logout(): Observable<void> {
-    return this.http.post<void>(this.authUrl + '/logout/' + (localStorage.getItem('token') as string).split(" ")[1], AuthService.getHttpOptions());
+    return this.http.post<void>(this.authUrl + '/logout', {}, AuthService.getHttpOptions());
   }
 
   public getCurrentlyLoggedUser(): Observable<User> {
@@ -55,16 +55,17 @@ export class AuthService {
     return {
       headers: new HttpHeaders({
         'Access-Control-Allow-Origin': '*',
-        'Authorization': localStorage.getItem('token') || 'authkey',
         'Content-Type': 'application/json',
       }),
-      params: params
+      params: params,
+      withCredentials: true
     };
   }
 
   public isLoggedIn(): boolean {
-    return localStorage.getItem('token') !== null;
+    return localStorage.getItem('userRole') !== null;
   }
+
 
 
 }

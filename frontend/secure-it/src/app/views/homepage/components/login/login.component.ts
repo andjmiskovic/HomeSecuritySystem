@@ -66,7 +66,6 @@ export class LoginComponent {
     }
     this.authService.login(loginCredentials).subscribe({
       next: (loginResponse) => {
-        localStorage.setItem('token', "Bearer " + loginResponse.accessToken);
         localStorage.setItem('userRole', loginResponse.role);
         this.router.navigate(['/dashboard']);
         this.loginFailed = false;

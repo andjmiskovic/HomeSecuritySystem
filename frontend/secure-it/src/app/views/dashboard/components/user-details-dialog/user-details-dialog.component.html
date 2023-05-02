@@ -1,7 +1,6 @@
 <mat-card>
-  <mat-card-title>Sign up</mat-card-title>
-  <mat-card-subtitle>Please enter your data</mat-card-subtitle>
-  <mat-card-content>
+  <mat-card-title>User details</mat-card-title>
+  <mat-card-content style="padding: 0px">
     <form [formGroup]="formGroup">
       <p style="margin-top: 10px">
         <mat-form-field class="example-full-width" style="width: 49%; margin-right: 1%" appearance="outline">
@@ -59,8 +58,12 @@
         </div>
         <div *ngSwitchCase="'edit'">
           <button mat-raised-button id="edit-button" color="primary" type="submit"
-                  style="width: 100%; margin-top: -10px;" (click)="editUser()" [disabled]="formGroup.invalid">
+                  style="width: 49%; margin-top: -10px; margin-right: 2%" (click)="editUser()" [disabled]="formGroup.invalid">
             Save changes
+          </button>
+          <button mat-raised-button id="delete-button" color="warn" type="submit"
+                  style="width: 49%; margin-top: -10px;" (click)="deleteUser()">
+            Delete user
           </button>
         </div>
       </div>

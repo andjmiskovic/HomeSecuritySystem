@@ -1,5 +1,6 @@
 package com.team4.secureit.controller;
 
+import com.team4.secureit.api.ResponseOk;
 import com.team4.secureit.dto.request.UserDetailsRequest;
 import com.team4.secureit.dto.response.UserDetailResponse;
 import com.team4.secureit.dto.response.UserInfoResponse;
@@ -33,5 +34,12 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public UserDetailResponse editPropertyOwner(@RequestBody UserDetailsRequest user) {
         return userService.editPropertyOwner(user);
+    }
+
+    @DeleteMapping("/{userEmail}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseOk deleteUser(@PathVariable String userEmail) {
+        userService.deleteUser(userEmail);
+        return new ResponseOk("User logically deleted.");
     }
 }

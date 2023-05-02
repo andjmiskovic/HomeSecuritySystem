@@ -12,12 +12,9 @@ import com.team4.secureit.security.AuthenticationManagerWrapper;
 import com.team4.secureit.security.TokenAuthenticationFilter;
 import com.team4.secureit.security.TokenProvider;
 import com.team4.secureit.util.CookieUtils;
-import de.taimos.totp.TOTP;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
-import org.apache.commons.codec.binary.Base32;
-import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,10 +22,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
 import java.util.UUID;
+
+import static com.team4.secureit.util.LoginUtils.*;
 
 @Service
 @Transactional
@@ -51,8 +47,6 @@ public class AccountService {
 
     @Autowired
     private MailingService mailingService;
-
-    private final SecureRandom random = new SecureRandom();
 
     public LoginResponse login(LoginRequest loginRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -94,6 +88,7 @@ public class AccountService {
 
         PropertyOwner propertyOwner = populatePropertyOwner(registrationRequest);
         propertyOwner.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        propertyOwner.setPasswordSet(true);
         propertyOwner.setRole(Role.ROLE_PROPERTY_OWNER);
         propertyOwner.lockAccount("Email address for this account has not been verified.");
         userRepository.save(propertyOwner);
@@ -109,6 +104,7 @@ public class AccountService {
         userToVerify.unlockAccount();
         userToVerify.setEmailVerified(true);
         userRepository.save(userToVerify);
+        mailingService.sendTwoFactorSetupKey(userToVerify);
     }
 
     private void checkEmailAvailability(String email) {
@@ -158,41 +154,6 @@ public class AccountService {
         userToVerify.setPassword(passwordEncoder.encode(setPasswordRequest.getPassword()));
         userToVerify.setPasswordSet(true);
         userRepository.save(userToVerify);
-    }
-
-    private String generateVerificationCode() {
-        byte[] bytes = new byte[32];
-        random.nextBytes(bytes);
-        return Hex.encodeHexString(bytes);
-    }
-
-    private String generateTwoFactorKey() {
-        byte[] bytes = new byte[20];
-        random.nextBytes(bytes);
-        Base32 base32 = new Base32();
-        return base32.encodeToString(bytes);
-    }
-
-    private String getTOTPCode(String secretKey) {
-        Base32 base32 = new Base32();
-        byte[] bytes = base32.decode(secretKey);
-        String hexKey = Hex.encodeHexString(bytes);
-        return TOTP.getOTP(hexKey);
-    }
-
-    private boolean verify2FA(String code, User user) {
-        return code.equals(getTOTPCode(user.getTwoFactorKey()));
-    }
-
-    private String generateGoogleAuthenticatorLink(User user) {
-        String issuer = "Secure IT Inc.";
-        String accountName = URLEncoder.encode(user.getFirstName() + " " + user.getLastName(), StandardCharsets.UTF_8);
-        String secret = user.getTwoFactorKey();
-        String algorithm = "SHA1";
-        int digits = 6;
-        int period = 30;
-
-        return String.format("otpauth://totp/%s:%s?secret=%s&issuer=%s&algorithm=%s&digits=%d&period=%d",
-                issuer, accountName, secret, issuer, algorithm, digits, period);
+        mailingService.sendTwoFactorSetupKey(userToVerify);
     }
 }
