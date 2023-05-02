@@ -4,20 +4,18 @@ import {NotAuthorizedPageComponent} from './views/403/not-authorized-page/not-au
 import {NotFoundPageComponent} from './views/404/not-found-page/not-found-page.component';
 import {HomepageContainerComponent} from './views/homepage/container/homepage-container/homepage-container.component';
 import {CertificateListComponent} from "./views/certificates/container/certificate-list/certificate-list.component";
-import {
-  DashboardContainerComponent
-} from "./views/dashboard/container/dashboard-container/dashboard-container.component";
+import {DashboardContainerComponent} from "./views/dashboard/container/dashboard-container/dashboard-container.component";
 import {CertificateRequestsComponent} from "./views/csr/container/certificate-requests/certificate-requests.component";
 import {AuthGuard} from "./model/AuthGuard";
-import {
-  VerificationScreenContainerComponent
-} from "./views/verification-screen/container/verification-screen-container/verification-screen-container.component";
+import {VerificationScreenContainerComponent} from "./views/verification-screen/container/verification-screen-container/verification-screen-container.component";
+import {ObjectsContainerComponent} from "./views/objects/container/objects-container/objects-container.component";
 
 const routes: Routes = [
   {path: '', component: HomepageContainerComponent},
   {path: 'certificates', component: CertificateListComponent, canActivate: [AuthGuard]},
   {path: 'requests', component: CertificateRequestsComponent, canActivate: [AuthGuard]},
   {path: 'dashboard', component: DashboardContainerComponent, canActivate: [AuthGuard]},
+  {path: 'objects', component: ObjectsContainerComponent, canActivate: [AuthGuard]},
   // {path: 'registration/verification?code=/:verificationCode', component: VerificationScreenComponent},
   {path: 'registration/verification', component: VerificationScreenContainerComponent},
   {path: '403', component: NotAuthorizedPageComponent},

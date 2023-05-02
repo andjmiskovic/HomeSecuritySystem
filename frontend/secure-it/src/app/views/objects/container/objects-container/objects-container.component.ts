@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {BasicObjectDetails, ObjectType} from "../../../../model/Object";
 import {ObjectsService} from "../../../../services/objects.service";
+import {MatSelectChange} from "@angular/material/select";
 
 @Component({
   selector: 'app-objects-container',
@@ -24,5 +25,9 @@ export class ObjectsContainerComponent {
       next: (objects) => this.objects = objects,
       error: err => console.error(err)
     })
+  }
+
+  selectedFilterChange($event: MatSelectChange) {
+    this.getCards();
   }
 }
