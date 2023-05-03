@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {BasicPropertyDetails} from "../../../../model/Property";
 import {MatDialog} from "@angular/material/dialog";
 import {PropertyDetailsComponent} from "../property-details/property-details.component";
+import {AuthService} from "../../../../services/auth.service";
 
 @Component({
   selector: 'app-property-card',
@@ -11,11 +12,15 @@ import {PropertyDetailsComponent} from "../property-details/property-details.com
 export class PropertyCardComponent implements OnInit {
 
   @Input() property!: BasicPropertyDetails;
+  loggedUserId!: number
 
-  constructor(private dialog: MatDialog) {
+  constructor(private dialog: MatDialog, private authService: AuthService) {
   }
 
   ngOnInit() {
+    this.authService.getCurrentlyLoggedUser().subscribe((user) => {
+      this.loggedUserId = user.id
+    })
   }
 
   objectDetails(id: string) {
