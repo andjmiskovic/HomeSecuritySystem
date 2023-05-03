@@ -11,7 +11,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-select disableRipple [(ngModel)]="type" (selectionChange)="selectedFilterChange($event)">
-        <mat-option (click)="type = undefined" [value]="undefined">All</mat-option>
+        <mat-option [value]="'All'">All</mat-option>
         <mat-option *ngFor="let fileType of fileTypes" [value]="fileType">{{fileType}}</mat-option>
       </mat-select>
     </mat-form-field>
@@ -22,9 +22,6 @@
       Add new property
     </button>
   </p>
-
-
-
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-6 col-md-4 col-lg-3 mb-4" *ngFor="let o of properties">

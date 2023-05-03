@@ -14,7 +14,7 @@ import {
 })
 export class PropertiesContainerComponent {
   searchFilter = "";
-  type: string | undefined;
+  type: string | undefined = 'All';
   properties: BasicPropertyDetails[] = [];
   public fileTypes = Object.values(PropertyType);
 
@@ -25,7 +25,9 @@ export class PropertiesContainerComponent {
   getCards() {
     console.log(this.searchFilter)
     console.log(this.type)
-    this.propertiesService.getObjects(this.searchFilter, getKeyFromValue(this.type)).subscribe({
+    let type = this.type
+    if (type === "All") type = undefined
+    this.propertiesService.getObjects(this.searchFilter, getKeyFromValue(type)).subscribe({
       next: (properties) => this.properties = properties,
       error: err => console.error(err)
     })
