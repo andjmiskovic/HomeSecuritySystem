@@ -17,12 +17,14 @@ import {PropertiesContainerComponent} from './container/properties-container/pro
 import {PropertyCardComponent} from './components/property-card/property-card.component';
 import {MatTooltipModule} from "@angular/material/tooltip";
 import { PropertyEditFormDialogComponent } from './components/property-details-dialog/property-edit-form-dialog.component';
+import { PropertyDetailsComponent } from './components/property-details/property-details.component';
 
 @NgModule({
   declarations: [
     PropertiesContainerComponent,
     PropertyCardComponent,
-    PropertyEditFormDialogComponent
+    PropertyEditFormDialogComponent,
+    PropertyDetailsComponent
   ],
     imports: [
         MatFormFieldModule,

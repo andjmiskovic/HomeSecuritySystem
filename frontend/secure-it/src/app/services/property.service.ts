@@ -17,7 +17,7 @@ export class PropertyService {
     this.objectsUrl = environment.apiUrl + '/property';
   }
 
-  public getObjects(search: string, type: string | undefined): Observable<BasicPropertyDetails[]> {
+  public getProperties(search: string, type: string | undefined): Observable<BasicPropertyDetails[]> {
     let queryParams = new HttpParams();
     queryParams = queryParams.append("search", search);
     if (type != undefined)
@@ -37,5 +37,9 @@ export class PropertyService {
     if (type != undefined)
       queryParams = queryParams.append("type", type);
     return this.http.get<BasicPropertyDetails[]>(this.objectsUrl + "/owner", AuthService.getHttpOptions(queryParams));
+  }
+
+  getProperty(id: string) {
+
   }
 }

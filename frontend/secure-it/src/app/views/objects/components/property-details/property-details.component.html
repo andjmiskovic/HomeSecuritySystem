@@ -1,0 +1,13 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <img class="property-image" src="{{ property.image }}" alt="{{ property.name }} image">
+    </div>
+    <div class="col-md-6">
+      <h1>{{ property.name }}</h1>
+      <p>{{ property.type }}</p>
+      <p>{{ property.address }}</p>
+      <p>Owned by {{ property.owner.firstName }} {{ property.owner.lastName }}</p>
+    </div>
+  </div>
+</div>

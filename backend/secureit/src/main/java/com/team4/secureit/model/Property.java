@@ -1,6 +1,5 @@
 package com.team4.secureit.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +21,6 @@ public class Property {
     private PropertyType type;
     private String image;
     private UUID ownerId;
-    @OneToMany
+    @ManyToMany
     private Set<PropertyOwner> tenants;
 }
