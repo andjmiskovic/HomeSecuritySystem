@@ -12,11 +12,17 @@ export class PropertyDetailsComponent implements OnInit {
   property: PropertyDetails = new PropertyDetails();
 
   constructor(private propertyService: PropertyService) {
-
+    this.propertyService.getProperty(this.id).subscribe({
+      next: (p) => this.property = p,
+      error: err => console.error(err)
+    });
   }
 
   ngOnInit() {
-    this.propertyService.getProperty(id);
+    // this.propertyService.getProperty(this.id).subscribe({
+    //   next: (p) => this.property = p,
+    //   error: err => console.error(err)
+    // });
   }
 
 }

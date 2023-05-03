@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {BasicPropertyDetails} from "../../../../model/Property";
 import {MatDialog} from "@angular/material/dialog";
-import {PropertyDetailsDialogComponent} from "../property-details-dialog/property-details-dialog.component";
+import {PropertyDetailsComponent} from "../property-details/property-details.component";
 
 @Component({
   selector: 'app-property-card',
@@ -19,7 +19,7 @@ export class PropertyCardComponent implements OnInit {
   }
 
   objectDetails(id: string) {
-    let dialogRef = this.dialog.open(PropertyDetailsDialogComponent);
-    dialogRef.id = id;
+    let dialogRef = this.dialog.open(PropertyDetailsComponent);
+    dialogRef.componentInstance.id = id;
   }
 }

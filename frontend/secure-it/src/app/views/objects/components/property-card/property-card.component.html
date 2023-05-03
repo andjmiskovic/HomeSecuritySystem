@@ -1,4 +1,4 @@
-<mat-card class="example-card" (click)="objectDetails(property.id)">
+<mat-card style="cursor: pointer" [matTooltip]="'View details'" (click)="objectDetails(property.id)">
   <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
   <div style="position: absolute; top: 10px; left: 10px; padding: 10px; z-index: 1;">
     <span class="tag">{{property.type}}</span>

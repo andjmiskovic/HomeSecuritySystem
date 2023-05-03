@@ -59,6 +59,9 @@ public class PropertyService {
     public PropertyDetailsResponse getPropertyById(String id) {
         Property property = propertyRepository.getReferenceById(UUID.fromString(id));
         List<UserInfoResponse> tenants = new ArrayList<>();
+        for (PropertyOwner tenant : property.getTenants()) {
+            tenants.add(new UserInfoResponse(tenant.getId(), tenant.getFirstName(), tenant.getLastName(), tenant.getEmail()));
+        }
         return new PropertyDetailsResponse(property.getId(), property.getName(), property.getAddress(), property.getType(), property.getImage(), getUserInfo(property.getOwnerId()), tenants);
     }
 }

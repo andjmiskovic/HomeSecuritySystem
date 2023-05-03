@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team4.secureit.api.ResponseError;
 import com.team4.secureit.exception.InvalidAccessTokenException;
 import com.team4.secureit.util.CookieUtils;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -74,7 +72,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         return null;
     }
-
 
     private void sendResponse(HttpServletResponse response, Integer status, String message) throws IOException {
         ResponseError responseError = new ResponseError(status, message);

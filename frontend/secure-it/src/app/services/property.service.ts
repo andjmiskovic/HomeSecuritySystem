@@ -3,18 +3,17 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from "rxjs";
 import {AuthService} from "./auth.service";
 import {environment} from "../environment.development";
-import {BasicPropertyDetails, PropertyType} from "../model/Property";
-import {UserDetails} from "../model/User";
+import {BasicPropertyDetails, PropertyDetails} from "../model/Property";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PropertyService {
 
-  private readonly objectsUrl: string;
+  private readonly propertiesUrl: string;
 
   constructor(private http: HttpClient) {
-    this.objectsUrl = environment.apiUrl + '/property';
+    this.propertiesUrl = environment.apiUrl + '/property';
   }
 
   public getProperties(search: string, type: string | undefined): Observable<BasicPropertyDetails[]> {
@@ -23,14 +22,14 @@ export class PropertyService {
     if (type != undefined)
       queryParams = queryParams.append("type", type);
     console.log(type)
-    return this.http.get<BasicPropertyDetails[]>(this.objectsUrl + "/all", AuthService.getHttpOptions(queryParams));
+    return this.http.get<BasicPropertyDetails[]>(this.propertiesUrl + "/all", AuthService.getHttpOptions(queryParams));
   }
 
   public getPropertyTypes(): Observable<string[]> {
-    return this.http.get<string[]>(this.objectsUrl + '/types', AuthService.getHttpOptions());
+    return this.http.get<string[]>(this.propertiesUrl + '/types', AuthService.getHttpOptions());
   }
 
-  getProperty(id: string) {
-
+  getProperty(id: string): Observable<PropertyDetails> {
+    return this.http.get<PropertyDetails>(this.propertiesUrl + '/' + id, AuthService.getHttpOptions());
   }
 }
