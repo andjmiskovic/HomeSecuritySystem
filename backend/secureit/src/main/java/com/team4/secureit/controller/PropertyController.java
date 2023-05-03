@@ -2,10 +2,11 @@ package com.team4.secureit.controller;
 
 import com.team4.secureit.dto.request.CSRCreationRequest;
 import com.team4.secureit.dto.response.PropertyDetailsResponse;
-import com.team4.secureit.model.Property;
+import com.team4.secureit.dto.response.PropertyResponse;
 import com.team4.secureit.model.PropertyType;
 import com.team4.secureit.service.PropertyService;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,8 +29,13 @@ public class PropertyController {
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<PropertyDetailsResponse> getProperties(@RequestParam(value = "search", required = false) String search, @RequestParam(value = "type", required = false) PropertyType type) {
+    public List<PropertyResponse> getProperties(@RequestParam(value = "search", required = false) String search, @RequestParam(value = "type", required = false) PropertyType type) {
         return objectService.getProperties(search, type);
+    }
+
+    @GetMapping("/{id}")
+    public PropertyDetailsResponse getProperties(@PathParam(value = "id") String id) {
+        return objectService.getPropertyById(id);
     }
 
     @GetMapping("/types")

@@ -1,15 +1,18 @@
-<mat-card class="example-card">
-  <mat-card-header>
-    <p>{{property.type}}</p>
-    <mat-card-title>{{property.id}}</mat-card-title>
-    <mat-card-subtitle>{{property.name}}</mat-card-subtitle>
-  </mat-card-header>
+<mat-card class="example-card" (click)="objectDetails(property.id)">
   <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
-  <mat-card-content>
-    <p>Address: {{property.address}}</p>
-    <p>Owner: {{property.owner.firstName}} {{property.owner.lastName}}</p>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button (click)="objectDetails(property.id)">VIEW DETAILS</button>
-  </mat-card-actions>
+  <div style="position: absolute; top: 10px; left: 10px; padding: 10px; z-index: 1;">
+    <span class="tag">{{property.type}}</span>
+  </div>
+  <div style="padding: 10px">
+    <h2>{{property.name}}</h2>
+    <span>
+      <mat-icon>location_pin</mat-icon>
+      {{property.address}}
+    </span>
+    <br>
+    <span>
+      <mat-icon>person</mat-icon>
+      {{property.owner.firstName}} {{property.owner.lastName}}
+    </span>
+  </div>
 </mat-card>

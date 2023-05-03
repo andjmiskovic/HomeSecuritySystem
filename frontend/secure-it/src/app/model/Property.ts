@@ -9,8 +9,18 @@ export class BasicPropertyDetails {
   owner!: User;
 }
 
+export class PropertyDetails {
+  id!: string;
+  image: string = "";
+  address!: string;
+  name!: string;
+  type!: PropertyType;
+  owner!: User;
+  tenants: User[] = [];
+}
+
 export enum PropertyType {
-  HOUSE= "House",
+  HOUSE = "House",
   FLAT = "Flat",
   COTTAGE = "Cottage",
   BUSINESS_SPACE = "Business space",

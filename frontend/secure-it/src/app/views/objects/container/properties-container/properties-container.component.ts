@@ -27,7 +27,7 @@ export class PropertiesContainerComponent {
     console.log(this.type)
     let type = this.type
     if (type === "All") type = undefined
-    this.propertiesService.getObjects(this.searchFilter, getKeyFromValue(type)).subscribe({
+    this.propertiesService.getProperties(this.searchFilter, getKeyFromValue(type)).subscribe({
       next: (properties) => this.properties = properties,
       error: err => console.error(err)
     })

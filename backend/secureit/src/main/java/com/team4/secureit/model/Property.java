@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -21,4 +23,6 @@ public class Property {
     private PropertyType type;
     private String image;
     private UUID ownerId;
+    @ManyToMany
+    private Set<UUID> tenantsId;
 }
