@@ -15,5 +15,8 @@ public interface PropertyRepository extends JpaRepository<Property, UUID> {
     List<Property> getAll(@Param("search") String search, @Param("type") PropertyType type);
 
     @Query("SELECT p FROM Property p JOIN PropertyOwner o ON p.ownerId = o.id WHERE (p.ownerId = :userId) AND (:search IS NULL OR LOWER(p.name) LIKE %:search% OR LOWER(p.address) LIKE %:search% OR CAST(p.id AS string) LIKE %:search% OR LOWER(CONCAT(o.firstName, ' ', o.lastName)) LIKE %:search%) AND (:type IS NULL OR p.type = :type)")
-    List<Property> getAllForOwner(@Param("userId") UUID userId, @Param("search") String search, @Param("type") PropertyType type);
+    List<Property> getPropertiesWhereUserIsOwner(@Param("userId") UUID userId, @Param("search") String search, @Param("type") PropertyType type);
+
+    @Query("SELECT DISTINCT p FROM Property p JOIN PropertyOwner o ON p.ownerId = o.id JOIN p.tenants t WHERE (t.id = :userId) AND (:search IS NULL OR LOWER(p.name) LIKE %:search% OR LOWER(p.address) LIKE %:search% OR CAST(p.id AS string) LIKE %:search% OR LOWER(CONCAT(o.firstName, ' ', o.lastName)) LIKE %:search%) AND (:type IS NULL OR p.type = :type)")
+    List<Property> getPropertiesWhereUserIsTenant(@Param("userId") UUID userId, @Param("search") String search, @Param("type") PropertyType type);
 }

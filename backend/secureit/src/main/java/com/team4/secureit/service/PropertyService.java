@@ -34,7 +34,8 @@ public class PropertyService {
     }
 
     public List<PropertyResponse> getOwnerProperties(UUID id, String search, PropertyType type) {
-        List<Property> properties = propertyRepository.getAllForOwner(id, search, type);
+        List<Property> properties = propertyRepository.getPropertiesWhereUserIsOwner(id, search, type);
+        properties.addAll(propertyRepository.getPropertiesWhereUserIsTenant(id, search, type));
         return getPropertyDetailsResponsesFromProperties(properties);
     }
 
