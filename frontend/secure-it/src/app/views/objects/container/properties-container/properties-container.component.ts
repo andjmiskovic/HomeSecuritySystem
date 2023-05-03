@@ -1,7 +1,11 @@
 import {Component} from '@angular/core';
-import {BasicPropertyDetails, PropertyType} from "../../../../model/Property";
+import {BasicPropertyDetails, getKeyFromValue, PropertyType} from "../../../../model/Property";
 import {PropertyService} from "../../../../services/property.service";
 import {MatSelectChange} from "@angular/material/select";
+import {MatDialog} from "@angular/material/dialog";
+import {
+  PropertyDetailsDialogComponent
+} from "../../components/property-details-dialog/property-details-dialog.component";
 
 @Component({
   selector: 'app-properties-container',
@@ -10,16 +14,18 @@ import {MatSelectChange} from "@angular/material/select";
 })
 export class PropertiesContainerComponent {
   searchFilter = "";
-  type: PropertyType | undefined;
+  type: string | undefined;
   properties: BasicPropertyDetails[] = [];
   public fileTypes = Object.values(PropertyType);
 
-  constructor(private propertiesService: PropertyService) {
+  constructor(private propertiesService: PropertyService, private dialog: MatDialog) {
     this.getCards();
   }
 
   getCards() {
-    this.propertiesService.getObjects(this.searchFilter, this.type).subscribe({
+    console.log(this.searchFilter)
+    console.log(this.type)
+    this.propertiesService.getObjects(this.searchFilter, getKeyFromValue(this.type)).subscribe({
       next: (properties) => this.properties = properties,
       error: err => console.error(err)
     })
@@ -31,5 +37,11 @@ export class PropertiesContainerComponent {
 
   applySearchFilter($event: KeyboardEvent) {
     this.getCards();
+  }
+
+  addNewProperty() {
+    const dialogRef = this.dialog.open(PropertyDetailsDialogComponent);
+    dialogRef.componentInstance.mode = 'create';
+    dialogRef.afterClosed().subscribe(() => this.getCards())
   }
 }

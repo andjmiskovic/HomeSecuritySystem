@@ -15,30 +15,34 @@ import {MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {PropertiesContainerComponent} from './container/properties-container/properties-container.component';
 import {PropertyCardComponent} from './components/property-card/property-card.component';
+import {MatTooltipModule} from "@angular/material/tooltip";
+import { PropertyDetailsDialogComponent } from './components/property-details-dialog/property-details-dialog.component';
 
 @NgModule({
   declarations: [
     PropertiesContainerComponent,
-    PropertyCardComponent
+    PropertyCardComponent,
+    PropertyDetailsDialogComponent
   ],
-  imports: [
-    MatFormFieldModule,
-    MatIconModule,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDialogModule,
-    FormsModule,
-    CommonModule,
-    MatSnackBarModule,
-    ReactiveFormsModule,
-    MatMenuModule,
-    SharedModule,
-    MatSelectModule,
-    MatTableModule,
-    MatPaginatorModule
-  ],
+    imports: [
+        MatFormFieldModule,
+        MatIconModule,
+        MatButtonModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDialogModule,
+        FormsModule,
+        CommonModule,
+        MatSnackBarModule,
+        ReactiveFormsModule,
+        MatMenuModule,
+        SharedModule,
+        MatSelectModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatTooltipModule
+    ],
   exports: [
     PropertiesContainerComponent
   ]

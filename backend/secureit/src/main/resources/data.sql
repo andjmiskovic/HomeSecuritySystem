@@ -13,4 +13,5 @@ VALUES (UUID '638520b8-cd02-43ee-a21f-778d7d5752a6', 'john@deste.com', TRUE, 'Jo
         '+38127456789', 'Belgrade', TRUE, 0, '-1000000000-01-01T00:00:00Z', TIMESTAMP '-1000000000-01-01T00:00:00Z', NULL, 'F3OPURVECFTYHZXAM62YME7PVESQZXP7', false);
 
 INSERT INTO PROPERTY(ID, ADDRESS, IMAGE, NAME, TYPE, OWNER_ID)
-VALUES (UUID '638520b8-cd02-43ee-a21f-778d7d5952a6', 'Njegoseva 12', '', 'Vila Lovcen', 0, UUID '638520b8-cd02-43ee-a21f-778d7d5752a6');
+VALUES (UUID '638520b8-cd02-43ee-a21f-778d7d5952a6', 'Njegoseva 12', '', 'Vila Lovcen', 0, UUID '638520b8-cd02-43ee-a21f-778d7d5752a6'),
+       (UUID '638520b8-cd02-43ee-a21f-778d7d5952a7', 'Bulevar oslobodjenja 12', '', 'Objekat 2', 1, UUID 'eb17cdd4-f0e8-4db4-ae4d-07a58340663c');

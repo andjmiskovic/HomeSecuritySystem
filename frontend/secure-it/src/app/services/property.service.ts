@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {AuthService} from "./auth.service";
 import {environment} from "../environment.development";
 import {BasicPropertyDetails, PropertyType} from "../model/Property";
+import {UserDetails} from "../model/User";
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +17,16 @@ export class PropertyService {
     this.objectsUrl = environment.apiUrl + '/property';
   }
 
-  public getObjects(search: string, type: PropertyType | undefined): Observable<BasicPropertyDetails[]> {
+  public getObjects(search: string, type: string | undefined): Observable<BasicPropertyDetails[]> {
     let queryParams = new HttpParams();
     queryParams = queryParams.append("search", search);
     if (type != undefined)
       queryParams = queryParams.append("type", type);
-    console.log(queryParams)
+    console.log(type)
     return this.http.get<BasicPropertyDetails[]>(this.objectsUrl + "/all", AuthService.getHttpOptions(queryParams));
+  }
+
+  public getPropertyTypes(): Observable<string[]> {
+    return this.http.get<string[]>(this.objectsUrl + '/types', AuthService.getHttpOptions());
   }
 }

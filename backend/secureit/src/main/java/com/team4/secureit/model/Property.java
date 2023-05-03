@@ -1,9 +1,7 @@
 package com.team4.secureit.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +20,5 @@ public class Property {
     private String address;
     private PropertyType type;
     private String image;
-    @ManyToOne
-    private PropertyOwner owner;
+    private UUID ownerId;
 }

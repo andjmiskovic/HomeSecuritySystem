@@ -1,6 +1,7 @@
 package com.team4.secureit.controller;
 
 import com.team4.secureit.dto.request.CSRCreationRequest;
+import com.team4.secureit.dto.response.PropertyDetailsResponse;
 import com.team4.secureit.model.Property;
 import com.team4.secureit.model.PropertyType;
 import com.team4.secureit.service.PropertyService;
@@ -27,9 +28,13 @@ public class PropertyController {
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Property> getProperties(@RequestParam(value = "search", required = false) String search, @RequestParam(value = "type", required = false) PropertyType type) {
-        List<Property> props = objectService.getProperties(search, type);
-        return props;
+    public List<PropertyDetailsResponse> getProperties(@RequestParam(value = "search", required = false) String search, @RequestParam(value = "type", required = false) PropertyType type) {
+        return objectService.getProperties(search, type);
+    }
+
+    @GetMapping("/types")
+    public List<String> getPropertyTypes() {
+        return objectService.getPropertyTypes();
     }
 
 }

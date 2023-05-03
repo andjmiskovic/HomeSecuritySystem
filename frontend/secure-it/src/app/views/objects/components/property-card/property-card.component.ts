@@ -14,7 +14,6 @@ export class PropertyCardComponent implements OnInit {
   }
 
   ngOnInit() {
-
   }
 
   objectDetails(id: string) {

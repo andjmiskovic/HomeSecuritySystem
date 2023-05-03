@@ -1,0 +1,71 @@
+<mat-card>
+  <mat-card-title>Property details</mat-card-title>
+  <mat-card-content style="padding: 0">
+    <form [formGroup]="formGroup">
+      <p style="margin-top: 10px">
+        <mat-form-field style="width: 49%; margin-right: 2%" appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput [(ngModel)]="name" formControlName="nameFormControl">
+          <mat-error *ngIf="formGroup.hasError('required', 'nameFormControl')">
+            Name is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field style="width: 49%" appearance="outline">
+          <mat-label>Type</mat-label>
+          <mat-select [(ngModel)]="type">
+            <mat-option *ngFor="let val of propertyTypes" [value]="type">
+              {{val}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </p>
+      <p>
+
+<!--        <mat-form-field style="width: 49%; margin-left: 1%" appearance="outline">-->
+<!--          <mat-label>Type</mat-label>-->
+<!--          <input matInput formControlName="typeFormControl" [(ngModel)]="typeName">-->
+<!--          <mat-error *ngIf="formGroup.hasError('required', 'typeFormControl')">-->
+<!--            Last name is <strong>required</strong>-->
+<!--          </mat-error>-->
+<!--        </mat-form-field>-->
+
+      </p>
+      <p>
+        <mat-form-field style="width: 49%; margin-right: 2%" appearance="outline">
+          <mat-label>Address</mat-label>
+          <input matInput formControlName="addressFormControl" [(ngModel)]="address">
+          <mat-error *ngIf="formGroup.hasError('required', 'addressFormControl')">
+            Address is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field style="width: 49%" appearance="outline">
+          <mat-label>City you live in</mat-label>
+          <input matInput formControlName="cityFormControl" [(ngModel)]="city">
+          <mat-error *ngIf="formGroup.hasError('required', 'cityFormControl')">
+            City is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <div [ngSwitch]="mode">
+        <div *ngSwitchCase="'create'">
+          <button mat-raised-button id="register-button" color="primary" type="submit"
+                  style="width: 100%; margin-top: -10px;" (click)="addNewProperty()" [disabled]="formGroup.invalid">
+            Create
+          </button>
+        </div>
+        <div *ngSwitchCase="'edit'">
+          <button mat-raised-button id="edit-button" color="primary" type="submit"
+                  style="width: 49%; margin-top: -10px; margin-right: 2%" (click)="editProperty()" [disabled]="formGroup.invalid">
+            Save changes
+          </button>
+          <button mat-raised-button id="delete-button" color="warn" type="submit"
+                  style="width: 49%; margin-top: -10px;" (click)="deleteProperty()">
+            Delete property
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </mat-card-content>
+</mat-card>

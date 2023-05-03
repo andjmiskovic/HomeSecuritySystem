@@ -16,3 +16,12 @@ export enum PropertyType {
   BUSINESS_SPACE = "Business space",
   STORE = "Store"
 }
+
+export function getKeyFromValue(value: string | undefined): string | undefined {
+  for (const [key, val] of Object.entries(PropertyType)) {
+    if (val === value) {
+      return (key as keyof typeof PropertyType);
+    }
+  }
+  return undefined;
+}
