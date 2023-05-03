@@ -15,7 +15,7 @@
         <mat-option *ngFor="let fileType of fileTypes" [value]="fileType">{{fileType}}</mat-option>
       </mat-select>
     </mat-form-field>
-    <button [matTooltip]="'Add new property'" style="float: right; margin-left: 5px" (click)="addNewProperty()"
+    <button *ngIf="userRole==='ROLE_PROPERTY_OWNER'" [matTooltip]="'Add new property'" style="float: right; margin-left: 5px" (click)="addNewProperty()"
             mat-raised-button
             color="primary">
       <mat-icon>house</mat-icon>

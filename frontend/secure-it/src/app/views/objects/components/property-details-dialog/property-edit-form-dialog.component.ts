@@ -4,10 +4,10 @@ import {PropertyService} from "../../../../services/property.service";
 
 @Component({
   selector: 'app-property-details-dialog',
-  templateUrl: './property-details-dialog.component.html',
-  styleUrls: ['./property-details-dialog.component.css']
+  templateUrl: './property-edit-form-dialog.component.html',
+  styleUrls: ['./property-edit-form-dialog.component.css']
 })
-export class PropertyDetailsDialogComponent implements OnInit {
+export class PropertyEditFormDialogComponent implements OnInit {
   @Input() mode!: string;
 
   formGroup = this._formBuilder.group({

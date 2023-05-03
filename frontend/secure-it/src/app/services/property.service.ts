@@ -29,4 +29,13 @@ export class PropertyService {
   public getPropertyTypes(): Observable<string[]> {
     return this.http.get<string[]>(this.objectsUrl + '/types', AuthService.getHttpOptions());
   }
+
+  public getOwnersProperties(search: string, type: string | undefined, id: number) {
+    let queryParams = new HttpParams();
+    queryParams = queryParams.append("search", search);
+    queryParams = queryParams.append("id", id);
+    if (type != undefined)
+      queryParams = queryParams.append("type", type);
+    return this.http.get<BasicPropertyDetails[]>(this.objectsUrl + "/owner", AuthService.getHttpOptions(queryParams));
+  }
 }

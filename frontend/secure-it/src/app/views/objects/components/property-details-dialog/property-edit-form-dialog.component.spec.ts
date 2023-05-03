@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PropertyDetailsDialogComponent } from './property-details-dialog.component';
+import { PropertyEditFormDialogComponent } from './property-edit-form-dialog.component';
 
 describe('PropertyDetailsDialogComponent', () => {
-  let component: PropertyDetailsDialogComponent;
-  let fixture: ComponentFixture<PropertyDetailsDialogComponent>;
+  let component: PropertyEditFormDialogComponent;
+  let fixture: ComponentFixture<PropertyEditFormDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PropertyDetailsDialogComponent ]
+      declarations: [ PropertyEditFormDialogComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PropertyDetailsDialogComponent);
+    fixture = TestBed.createComponent(PropertyEditFormDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

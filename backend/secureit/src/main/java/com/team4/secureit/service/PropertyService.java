@@ -16,6 +16,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +31,11 @@ public class PropertyService {
 
     public List<PropertyDetailsResponse> getProperties(String search, PropertyType type) {
         List<Property> properties = propertyRepository.getAll(search.toLowerCase(), type);
+        return getPropertyDetailsResponsesFromProperties(properties);
+    }
+
+    public List<PropertyDetailsResponse> getOwnerProperties(UUID id, String search, PropertyType type) {
+        List<Property> properties = propertyRepository.getAllForOwner(id, search, type);
         return getPropertyDetailsResponsesFromProperties(properties);
     }
 
@@ -50,4 +56,6 @@ public class PropertyService {
         return Arrays.stream(PropertyType.values())
                 .map(Enum::name).toList();
     }
+
+
 }

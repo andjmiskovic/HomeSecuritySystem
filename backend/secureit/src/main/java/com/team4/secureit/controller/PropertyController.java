@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/property")
@@ -30,6 +31,12 @@ public class PropertyController {
     @PreAuthorize("hasRole('ADMIN')")
     public List<PropertyDetailsResponse> getProperties(@RequestParam(value = "search", required = false) String search, @RequestParam(value = "type", required = false) PropertyType type) {
         return objectService.getProperties(search, type);
+    }
+
+    @GetMapping("/owner")
+    @PreAuthorize("hasRole('PROPERTY_OWNER')")
+    public List<PropertyDetailsResponse> getOwnerProperties(@RequestParam(value = "id") UUID id, @RequestParam(value = "search", required = false) String search, @RequestParam(value = "type", required = false) PropertyType type) {
+        return objectService.getOwnerProperties(id, search, type);
     }
 
     @GetMapping("/types")
