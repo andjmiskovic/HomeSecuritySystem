@@ -1,9 +1,11 @@
 package com.team4.secureit.service;
 
 import com.team4.secureit.dto.request.CreatePropertyRequest;
+import com.team4.secureit.dto.request.TenantRoleRequest;
 import com.team4.secureit.dto.response.PropertyDetailsResponse;
 import com.team4.secureit.dto.response.PropertyResponse;
 import com.team4.secureit.dto.response.UserInfoResponse;
+import com.team4.secureit.exception.PropertyNotFoundException;
 import com.team4.secureit.exception.UserNotFoundException;
 import com.team4.secureit.model.Property;
 import com.team4.secureit.model.PropertyOwner;
@@ -51,10 +53,9 @@ public class PropertyService {
         return response;
     }
 
-
     private PropertyResponse getPropertyDetailsResponseFromProperty(Property property) {
         PropertyOwner owner = propertyOwnerRepository.findById(property.getOwnerId()).orElseThrow(() -> new UserNotFoundException("User for given id does not exist."));
-        return new PropertyResponse(property.getId(), property.getName(), property.getAddress(), property.getType(), property.getImage(), new UserInfoResponse(owner.getId(), owner.getFirstName(), owner.getLastName(), owner.getEmail()));
+        return new PropertyResponse(property.getId(), property.getName(), property.getAddress(), property.getType(), property.getImage(), new UserInfoResponse(owner.getId().toString(), owner.getFirstName(), owner.getLastName(), owner.getEmail()));
     }
 
     public List<String> getPropertyTypes() {
@@ -64,14 +65,14 @@ public class PropertyService {
 
     public UserInfoResponse getUserInfo(UUID id) {
         PropertyOwner owner = propertyOwnerRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User for given id does not exist."));
-        return new UserInfoResponse(owner.getId(), owner.getFirstName(), owner.getLastName(), owner.getEmail());
+        return new UserInfoResponse(owner.getId().toString(), owner.getFirstName(), owner.getLastName(), owner.getEmail());
     }
 
     public PropertyDetailsResponse getPropertyById(UUID id) {
-        Property property = propertyRepository.getReferenceById(id);
+        Property property = propertyRepository.findById(id).orElseThrow(PropertyNotFoundException::new);
         List<UserInfoResponse> tenants = new ArrayList<>();
         for (PropertyOwner tenant : property.getTenants()) {
-            tenants.add(new UserInfoResponse(tenant.getId(), tenant.getFirstName(), tenant.getLastName(), tenant.getEmail()));
+            tenants.add(new UserInfoResponse(tenant.getId().toString(), tenant.getFirstName(), tenant.getLastName(), tenant.getEmail()));
         }
         return new PropertyDetailsResponse(property.getId(), property.getName(), property.getAddress(), property.getType(), property.getImage(), getUserInfo(property.getOwnerId()), tenants);
     }
@@ -92,6 +93,39 @@ public class PropertyService {
         property.setTenants(new HashSet<>());
         property.setType(createPropertyRequest.getType());
         property.setOwnerId(createPropertyRequest.getOwnerId());
+        propertyRepository.save(property);
+    }
+
+    public void setOwner(TenantRoleRequest request) {
+        Property property = propertyRepository.findById(request.getPropertyId()).orElseThrow(PropertyNotFoundException::new);
+
+        PropertyOwner propertyOwner = propertyOwnerRepository.findById(property.getOwnerId()).get();
+        propertyOwner.getOwnedProperties().remove(property);
+        propertyOwner.getTenantProperties().add(property);
+
+        PropertyOwner newOwner = propertyOwnerRepository.findById(request.getTenantId()).get();
+        newOwner.getOwnedProperties().add(property);
+        newOwner.getTenantProperties().remove(property);
+
+        Set<PropertyOwner> tenants = property.getTenants();
+        tenants.remove(newOwner);
+        tenants.add(propertyOwner);
+        property.setTenants(tenants);
+        property.setOwnerId(request.getTenantId());
+
+        propertyOwnerRepository.save(propertyOwner);
+        propertyOwnerRepository.save(newOwner);
+        propertyRepository.save(property);
+    }
+
+    public void removeTenant(TenantRoleRequest request) {
+        Property property = propertyRepository.findById(request.getPropertyId()).orElseThrow(PropertyNotFoundException::new);
+
+        PropertyOwner propertyOwner = propertyOwnerRepository.findById(request.getTenantId()).get();
+        propertyOwner.getTenantProperties().remove(property);
+
+        property.getTenants().remove(propertyOwner);
+        propertyOwnerRepository.save(propertyOwner);
         propertyRepository.save(property);
     }
 }

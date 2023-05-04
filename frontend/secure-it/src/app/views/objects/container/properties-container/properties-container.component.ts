@@ -21,16 +21,16 @@ export class PropertiesContainerComponent {
   userRole: string;
 
   constructor(private propertiesService: PropertyService, private dialog: MatDialog, private authService: AuthService) {
-    this.userRole = localStorage.getItem("userRole") || ""
+    this.userRole = localStorage.getItem("userRole") || "";
     this.getCards();
   }
 
   getCards() {
-    console.log(this.searchFilter)
-    console.log(this.type)
-    let type = this.type
-    if (type === "All") type = undefined
-    if (this.userRole==="ROLE_ADMIN") {
+    let type = this.type;
+    if (type === "All") {
+      type = undefined;
+    }
+    if (this.userRole === "ROLE_ADMIN") {
       this.propertiesService.getProperties(this.searchFilter, getKeyFromValue(type)).subscribe({
         next: (properties) => this.properties = properties,
         error: err => console.error(err)

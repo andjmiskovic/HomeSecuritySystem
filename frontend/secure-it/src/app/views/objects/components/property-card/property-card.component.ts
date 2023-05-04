@@ -12,8 +12,8 @@ import {AuthService} from "../../../../services/auth.service";
 export class PropertyCardComponent implements OnInit {
 
   @Input() property!: BasicPropertyDetails;
-  loggedUserId!: string
-  userRole!: string
+  loggedUserId!: string;
+  userRole!: string;
 
   constructor(private dialog: MatDialog, private authService: AuthService) {
     this.userRole = localStorage.getItem("userRole") || ""
