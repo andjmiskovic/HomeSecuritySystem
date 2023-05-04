@@ -19,10 +19,10 @@ export class PropertyDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.propertyService.getProperty(this.id).subscribe({
-    //   next: (p) => this.property = p,
-    //   error: err => console.error(err)
-    // });
+    this.propertyService.getProperty(this.id).subscribe({
+      next: (p) => this.property = p,
+      error: err => console.error(err)
+    });
   }
 
 }

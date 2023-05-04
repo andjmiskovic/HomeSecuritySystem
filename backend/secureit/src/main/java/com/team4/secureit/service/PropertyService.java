@@ -33,6 +33,12 @@ public class PropertyService {
         return getPropertyDetailsResponsesFromProperties(properties);
     }
 
+    public List<PropertyResponse> getOwnerProperties(UUID id, String search, PropertyType type) {
+        List<Property> properties = propertyRepository.getPropertiesWhereUserIsOwner(id, search, type);
+        properties.addAll(propertyRepository.getPropertiesWhereUserIsTenant(id, search, type));
+        return getPropertyDetailsResponsesFromProperties(properties);
+    }
+
     private List<PropertyResponse> getPropertyDetailsResponsesFromProperties(List<Property> properties) {
         List<PropertyResponse> response = new ArrayList<>();
         for (Property property : properties) {
@@ -40,6 +46,7 @@ public class PropertyService {
         }
         return response;
     }
+
 
     private PropertyResponse getPropertyDetailsResponseFromProperty(Property property) {
         PropertyOwner owner = propertyOwnerRepository.findById(property.getOwnerId()).orElseThrow(() -> new UserNotFoundException("User for given id does not exist."));
