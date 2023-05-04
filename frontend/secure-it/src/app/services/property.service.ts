@@ -3,7 +3,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from "rxjs";
 import {AuthService} from "./auth.service";
 import {environment} from "../environment.development";
-import {BasicPropertyDetails, PropertyDetails} from "../model/Property";
+import {BasicPropertyDetails, CreatePropertyRequest, PropertyDetails} from "../model/Property";
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +35,7 @@ export class PropertyService {
     return this.http.get<PropertyDetails>(this.propertiesUrl, AuthService.getHttpOptions(queryParams));
   }
 
-  public getUsersProperties(search: string, type: string | undefined, id: number) {
+  public getUsersProperties(search: string, type: string | undefined, id: string) {
     let queryParams = new HttpParams();
     queryParams = queryParams.append("search", search);
     queryParams = queryParams.append("id", id);
@@ -48,5 +48,9 @@ export class PropertyService {
     let queryParams = new HttpParams();
     queryParams = queryParams.append("email", email);
     return this.http.get<BasicPropertyDetails[]>(this.propertiesUrl + "/owner", AuthService.getHttpOptions(queryParams));
+  }
+
+  public addNewProperty(requestBody: CreatePropertyRequest) {
+    return this.http.post<void>(this.propertiesUrl, requestBody, AuthService.getHttpOptions());
   }
 }

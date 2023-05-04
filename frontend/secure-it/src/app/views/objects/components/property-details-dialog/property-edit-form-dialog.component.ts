@@ -1,6 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {PropertyService} from "../../../../services/property.service";
+import {CreatePropertyRequest, getKeyFromValue, PropertyType} from "../../../../model/Property";
+import {AuthService} from "../../../../services/auth.service";
+import {User} from "../../../../model/User";
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-property-details-dialog',
@@ -13,25 +17,35 @@ export class PropertyEditFormDialogComponent implements OnInit {
   formGroup = this._formBuilder.group({
     nameFormControl: ['name', [Validators.required]],
     addressFormControl: ['address', [Validators.required]],
-    cityFormControl: ['city', [Validators.required]],
   });
   propertyTypes: string[] = [];
-  type: string = '';
+  type: string = 'House';
   address!: string;
   name!: string;
-  city!: string;
+  fileTypes = Object.values(PropertyType);
+  loggedUser!: User
+  image:string = ""
 
-  constructor(private _formBuilder: FormBuilder, private propertyService: PropertyService) {
+  constructor(public dialogRef: MatDialogRef<PropertyEditFormDialogComponent>, private _formBuilder: FormBuilder, private propertyService: PropertyService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
-    this.propertyService.getPropertyTypes().subscribe((res) => {
-      this.propertyTypes = res
+    this.authService.getCurrentlyLoggedUser().subscribe((user) => {
+      this.loggedUser = user
     })
   }
 
   addNewProperty() {
-
+    const requestBody: CreatePropertyRequest = {
+      "ownerId": this.loggedUser.id,
+      "name": this.name,
+      "address": this.address,
+      "type": getKeyFromValue(this.type)!,
+      "image": this.image
+    }
+    this.propertyService.addNewProperty(requestBody).subscribe((res)=> {
+      this.dialogRef.close()
+    })
   }
 
   deleteProperty() {

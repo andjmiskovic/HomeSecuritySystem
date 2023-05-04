@@ -18,6 +18,7 @@ import {PropertyCardComponent} from './components/property-card/property-card.co
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {PropertyEditFormDialogComponent} from './components/property-details-dialog/property-edit-form-dialog.component';
 import {PropertyDetailsComponent} from './components/property-details/property-details.component';
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 @NgModule({
   declarations: [
@@ -26,25 +27,26 @@ import {PropertyDetailsComponent} from './components/property-details/property-d
     PropertyEditFormDialogComponent,
     PropertyDetailsComponent
   ],
-  imports: [
-    MatFormFieldModule,
-    MatIconModule,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDialogModule,
-    FormsModule,
-    CommonModule,
-    MatSnackBarModule,
-    ReactiveFormsModule,
-    MatMenuModule,
-    SharedModule,
-    MatSelectModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatTooltipModule
-  ],
+    imports: [
+        MatFormFieldModule,
+        MatIconModule,
+        MatButtonModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDialogModule,
+        FormsModule,
+        CommonModule,
+        MatSnackBarModule,
+        ReactiveFormsModule,
+        MatMenuModule,
+        SharedModule,
+        MatSelectModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatTooltipModule,
+        MatAutocompleteModule
+    ],
   exports: [
     PropertiesContainerComponent,
     PropertyCardComponent

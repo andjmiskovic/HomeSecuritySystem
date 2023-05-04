@@ -12,7 +12,7 @@ import {AuthService} from "../../../../services/auth.service";
 export class PropertyCardComponent implements OnInit {
 
   @Input() property!: BasicPropertyDetails;
-  loggedUserId!: number
+  loggedUserId!: string
   userRole!: string
 
   constructor(private dialog: MatDialog, private authService: AuthService) {

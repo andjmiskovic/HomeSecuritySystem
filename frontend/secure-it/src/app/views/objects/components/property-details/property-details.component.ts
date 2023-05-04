@@ -21,11 +21,11 @@ export class PropertyDetailsComponent implements OnInit {
     });
   }
 
-  setOwner(id: number) {
-    
+  setOwner(id: string) {
+
   }
 
-  removeFromProperty(id: number) {
-    
+  removeFromProperty(id: string) {
+
   }
 }

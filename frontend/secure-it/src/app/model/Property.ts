@@ -9,6 +9,14 @@ export class BasicPropertyDetails {
   owner!: User;
 }
 
+export class CreatePropertyRequest {
+  ownerId!: string;
+  name!: string;
+  address!: string;
+  type!: string;
+  image!: string;
+}
+
 export class PropertyDetails {
   id: string = "";
   image: string = "";

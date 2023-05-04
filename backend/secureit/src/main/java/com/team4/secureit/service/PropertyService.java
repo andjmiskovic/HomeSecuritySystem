@@ -1,5 +1,6 @@
 package com.team4.secureit.service;
 
+import com.team4.secureit.dto.request.CreatePropertyRequest;
 import com.team4.secureit.dto.response.PropertyDetailsResponse;
 import com.team4.secureit.dto.response.PropertyResponse;
 import com.team4.secureit.dto.response.UserInfoResponse;
@@ -13,10 +14,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -83,5 +81,17 @@ public class PropertyService {
             property.setDeleted(true);
             propertyRepository.save(property);
         }
+    }
+
+    public void createProperty(CreatePropertyRequest createPropertyRequest) {
+        Property property = new Property();
+        property.setDeleted(false);
+        property.setAddress(createPropertyRequest.getAddress());
+        property.setImage(createPropertyRequest.getImage());
+        property.setName(createPropertyRequest.getName());
+        property.setTenants(new HashSet<>());
+        property.setType(createPropertyRequest.getType());
+        property.setOwnerId(createPropertyRequest.getOwnerId());
+        propertyRepository.save(property);
     }
 }
