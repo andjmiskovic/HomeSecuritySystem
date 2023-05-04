@@ -25,7 +25,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-6 col-md-4 col-lg-3 mb-4" *ngFor="let o of properties">
-        <app-property-card [property]="o"></app-property-card>
+        <app-property-card [property]="o" (updateDisplay)="getCards()"></app-property-card>
       </div>
       <div *ngIf="properties.length === 0" class="d-flex justify-content-center" style="width: 100%">
         <img src="assets/images/SafeHouse.png" style="height: 400px">

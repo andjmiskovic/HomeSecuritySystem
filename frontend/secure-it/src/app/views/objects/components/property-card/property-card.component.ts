@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {BasicPropertyDetails} from "../../../../model/Property";
 import {MatDialog} from "@angular/material/dialog";
 import {PropertyDetailsComponent} from "../property-details/property-details.component";
@@ -10,7 +10,7 @@ import {AuthService} from "../../../../services/auth.service";
   styleUrls: ['./property-card.component.css']
 })
 export class PropertyCardComponent implements OnInit {
-
+  @Output() updateDisplay: EventEmitter<any> = new EventEmitter();
   @Input() property!: BasicPropertyDetails;
   loggedUserId!: string;
   userRole!: string;
@@ -31,5 +31,6 @@ export class PropertyCardComponent implements OnInit {
       width: '800px'
     });
     dialogRef.componentInstance.id = id;
+    dialogRef.afterClosed().subscribe(() => this.updateDisplay.emit())
   }
 }

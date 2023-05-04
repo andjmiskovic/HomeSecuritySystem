@@ -72,4 +72,8 @@ export class PropertyService {
   public editProperty(requestBody: UpdatePropertyRequest) {
     return this.http.put<void>(this.propertiesUrl, requestBody, AuthService.getHttpOptions());
   }
+
+  public deleteProperty(id: string) {
+    return this.http.delete<void>(this.propertiesUrl + "/" + id, AuthService.getHttpOptions());
+  }
 }

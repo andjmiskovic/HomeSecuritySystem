@@ -79,11 +79,17 @@ public class PropertyService {
         return new PropertyDetailsResponse(property.getId(), property.getName(), property.getAddress(), property.getType(), property.getImage(), getUserInfo(property.getOwnerId()), tenants);
     }
 
-    public void deleteProperty(PropertyOwner propertyOwner) {
+    public void deleteAllPropertiesForUser(PropertyOwner propertyOwner) {
         for (Property property : propertyOwner.getOwnedProperties()) {
             property.setDeleted(true);
             propertyRepository.save(property);
         }
+    }
+
+    public void deleteProperty(UUID propertyId) {
+        Property property = propertyRepository.findById(propertyId).orElseThrow(PropertyNotFoundException::new);
+        property.setDeleted(true);
+        propertyRepository.save(property);
     }
 
     public void createProperty(CreatePropertyRequest createPropertyRequest) {

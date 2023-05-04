@@ -9,12 +9,10 @@ import com.team4.secureit.dto.response.PropertyResponse;
 import com.team4.secureit.model.PropertyType;
 import com.team4.secureit.service.PropertyService;
 import jakarta.validation.Valid;
-import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +31,12 @@ public class PropertyController {
     @PutMapping
     public ResponseOk update(@RequestBody @Valid final UpdatePropertyRequest updatePropertyRequest) {
         propertyService.updateProperty(updatePropertyRequest);
+        return new ResponseOk("Success");
+    }
+
+    @DeleteMapping("/{propertyId}")
+    public ResponseOk delete(@PathVariable UUID propertyId) {
+        propertyService.deleteProperty(propertyId);
         return new ResponseOk("Success");
     }
 

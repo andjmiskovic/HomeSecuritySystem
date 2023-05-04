@@ -47,6 +47,6 @@ public class UserService {
                 .orElseThrow(UserNotFoundException::new);
         propertyOwner.setDeleted(true);
         propertyOwnerRepository.save(propertyOwner);
-        propertyService.deleteProperty(propertyOwner);
+        propertyService.deleteAllPropertiesForUser(propertyOwner);
     }
 }
