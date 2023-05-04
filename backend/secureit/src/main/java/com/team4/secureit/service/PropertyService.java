@@ -33,9 +33,15 @@ public class PropertyService {
         return getPropertyDetailsResponsesFromProperties(properties);
     }
 
-    public List<PropertyResponse> getOwnerProperties(UUID id, String search, PropertyType type) {
+    public List<PropertyResponse> getPropertiesForUser(UUID id, String search, PropertyType type) {
         List<Property> properties = propertyRepository.getPropertiesWhereUserIsOwner(id, search, type);
         properties.addAll(propertyRepository.getPropertiesWhereUserIsTenant(id, search, type));
+        return getPropertyDetailsResponsesFromProperties(properties);
+    }
+
+    public List<PropertyResponse> getPropertiesOfOwner(String email) {
+        PropertyOwner propertyOwner = propertyOwnerRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+        List<Property> properties = propertyRepository.getPropertiesWhereUserIsOwner(propertyOwner.getId(), "", null);
         return getPropertyDetailsResponsesFromProperties(properties);
     }
 
@@ -70,5 +76,12 @@ public class PropertyService {
             tenants.add(new UserInfoResponse(tenant.getId(), tenant.getFirstName(), tenant.getLastName(), tenant.getEmail()));
         }
         return new PropertyDetailsResponse(property.getId(), property.getName(), property.getAddress(), property.getType(), property.getImage(), getUserInfo(property.getOwnerId()), tenants);
+    }
+
+    public void deleteProperty(PropertyOwner propertyOwner) {
+        for (Property property : propertyOwner.getOwnedProperties()) {
+            property.setDeleted(true);
+            propertyRepository.save(property);
+        }
     }
 }

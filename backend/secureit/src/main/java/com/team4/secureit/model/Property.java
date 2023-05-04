@@ -1,17 +1,18 @@
 package com.team4.secureit.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Data
+@SQLDelete(sql = "UPDATE PROPERTY SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 @NoArgsConstructor
 public class Property {
 
@@ -26,4 +27,7 @@ public class Property {
     private UUID ownerId;
     @ManyToMany
     private Set<PropertyOwner> tenants;
+
+    @Column(nullable = false)
+    private boolean deleted = Boolean.FALSE;
 }

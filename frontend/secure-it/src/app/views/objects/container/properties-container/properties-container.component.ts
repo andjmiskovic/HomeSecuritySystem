@@ -37,7 +37,7 @@ export class PropertiesContainerComponent {
       })
     } else if (this.userRole === "ROLE_PROPERTY_OWNER") {
       this.authService.getCurrentlyLoggedUser().subscribe((user) => {
-        this.propertiesService.getOwnersProperties(this.searchFilter, getKeyFromValue(type), user.id).subscribe({
+        this.propertiesService.getUsersProperties(this.searchFilter, getKeyFromValue(type), user.id).subscribe({
           next: (properties) => this.properties = properties,
           error: (err) => console.error(err)
         })

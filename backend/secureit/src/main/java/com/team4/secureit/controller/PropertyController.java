@@ -34,11 +34,17 @@ public class PropertyController {
         return objectService.getProperties(search, type);
     }
 
-    @GetMapping("/owner")
+    @GetMapping("/user")
     @PreAuthorize("hasRole('PROPERTY_OWNER')")
-    public List<PropertyResponse> getOwnerProperties(@RequestParam(value = "id") UUID id, @RequestParam(value = "search", required = false) String search, @RequestParam(value = "type", required = false) PropertyType type) {
-        return objectService.getOwnerProperties(id, search, type);
+    public List<PropertyResponse> getPropertiesForUser(@RequestParam(value = "id") UUID id, @RequestParam(value = "search", required = false) String search, @RequestParam(value = "type", required = false) PropertyType type) {
+        return objectService.getPropertiesForUser(id, search, type);
     }
+
+    @GetMapping("/owner")
+    public List<PropertyResponse> getPropertiesOfOwner(@RequestParam(value = "email") String email) {
+        return objectService.getPropertiesOfOwner(email);
+    }
+
 
     @GetMapping("/{id}")
     public PropertyDetailsResponse getProperties(@PathParam(value = "id") String id) {

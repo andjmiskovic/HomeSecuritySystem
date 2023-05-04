@@ -68,7 +68,7 @@ public abstract class User implements UserDetails {
     private Instant lastLoginAttempt = Instant.MIN;
 
     @Column(nullable = false)
-    private boolean deleted = Boolean.FALSE;;
+    private boolean deleted = Boolean.FALSE;
 
     @Column(nullable = false)
     private Instant lockedUntil = Instant.MAX;
