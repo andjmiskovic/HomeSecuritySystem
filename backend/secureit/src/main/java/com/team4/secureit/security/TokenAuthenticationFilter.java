@@ -2,6 +2,7 @@ package com.team4.secureit.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team4.secureit.api.ResponseError;
+import com.team4.secureit.exception.BlacklistedTokenException;
 import com.team4.secureit.exception.InvalidAccessTokenException;
 import com.team4.secureit.util.CookieUtils;
 import jakarta.servlet.FilterChain;
@@ -43,7 +44,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            tokenProvider.validateToken(token);
+            if (tokenProvider.isTokenBlacklisted(token))
+                throw new BlacklistedTokenException("Access token is blacklisted.");
+
+            tokenProvider.readClaims(token);
             UUID userId = tokenProvider.getUserIdFromToken(token);
 
             UserDetails userDetails = customUserDetailsService.loadUserById(userId);
@@ -53,6 +57,9 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
+        } catch (BlacklistedTokenException e) {
+            CookieUtils.deleteCookie(request, response, ACCESS_TOKEN_COOKIE_NAME);
+            sendResponse(response, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         } catch (InvalidAccessTokenException e) {
             sendResponse(response, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         } catch (Exception e) {

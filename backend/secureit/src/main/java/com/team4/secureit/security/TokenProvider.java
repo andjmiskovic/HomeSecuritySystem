@@ -1,6 +1,7 @@
 package com.team4.secureit.security;
 
 import com.team4.secureit.config.AppProperties;
+import com.team4.secureit.dto.response.BlacklistedTokenInfo;
 import com.team4.secureit.exception.InvalidAccessTokenException;
 import com.team4.secureit.model.User;
 import io.jsonwebtoken.*;
@@ -13,9 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.sql.Date;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class TokenProvider {
@@ -23,6 +22,8 @@ public class TokenProvider {
     private final AppProperties.Auth authProperties;
 
     private final Set<String> tokenBlacklist = new HashSet<>();
+
+    private final Map<String, BlacklistedTokenInfo> tokenBlacklistInfo = new HashMap<>();
 
     public TokenProvider(AppProperties appProperties) {
         this.authProperties = appProperties.getAuth();
@@ -50,8 +51,6 @@ public class TokenProvider {
     }
 
     public Claims readClaims(String token) {
-        if (isTokenBlacklisted(token))
-            throw new InvalidAccessTokenException("Access token is blacklisted.");
         try {
             JwtParser parser = Jwts.parserBuilder().setSigningKey(getKey()).build();
             return parser.parseClaimsJws(token).getBody();
@@ -68,16 +67,29 @@ public class TokenProvider {
         }
     }
 
-    public void validateToken(String token) {
-        readClaims(token);
-    }
-
     public void addTokenToBlacklist(String token) {
         tokenBlacklist.add(token);
+
+        try {
+            Claims claims = readClaims(token);
+            tokenBlacklistInfo.put(token, new BlacklistedTokenInfo(
+                    claims.getSubject(),
+                    claims.getIssuedAt().toString(),
+                    claims.getExpiration().toString()
+            ));
+        } catch (Exception e) {
+            tokenBlacklistInfo.put(token, new BlacklistedTokenInfo(
+                    e.getMessage()
+            ));
+        }
     }
 
     public boolean isTokenBlacklisted(String token) {
-        return tokenBlacklist.contains(token);
+        return token != null && tokenBlacklist.contains(token);
+    }
+
+    public List<BlacklistedTokenInfo> getTokenBlacklistInfo() {
+        return tokenBlacklistInfo.values().stream().toList();
     }
 
     private Key getKey() {
