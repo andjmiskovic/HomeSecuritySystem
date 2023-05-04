@@ -12,10 +12,6 @@ export class PropertyDetailsComponent implements OnInit {
   property: PropertyDetails = new PropertyDetails();
 
   constructor(private propertyService: PropertyService) {
-    this.propertyService.getProperty(this.id).subscribe({
-      next: (p) => this.property = p,
-      error: err => console.error(err)
-    });
   }
 
   ngOnInit() {
@@ -25,4 +21,11 @@ export class PropertyDetailsComponent implements OnInit {
     });
   }
 
+  setOwner(id: number) {
+    
+  }
+
+  removeFromProperty(id: number) {
+    
+  }
 }

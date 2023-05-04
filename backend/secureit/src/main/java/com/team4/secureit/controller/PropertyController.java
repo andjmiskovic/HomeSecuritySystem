@@ -40,8 +40,8 @@ public class PropertyController {
         return objectService.getOwnerProperties(id, search, type);
     }
 
-    @GetMapping("/{id}")
-    public PropertyDetailsResponse getProperties(@PathParam(value = "id") String id) {
+    @GetMapping()
+    public PropertyDetailsResponse getProperty(@RequestParam(value = "id") UUID id) {
         return objectService.getPropertyById(id);
     }
 
@@ -49,5 +49,4 @@ public class PropertyController {
     public List<String> getPropertyTypes() {
         return objectService.getPropertyTypes();
     }
-
 }
