@@ -21,12 +21,15 @@ export class PropertyCardComponent implements OnInit {
 
   ngOnInit() {
     this.authService.getCurrentlyLoggedUser().subscribe((user) => {
-      this.loggedUserId = user.id
+      this.loggedUserId = user.id;
     })
   }
 
   objectDetails(id: string) {
-    let dialogRef = this.dialog.open(PropertyDetailsComponent);
+    let dialogRef = this.dialog.open(PropertyDetailsComponent, {
+      height: '650px',
+      width: '800px'
+    });
     dialogRef.componentInstance.id = id;
   }
 }

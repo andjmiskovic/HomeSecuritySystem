@@ -30,7 +30,9 @@ export class PropertyService {
   }
 
   getProperty(id: string): Observable<PropertyDetails> {
-    return this.http.get<PropertyDetails>(this.propertiesUrl + '/' + id, AuthService.getHttpOptions());
+    let queryParams = new HttpParams();
+    queryParams = queryParams.append("id", id);
+    return this.http.get<PropertyDetails>(this.propertiesUrl, AuthService.getHttpOptions(queryParams));
   }
 
   public getUsersProperties(search: string, type: string | undefined, id: number) {

@@ -1,10 +1,8 @@
 <mat-card style="cursor: pointer" [matTooltip]="'View details'" (click)="objectDetails(property.id)">
-  <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
-  <div style="position: absolute; top: 10px; left: 10px; padding: 10px; z-index: 1;">
+  <img mat-card-image src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Property Photo">
+  <div style="position: absolute; top: 5px; left: 5px; padding: 5px; z-index: 1;">
     <span class="tag">{{property.type}}</span>
-  </div>
-  <div *ngIf="userRole !== 'ROLE_ADMIN'" style="position: absolute; top: 10px; right: 10px; padding: 10px; z-index: 1;">
-    <span class="tag">{{loggedUserId === property.owner.id ? 'OWNER' : 'TENANT'}}</span>
+    <span *ngIf="userRole !== 'ROLE_ADMIN'" class="dark-tag">{{loggedUserId === property.owner.id ? 'OWNER' : 'TENANT'}}</span>
   </div>
   <div style="padding: 10px">
     <h2>{{property.name}}</h2>

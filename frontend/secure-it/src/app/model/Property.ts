@@ -10,12 +10,12 @@ export class BasicPropertyDetails {
 }
 
 export class PropertyDetails {
-  id!: string;
+  id: string = "";
   image: string = "";
-  address!: string;
-  name!: string;
-  type!: PropertyType;
-  owner!: User;
+  address: string = "";
+  name: string = "";
+  type: PropertyType = PropertyType.HOUSE;
+  owner: User = new User();
   tenants: User[] = [];
 }
 

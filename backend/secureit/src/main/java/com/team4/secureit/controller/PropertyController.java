@@ -6,7 +6,6 @@ import com.team4.secureit.dto.response.PropertyResponse;
 import com.team4.secureit.model.PropertyType;
 import com.team4.secureit.service.PropertyService;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,20 +39,18 @@ public class PropertyController {
         return objectService.getPropertiesForUser(id, search, type);
     }
 
+    @GetMapping()
+    public PropertyDetailsResponse getProperty(@RequestParam(value = "id") UUID id) {
+        return objectService.getPropertyById(id);
+    }
+    
     @GetMapping("/owner")
     public List<PropertyResponse> getPropertiesOfOwner(@RequestParam(value = "email") String email) {
         return objectService.getPropertiesOfOwner(email);
-    }
-
-
-    @GetMapping("/{id}")
-    public PropertyDetailsResponse getProperties(@PathParam(value = "id") String id) {
-        return objectService.getPropertyById(id);
     }
 
     @GetMapping("/types")
     public List<String> getPropertyTypes() {
         return objectService.getPropertyTypes();
     }
-
 }

@@ -1,13 +1,42 @@
-<div class="container">
+<div style="padding: 20px">
+  <h2>
+    <mat-icon style="color: var(--blue)">house</mat-icon>
+    Property details
+  </h2>
+  <p style="margin-top: -15px"><i>Property id: {{property.id}}</i></p>
+
+  <hr>
+
   <div class="row">
-    <div class="col-md-6">
-      <img class="property-image" src="{{ property.image }}" alt="{{ property.name }} image">
-    </div>
-    <div class="col-md-6">
-      <h1>{{ property.name }}</h1>
-      <p>{{ property.type }}</p>
-      <p>{{ property.address }}</p>
-      <p>Owned by {{ property.owner.firstName }} {{ property.owner.lastName }}</p>
+    <div class="label">Name:</div>
+    <div class="value">{{property.name}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Address:</div>
+    <div class="value">{{property.address}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Property type:</div>
+    <div class="value">{{property.type}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Owner:</div>
+    <div class="value">{{ property.owner.firstName }} {{ property.owner.lastName }}</div>
+  </div>
+  <div class="row">
+    <div class="label">Tenants:</div>
+  </div>
+  <div class="row" *ngFor="let tenant of property.tenants">
+    <div class="label" style="font-weight: 400 !important;">{{ tenant.firstName }} {{ tenant.lastName }}</div>
+    <div class="value">
+      <button style="font-size: 12px" mat-stroked-button (click)="setOwner(tenant.id)">
+        <mat-icon style="color: var(--blue)">star</mat-icon>
+        Set owner
+      </button>
+      <button style="font-size: 12px; margin-left: 5px" mat-stroked-button (click)="removeFromProperty(tenant.id)">
+        <mat-icon style="color: var(--red)">delete</mat-icon>
+        Remove from property
+      </button>
     </div>
   </div>
 </div>
