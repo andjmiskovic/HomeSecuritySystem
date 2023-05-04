@@ -4,7 +4,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {AuthService} from "../../../../services/auth.service";
 import {CreateUserCredentials} from "../../../../model/RegisterCredentials";
 import {UserService} from "../../../../services/user.service";
-import {MatDialogRef} from "@angular/material/dialog";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {ConfirmUserDeleteComponent} from "../confirm-user-delete/confirm-user-delete.component";
 
 @Component({
   selector: 'app-user-details-dialog',
@@ -30,6 +31,7 @@ export class UserDetailsDialogComponent implements OnInit {
   name = "";
   lastName = "";
   city = "";
+  userId!: number;
 
   hide = true;
   hide2 = true;
@@ -39,8 +41,9 @@ export class UserDetailsDialogComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private authService: AuthService,
     private userService: UserService,
-    private dialogRef: MatDialogRef<UserDetailsDialogComponent>
-) {
+    private dialogRef: MatDialogRef<UserDetailsDialogComponent>,
+    private dialog: MatDialog
+  ) {
   }
 
   ngOnInit(): void {
@@ -102,12 +105,10 @@ export class UserDetailsDialogComponent implements OnInit {
   }
 
   deleteUser() {
-    this.userService.deleteUser(this.email).subscribe({
-      next: () => {
-        this.openSnackBar("Successfully deleted user")
-        this.dialogRef.close();
-      },
-      error: (message) => this.openSnackBar(message)
-    });
+    const dialogRef = this.dialog.open(ConfirmUserDeleteComponent);
+    dialogRef.componentInstance.userEmail = this.userEmail;
+    dialogRef.componentInstance.parentDialog = this.dialogRef
+    dialogRef.afterClosed().subscribe(() => {
+    })
   }
 }

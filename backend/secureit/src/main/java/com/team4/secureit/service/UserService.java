@@ -20,6 +20,8 @@ public class UserService {
     @Autowired
     private PropertyOwnerRepository propertyOwnerRepository;
 
+    @Autowired
+    private PropertyService propertyService;
 
     public List<UserInfoResponse> getPropertyOwners() {
         return MappingUtils.toUserInfoResponseList(propertyOwnerRepository.findAll());
@@ -45,5 +47,6 @@ public class UserService {
                 .orElseThrow(UserNotFoundException::new);
         propertyOwner.setDeleted(true);
         propertyOwnerRepository.save(propertyOwner);
+        propertyService.deleteProperty(propertyOwner);
     }
 }

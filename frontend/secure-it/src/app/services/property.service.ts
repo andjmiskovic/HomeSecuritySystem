@@ -35,12 +35,18 @@ export class PropertyService {
     return this.http.get<PropertyDetails>(this.propertiesUrl, AuthService.getHttpOptions(queryParams));
   }
 
-  public getOwnersProperties(search: string, type: string | undefined, id: number) {
+  public getUsersProperties(search: string, type: string | undefined, id: number) {
     let queryParams = new HttpParams();
     queryParams = queryParams.append("search", search);
     queryParams = queryParams.append("id", id);
     if (type != undefined)
       queryParams = queryParams.append("type", type);
+    return this.http.get<BasicPropertyDetails[]>(this.propertiesUrl + "/user", AuthService.getHttpOptions(queryParams));
+  }
+
+  public getPropertiesOfOwner(email: string) {
+    let queryParams = new HttpParams();
+    queryParams = queryParams.append("email", email);
     return this.http.get<BasicPropertyDetails[]>(this.propertiesUrl + "/owner", AuthService.getHttpOptions(queryParams));
   }
 }
