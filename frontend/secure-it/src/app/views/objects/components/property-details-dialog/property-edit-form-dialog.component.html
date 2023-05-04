@@ -35,13 +35,9 @@
         </div>
         <div *ngSwitchCase="'edit'">
           <button mat-raised-button id="edit-button" color="primary" type="submit"
-                  style="width: 49%; margin-top: -10px; margin-right: 2%" (click)="editProperty()"
+                  style="width: 100%; margin-top: -10px;" (click)="editProperty()"
                   [disabled]="formGroup.invalid">
             Save changes
-          </button>
-          <button mat-raised-button id="delete-button" color="warn" type="submit"
-                  style="width: 49%; margin-top: -10px;" (click)="deleteProperty()">
-            Delete property
           </button>
         </div>
       </div>

@@ -3,6 +3,7 @@ package com.team4.secureit.controller;
 import com.team4.secureit.api.ResponseOk;
 import com.team4.secureit.dto.request.CreatePropertyRequest;
 import com.team4.secureit.dto.request.TenantRoleRequest;
+import com.team4.secureit.dto.request.UpdatePropertyRequest;
 import com.team4.secureit.dto.response.PropertyDetailsResponse;
 import com.team4.secureit.dto.response.PropertyResponse;
 import com.team4.secureit.model.PropertyType;
@@ -24,8 +25,14 @@ public class PropertyController {
     private PropertyService propertyService;
 
     @PostMapping
-    public ResponseOk create(@RequestBody @Valid final CreatePropertyRequest createPropertyRequest) throws OperatorCreationException, IOException {
+    public ResponseOk create(@RequestBody @Valid final CreatePropertyRequest createPropertyRequest) {
         propertyService.createProperty(createPropertyRequest);
+        return new ResponseOk("Success");
+    }
+
+    @PutMapping
+    public ResponseOk update(@RequestBody @Valid final UpdatePropertyRequest updatePropertyRequest) {
+        propertyService.updateProperty(updatePropertyRequest);
         return new ResponseOk("Success");
     }
 

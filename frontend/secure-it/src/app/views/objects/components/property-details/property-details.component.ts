@@ -1,6 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {PropertyDetails} from "../../../../model/Property";
 import {PropertyService} from "../../../../services/property.service";
+import {PropertyEditFormDialogComponent} from "../property-details-dialog/property-edit-form-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-property-details',
@@ -11,7 +13,7 @@ export class PropertyDetailsComponent implements OnInit {
   @Input() id!: string;
   property: PropertyDetails = new PropertyDetails();
 
-  constructor(private propertyService: PropertyService) {
+  constructor(private propertyService: PropertyService, private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -40,5 +42,12 @@ export class PropertyDetailsComponent implements OnInit {
       next: () => this.loadProperty(),
       error: err => console.error(err)
     });
+  }
+
+  editProperty() {
+    const dialogRef = this.dialog.open(PropertyEditFormDialogComponent);
+    dialogRef.componentInstance.mode = 'edit';
+    dialogRef.componentInstance.property = this.property;
+    dialogRef.afterClosed().subscribe(() => this.loadProperty())
   }
 }

@@ -2,9 +2,11 @@ package com.team4.secureit.service;
 
 import com.team4.secureit.dto.request.CreatePropertyRequest;
 import com.team4.secureit.dto.request.TenantRoleRequest;
+import com.team4.secureit.dto.request.UpdatePropertyRequest;
 import com.team4.secureit.dto.response.PropertyDetailsResponse;
 import com.team4.secureit.dto.response.PropertyResponse;
 import com.team4.secureit.dto.response.UserInfoResponse;
+import com.team4.secureit.exception.PropertyDoesNotBelongToUserException;
 import com.team4.secureit.exception.PropertyNotFoundException;
 import com.team4.secureit.exception.UserNotFoundException;
 import com.team4.secureit.model.Property;
@@ -93,6 +95,21 @@ public class PropertyService {
         property.setTenants(new HashSet<>());
         property.setType(createPropertyRequest.getType());
         property.setOwnerId(createPropertyRequest.getOwnerId());
+        propertyRepository.save(property);
+    }
+
+    public void updateProperty(UpdatePropertyRequest updatePropertyRequest) {
+        PropertyOwner owner = propertyOwnerRepository.findById(updatePropertyRequest.getOwnerId()).orElseThrow(UserNotFoundException::new);
+        Property property = propertyRepository.findById(updatePropertyRequest.getPropertyId()).orElseThrow(PropertyNotFoundException::new);
+        if (!owner.getOwnedProperties().contains(property)) {
+            throw new PropertyDoesNotBelongToUserException();
+        } else if (!property.getOwnerId().equals(owner.getId())) {
+            throw new PropertyDoesNotBelongToUserException();
+        }
+        property.setType(updatePropertyRequest.getType());
+        property.setName(updatePropertyRequest.getName());
+        property.setAddress(updatePropertyRequest.getAddress());
+        property.setImage(updatePropertyRequest.getImage());
         propertyRepository.save(property);
     }
 

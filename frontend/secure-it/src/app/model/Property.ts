@@ -1,4 +1,5 @@
 import {User} from "./User";
+import {T} from "@angular/cdk/keycodes";
 
 export class BasicPropertyDetails {
   id!: string;
@@ -15,6 +16,10 @@ export class CreatePropertyRequest {
   address!: string;
   type!: string;
   image!: string;
+}
+
+export class UpdatePropertyRequest extends CreatePropertyRequest {
+  propertyId!: string;
 }
 
 export class PropertyDetails {
@@ -42,4 +47,13 @@ export function getKeyFromValue(value: string | undefined): string | undefined {
     }
   }
   return undefined;
+}
+
+export function getValueByKey(value: string) {
+  console.log(value)
+  const indexOfS = Object.keys(PropertyType).indexOf(value as unknown as PropertyType);
+  console.log(indexOfS)
+  const val = Object.values(PropertyType)[indexOfS];
+  // return PropertyType[indexOfS]
+  return val;
 }

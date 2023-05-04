@@ -3,7 +3,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from "rxjs";
 import {AuthService} from "./auth.service";
 import {environment} from "../environment.development";
-import {BasicPropertyDetails, CreatePropertyRequest, PropertyDetails} from "../model/Property";
+import {BasicPropertyDetails, CreatePropertyRequest, PropertyDetails, UpdatePropertyRequest} from "../model/Property";
 
 @Injectable({
   providedIn: 'root'
@@ -67,5 +67,9 @@ export class PropertyService {
 
   public addNewProperty(requestBody: CreatePropertyRequest) {
     return this.http.post<void>(this.propertiesUrl, requestBody, AuthService.getHttpOptions());
+  }
+
+  public editProperty(requestBody: UpdatePropertyRequest) {
+    return this.http.put<void>(this.propertiesUrl, requestBody, AuthService.getHttpOptions());
   }
 }
