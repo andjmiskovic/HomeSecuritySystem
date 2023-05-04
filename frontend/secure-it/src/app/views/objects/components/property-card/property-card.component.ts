@@ -13,8 +13,10 @@ export class PropertyCardComponent implements OnInit {
 
   @Input() property!: BasicPropertyDetails;
   loggedUserId!: string;
+  userRole!: string;
 
   constructor(private dialog: MatDialog, private authService: AuthService) {
+    this.userRole = localStorage.getItem("userRole") || ""
   }
 
   ngOnInit() {
