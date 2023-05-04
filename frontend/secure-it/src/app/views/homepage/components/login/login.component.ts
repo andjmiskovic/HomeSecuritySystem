@@ -49,7 +49,6 @@ export class LoginComponent {
     }
     this.authService.login(loginCredentials).subscribe({
       next: (auth) => {
-        console.log(auth)
         this.twoFactorAuth = true;
         this.loginFailed = false;
       }, error: () => {

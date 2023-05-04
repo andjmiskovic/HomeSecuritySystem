@@ -4,22 +4,22 @@
     Property details
   </h2>
   <p style="margin-top: -15px"><i>Property id: {{property.id}}</i>
-    <button [matTooltip]="'Delete property'" style="float: right; margin-left: 5px" (click)="deleteProperty()"
+    <button *ngIf="loggedUser && property && property.owner && loggedUser.id===property.owner.id" [matTooltip]="'Delete property'"
+            style="float: right; margin-left: 5px" (click)="deleteProperty()"
             mat-raised-button
             color="warn">
       <mat-icon>house</mat-icon>
       Delete
     </button>
-    <button [matTooltip]="'Edit property'" style="float: right; margin-left: 5px" (click)="editProperty()"
+    <button *ngIf="loggedUser && property && property.owner && loggedUser.id===property.owner.id" [matTooltip]="'Edit property'"
+            style="float: right; margin-left: 5px" (click)="editProperty()"
             mat-raised-button
             color="primary">
       <mat-icon>house</mat-icon>
       Edit
     </button>
-
   </p>
   <hr>
-
   <div class="row">
     <div class="label">Name:</div>
     <div class="value">{{property.name}}</div>

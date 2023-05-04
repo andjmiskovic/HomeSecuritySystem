@@ -60,7 +60,6 @@ export class CertificatesDetailsDialogComponent implements OnInit {
   }
 
   downloadPublicKeyPem() {
-    console.log(this.certificate)
     downloadTxtFile(this.certificate.pem, "publicKeyPem.txt");
   }
 }

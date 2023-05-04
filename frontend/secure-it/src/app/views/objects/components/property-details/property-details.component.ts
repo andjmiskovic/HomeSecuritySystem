@@ -4,6 +4,7 @@ import {PropertyService} from "../../../../services/property.service";
 import {PropertyEditFormDialogComponent} from "../property-details-dialog/property-edit-form-dialog.component";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {AuthService} from "../../../../services/auth.service";
+import {User} from "../../../../model/User";
 
 @Component({
   selector: 'app-property-details',
@@ -13,20 +14,23 @@ import {AuthService} from "../../../../services/auth.service";
 export class PropertyDetailsComponent implements OnInit {
   @Input() id!: string;
   property: PropertyDetails = new PropertyDetails();
+  loggedUser!: User;
 
   constructor(private authService: AuthService, private propertyService: PropertyService, private dialog: MatDialog,
-              private dialogRef: MatDialogRef<PropertyDetailsComponent>,) {
+              private dialogRef: MatDialogRef<PropertyDetailsComponent>) {
   }
 
   ngOnInit() {
-    this.loadProperty();
+    this.authService.getCurrentlyLoggedUser().subscribe((user) => {
+      this.loggedUser = user;
+      this.loadProperty();
+    });
   }
 
   loadProperty() {
     this.propertyService.getProperty(this.id).subscribe({
       next: (p) => {
         this.property = p;
-        console.log(this.property)
       },
       error: err => console.error(err)
     });

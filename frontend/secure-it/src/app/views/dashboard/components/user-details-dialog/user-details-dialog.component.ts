@@ -49,7 +49,6 @@ export class UserDetailsDialogComponent implements OnInit {
   ngOnInit(): void {
     this.disabled = this.mode === "edit"
     // this.formGroup.controls.emailFormControl.setValue(this.userEmail)
-    console.log(this.mode)
     if (this.mode === "edit") {
       this.userService.getPropertyOwner(this.userEmail).subscribe((user) => {
         this.email = user.email
@@ -69,7 +68,6 @@ export class UserDetailsDialogComponent implements OnInit {
       "phoneNumber": this.phoneNumber,
       "city": this.city,
     }
-    console.log(requestBody)
     this.authService.createUser(requestBody).subscribe({
       next: () => {
         this.openSnackBar("We sent the user verification link")
@@ -87,7 +85,6 @@ export class UserDetailsDialogComponent implements OnInit {
       "phoneNumber": this.phoneNumber,
       "city": this.city,
     }
-    console.log(requestBody)
     this.userService.editPropertyOwner(requestBody).subscribe({
       next: () => {
         this.openSnackBar("Values successfully updated")

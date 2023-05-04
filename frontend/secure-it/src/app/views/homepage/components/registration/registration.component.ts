@@ -49,7 +49,6 @@ export class RegistrationComponent {
         "city": this.city,
         "passwordConfirmation": this.password2
       }
-      console.log(requestBody)
       this.authService.register(requestBody).subscribe({
         next: () => this.openSnackBar("We sent you registration link"),
         error: (message) => this.openSnackBar(message)

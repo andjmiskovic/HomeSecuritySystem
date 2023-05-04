@@ -27,14 +27,10 @@ export class VerificationScreenContainerComponent {
       let verificationCode = params['code'] || "";
       this.authService.getIsPasswordSet(verificationCode).subscribe({
           next: (isPasswordSet) => {
-            console.log("EVE me")
             this.isPasswordSet = isPasswordSet
             this.isInvalidVerificationCode = false
-            console.log(this.isPasswordSet)
-            console.log(this.isInvalidVerificationCode)
           },
           error: (res) => {
-            console.log("EVE me 2")
             this.isInvalidVerificationCode = true
           }
         }

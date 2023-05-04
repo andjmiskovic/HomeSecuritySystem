@@ -60,7 +60,6 @@ export class ApproveCsrComponent {
 
   approve() {
     this.setOptions();
-    console.log(this.options);
     this.csrService.issueCertificate(this.id, this.options).subscribe({
       next: () => this.onNoClick(),
       error: (err) => console.error(err)

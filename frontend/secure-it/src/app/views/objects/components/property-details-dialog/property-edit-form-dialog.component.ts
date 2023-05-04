@@ -37,9 +37,6 @@ export class PropertyEditFormDialogComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.mode === "edit") {
-      console.log(this.property)
-      console.log(getValueByKey(this.property.type))
-      console.log(this.fileTypes)
       this.type = getValueByKey(this.property.type)
       this.name = this.property.name
       this.address = this.property.address

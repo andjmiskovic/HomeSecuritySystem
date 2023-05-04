@@ -50,10 +50,6 @@ export function getKeyFromValue(value: string | undefined): string | undefined {
 }
 
 export function getValueByKey(value: string) {
-  console.log(value)
   const indexOfS = Object.keys(PropertyType).indexOf(value as unknown as PropertyType);
-  console.log(indexOfS)
-  const val = Object.values(PropertyType)[indexOfS];
-  // return PropertyType[indexOfS]
-  return val;
+  return Object.values(PropertyType)[indexOfS];
 }
