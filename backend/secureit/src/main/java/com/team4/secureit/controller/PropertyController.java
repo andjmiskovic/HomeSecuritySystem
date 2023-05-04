@@ -1,6 +1,7 @@
 package com.team4.secureit.controller;
 
 import com.team4.secureit.dto.request.CSRCreationRequest;
+import com.team4.secureit.dto.request.TenantRoleRequest;
 import com.team4.secureit.dto.response.PropertyDetailsResponse;
 import com.team4.secureit.dto.response.PropertyResponse;
 import com.team4.secureit.model.PropertyType;
@@ -43,10 +44,20 @@ public class PropertyController {
     public PropertyDetailsResponse getProperty(@RequestParam(value = "id") UUID id) {
         return objectService.getPropertyById(id);
     }
-    
+
     @GetMapping("/owner")
     public List<PropertyResponse> getPropertiesOfOwner(@RequestParam(value = "email") String email) {
         return objectService.getPropertiesOfOwner(email);
+    }
+
+    @PostMapping("/set-owner")
+    public void setOwner(@RequestBody TenantRoleRequest request) {
+        objectService.setOwner(request);
+    }
+
+    @PostMapping("/remove-tenant")
+    public void removeTenant(@RequestBody TenantRoleRequest request) {
+        objectService.removeTenant(request);
     }
 
     @GetMapping("/types")

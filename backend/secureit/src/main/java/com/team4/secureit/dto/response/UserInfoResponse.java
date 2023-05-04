@@ -11,13 +11,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInfoResponse {
-    private UUID id;
+    private String id;
     private String firstName;
     private String lastName;
     private String email;
 
     public UserInfoResponse(User user) {
-        this.id = user.getId();
+        this.id = user.getId().toString();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();

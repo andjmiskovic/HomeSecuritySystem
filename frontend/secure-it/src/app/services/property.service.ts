@@ -21,7 +21,6 @@ export class PropertyService {
     queryParams = queryParams.append("search", search);
     if (type != undefined)
       queryParams = queryParams.append("type", type);
-    console.log(type)
     return this.http.get<BasicPropertyDetails[]>(this.propertiesUrl + "/all", AuthService.getHttpOptions(queryParams));
   }
 
@@ -35,7 +34,23 @@ export class PropertyService {
     return this.http.get<PropertyDetails>(this.propertiesUrl, AuthService.getHttpOptions(queryParams));
   }
 
-  public getUsersProperties(search: string, type: string | undefined, id: number) {
+  setOwner(propertyId: string, tenantId: string): Observable<void> {
+    let body = {
+      "propertyId": propertyId,
+      "tenantId": tenantId
+    }
+    return this.http.post<void>(this.propertiesUrl + "/set-owner", body, AuthService.getHttpOptions());
+  }
+
+  removeTenant(propertyId: string, tenantId: string): Observable<void> {
+    let body = {
+      "propertyId": propertyId,
+      "tenantId": tenantId
+    }
+    return this.http.post<void>(this.propertiesUrl + "/remove-tenant", body, AuthService.getHttpOptions());
+  }
+
+  public getUsersProperties(search: string, type: string | undefined, id: string) {
     let queryParams = new HttpParams();
     queryParams = queryParams.append("search", search);
     queryParams = queryParams.append("id", id);
