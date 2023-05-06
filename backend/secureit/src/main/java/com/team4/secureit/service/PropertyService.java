@@ -1,24 +1,27 @@
 package com.team4.secureit.service;
 
-import com.team4.secureit.dto.request.CreatePropertyRequest;
-import com.team4.secureit.dto.request.TenantRoleRequest;
-import com.team4.secureit.dto.request.UpdatePropertyRequest;
+import com.team4.secureit.dto.request.*;
 import com.team4.secureit.dto.response.PropertyDetailsResponse;
 import com.team4.secureit.dto.response.PropertyResponse;
 import com.team4.secureit.dto.response.UserInfoResponse;
 import com.team4.secureit.exception.PropertyDoesNotBelongToUserException;
 import com.team4.secureit.exception.PropertyNotFoundException;
 import com.team4.secureit.exception.UserNotFoundException;
+import com.team4.secureit.exception.VerificationFailedException;
 import com.team4.secureit.model.Property;
 import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.model.PropertyType;
+import com.team4.secureit.model.TenantInvite;
 import com.team4.secureit.repository.PropertyOwnerRepository;
 import com.team4.secureit.repository.PropertyRepository;
+import com.team4.secureit.repository.TenantInviteRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+
+import static com.team4.secureit.util.LoginUtils.generateVerificationCode;
 
 @Service
 @Transactional
@@ -29,6 +32,12 @@ public class PropertyService {
 
     @Autowired
     private PropertyOwnerRepository propertyOwnerRepository;
+
+    @Autowired
+    private TenantInviteRepository tenantInviteRepository;
+
+    @Autowired
+    private MailingService mailingService;
 
     public List<PropertyResponse> getProperties(String search, PropertyType type) {
         List<Property> properties = propertyRepository.getAll(search.toLowerCase(), type);
@@ -56,7 +65,7 @@ public class PropertyService {
     }
 
     private PropertyResponse getPropertyDetailsResponseFromProperty(Property property) {
-        PropertyOwner owner = propertyOwnerRepository.findById(property.getOwnerId()).orElseThrow(() -> new UserNotFoundException("User for given id does not exist."));
+        PropertyOwner owner = propertyOwnerRepository.findById(property.getOwner().getId()).orElseThrow(() -> new UserNotFoundException("User for given id does not exist."));
         return new PropertyResponse(property.getId(), property.getName(), property.getAddress(), property.getType(), property.getImage(), new UserInfoResponse(owner.getId().toString(), owner.getFirstName(), owner.getLastName(), owner.getEmail()));
     }
 
@@ -74,13 +83,15 @@ public class PropertyService {
         Property property = propertyRepository.findById(id).orElseThrow(PropertyNotFoundException::new);
         List<UserInfoResponse> tenants = new ArrayList<>();
         for (PropertyOwner tenant : property.getTenants()) {
-            tenants.add(new UserInfoResponse(tenant.getId().toString(), tenant.getFirstName(), tenant.getLastName(), tenant.getEmail()));
+            if (!tenant.isDeleted()) {
+                tenants.add(new UserInfoResponse(tenant.getId().toString(), tenant.getFirstName(), tenant.getLastName(), tenant.getEmail()));
+            }
         }
-        return new PropertyDetailsResponse(property.getId(), property.getName(), property.getAddress(), property.getType(), property.getImage(), getUserInfo(property.getOwnerId()), tenants);
+        return new PropertyDetailsResponse(property.getId(), property.getName(), property.getAddress(), property.getType(), property.getImage(), getUserInfo(property.getOwner().getId()), tenants);
     }
 
     public void deleteAllPropertiesForUser(PropertyOwner propertyOwner) {
-        for (Property property : propertyOwner.getOwnedProperties()) {
+        for (Property property : propertyRepository.getPropertiesWhereUserIsOwner(propertyOwner.getId(), "", null)) {
             property.setDeleted(true);
             propertyRepository.save(property);
         }
@@ -98,18 +109,18 @@ public class PropertyService {
         property.setAddress(createPropertyRequest.getAddress());
         property.setImage(createPropertyRequest.getImage());
         property.setName(createPropertyRequest.getName());
-        property.setTenants(new HashSet<>());
+        property.setTenants(new ArrayList<>());
         property.setType(createPropertyRequest.getType());
-        property.setOwnerId(createPropertyRequest.getOwnerId());
+        property.setOwner(propertyOwnerRepository.findById(createPropertyRequest.getOwnerId()).get());
         propertyRepository.save(property);
     }
 
     public void updateProperty(UpdatePropertyRequest updatePropertyRequest) {
         PropertyOwner owner = propertyOwnerRepository.findById(updatePropertyRequest.getOwnerId()).orElseThrow(UserNotFoundException::new);
         Property property = propertyRepository.findById(updatePropertyRequest.getPropertyId()).orElseThrow(PropertyNotFoundException::new);
-        if (!owner.getOwnedProperties().contains(property)) {
+        if (!propertyRepository.getPropertiesWhereUserIsOwner(owner.getId(), "", null).contains(property)) {
             throw new PropertyDoesNotBelongToUserException();
-        } else if (!property.getOwnerId().equals(owner.getId())) {
+        } else if (!property.getOwner().getId().equals(owner.getId())) {
             throw new PropertyDoesNotBelongToUserException();
         }
         property.setType(updatePropertyRequest.getType());
@@ -122,22 +133,16 @@ public class PropertyService {
     public void setOwner(TenantRoleRequest request) {
         Property property = propertyRepository.findById(request.getPropertyId()).orElseThrow(PropertyNotFoundException::new);
 
-        PropertyOwner propertyOwner = propertyOwnerRepository.findById(property.getOwnerId()).get();
-        propertyOwner.getOwnedProperties().remove(property);
-        propertyOwner.getTenantProperties().add(property);
+        PropertyOwner propertyOwner = propertyOwnerRepository.findById(property.getOwner().getId()).get();
 
         PropertyOwner newOwner = propertyOwnerRepository.findById(request.getTenantId()).get();
-        newOwner.getOwnedProperties().add(property);
-        newOwner.getTenantProperties().remove(property);
 
-        Set<PropertyOwner> tenants = property.getTenants();
-        tenants.remove(newOwner);
+        List<PropertyOwner> tenants = property.getTenants();
+        tenants.removeIf(obj -> obj.getId() == newOwner.getId());
         tenants.add(propertyOwner);
         property.setTenants(tenants);
-        property.setOwnerId(request.getTenantId());
+        property.setOwner(propertyOwnerRepository.findById(request.getTenantId()).get());
 
-        propertyOwnerRepository.save(propertyOwner);
-        propertyOwnerRepository.save(newOwner);
         propertyRepository.save(property);
     }
 
@@ -145,10 +150,44 @@ public class PropertyService {
         Property property = propertyRepository.findById(request.getPropertyId()).orElseThrow(PropertyNotFoundException::new);
 
         PropertyOwner propertyOwner = propertyOwnerRepository.findById(request.getTenantId()).get();
-        propertyOwner.getTenantProperties().remove(property);
 
-        property.getTenants().remove(propertyOwner);
-        propertyOwnerRepository.save(propertyOwner);
+        property.getTenants().removeIf(obj -> obj.getId() == propertyOwner.getId());
+
         propertyRepository.save(property);
+    }
+
+    public void sendInvitationToProperty(InviteUserToPropertyRequest inviteUserToPropertyRequest) {
+        Property property = propertyRepository.findById(inviteUserToPropertyRequest.getPropertyId()).orElseThrow(PropertyNotFoundException::new);
+        PropertyOwner propertyOwner = propertyOwnerRepository.findByEmail(inviteUserToPropertyRequest.getUserEmail()).orElseThrow(UserNotFoundException::new);
+
+        TenantInvite tenantInvite = new TenantInvite();
+        tenantInvite.setProperty(property);
+        tenantInvite.setUser(propertyOwner);
+        tenantInvite.setVerificationCode(generateVerificationCode());
+        tenantInvite.setVerified(false);
+
+        mailingService.sendInvitationToProperty(tenantInvite);
+
+        tenantInviteRepository.save(tenantInvite);
+    }
+
+    public void verifyInvite(VerificationRequest verificationRequest) {
+        Optional<TenantInvite> tenantInviteOptional = tenantInviteRepository.findByVerificationCode(verificationRequest.getCode());
+        if (tenantInviteOptional.isPresent()) {
+            TenantInvite tenantInvite = tenantInviteOptional.get();
+            if (tenantInvite.isVerified()) {
+                throw new VerificationFailedException("Request is already accepted.");
+            }
+            tenantInvite.setVerified(true);
+            Property property = tenantInvite.getProperty();
+            List<PropertyOwner> tenants = property.getTenants();
+            tenants.add(tenantInvite.getUser());
+            property.setTenants(tenants);
+
+            tenantInviteRepository.save(tenantInvite);
+            propertyRepository.save(property);
+        } else {
+            throw new VerificationFailedException("Error while verifying request");
+        }
     }
 }

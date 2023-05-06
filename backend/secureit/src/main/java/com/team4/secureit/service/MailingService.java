@@ -3,6 +3,7 @@ package com.team4.secureit.service;
 import com.google.zxing.WriterException;
 import com.team4.secureit.config.AppProperties;
 import com.team4.secureit.model.PropertyOwner;
+import com.team4.secureit.model.TenantInvite;
 import com.team4.secureit.model.User;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -63,6 +64,17 @@ public class MailingService {
         } catch (WriterException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Async
+    public void sendInvitationToProperty(TenantInvite tenantInvite) {
+        String content = renderTemplate("invitationToProperty.html",
+                "firstName", tenantInvite.getUser().getFirstName(),
+                "owner", tenantInvite.getProperty().getOwner().getFirstName() + " " + tenantInvite.getProperty().getOwner().getLastName(),
+                "property", tenantInvite.getProperty().getName() + ", " + tenantInvite.getProperty().getAddress(),
+                "code", tenantInvite.getVerificationCode());
+
+        sendMail(tenantInvite.getUser().getEmail(), "Invitation to property", content);
     }
 
     private void sendMail(String to, String subject, String body) {

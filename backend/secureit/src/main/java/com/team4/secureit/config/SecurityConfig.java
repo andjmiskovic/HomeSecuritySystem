@@ -65,6 +65,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                     .requestMatchers("/auth/**", "/h2-console/**")
                         .permitAll()
+                .requestMatchers("/property/invite/verify").permitAll()
                     .anyRequest()
                         .authenticated();
 

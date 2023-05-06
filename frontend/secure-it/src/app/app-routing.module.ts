@@ -9,6 +9,9 @@ import {CertificateRequestsComponent} from "./views/csr/container/certificate-re
 import {AuthGuard} from "./model/AuthGuard";
 import {VerificationScreenContainerComponent} from "./views/verification-screen/container/verification-screen-container/verification-screen-container.component";
 import {PropertiesContainerComponent} from "./views/objects/container/properties-container/properties-container.component";
+import {
+  TenantInvitationContainerComponent
+} from "./views/verification-screen/container/tenant-invitation-container/tenant-invitation-container.component";
 
 const routes: Routes = [
   {path: '', component: HomepageContainerComponent},
@@ -16,8 +19,8 @@ const routes: Routes = [
   {path: 'requests', component: CertificateRequestsComponent, canActivate: [AuthGuard]},
   {path: 'dashboard', component: DashboardContainerComponent, canActivate: [AuthGuard]},
   {path: 'properties', component: PropertiesContainerComponent, canActivate: [AuthGuard]},
-  // {path: 'registration/verification?code=/:verificationCode', component: VerificationScreenComponent},
   {path: 'registration/verification', component: VerificationScreenContainerComponent},
+  {path: 'invitation', component: TenantInvitationContainerComponent},
   {path: '403', component: NotAuthorizedPageComponent},
   {path: '**', component: NotFoundPageComponent}
 ];

@@ -1,9 +1,7 @@
 package com.team4.secureit.controller;
 
 import com.team4.secureit.api.ResponseOk;
-import com.team4.secureit.dto.request.CreatePropertyRequest;
-import com.team4.secureit.dto.request.TenantRoleRequest;
-import com.team4.secureit.dto.request.UpdatePropertyRequest;
+import com.team4.secureit.dto.request.*;
 import com.team4.secureit.dto.response.PropertyDetailsResponse;
 import com.team4.secureit.dto.response.PropertyResponse;
 import com.team4.secureit.model.PropertyType;
@@ -75,5 +73,17 @@ public class PropertyController {
     @GetMapping("/types")
     public List<String> getPropertyTypes() {
         return propertyService.getPropertyTypes();
+    }
+
+    @PostMapping("/invite")
+    public ResponseOk sendInvitationToProperty(@Valid @RequestBody InviteUserToPropertyRequest inviteUserToPropertyRequest) {
+        propertyService.sendInvitationToProperty(inviteUserToPropertyRequest);
+        return new ResponseOk("Success");
+    }
+
+    @PutMapping("/invite/verify")
+    public ResponseOk verifyInviteToProperty(@Valid @RequestBody VerificationRequest verificationRequest) {
+        propertyService.verifyInvite(verificationRequest);
+        return new ResponseOk("Success");
     }
 }

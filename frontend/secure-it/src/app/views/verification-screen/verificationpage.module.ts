@@ -14,12 +14,14 @@ import {
   VerificationScreenContainerComponent
 } from "./container/verification-screen-container/verification-screen-container.component";
 import {VerificationMessageComponent} from "./components/verification-message/verification-message.component";
+import { TenantInvitationContainerComponent } from './container/tenant-invitation-container/tenant-invitation-container.component';
 
 @NgModule({
   declarations: [
     EnterPasswordComponent,
     VerificationScreenContainerComponent,
     VerificationMessageComponent,
+    TenantInvitationContainerComponent,
   ],
   imports: [
     MatFormFieldModule,

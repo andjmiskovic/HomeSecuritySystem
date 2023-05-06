@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,9 +25,12 @@ public class Property {
     private String address;
     private PropertyType type;
     private String image;
-    private UUID ownerId;
-    @ManyToMany
-    private Set<PropertyOwner> tenants;
+
+    @ManyToMany()
+    private List<PropertyOwner> tenants;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private PropertyOwner owner;
 
     @Column(nullable = false)
     private boolean deleted = Boolean.FALSE;

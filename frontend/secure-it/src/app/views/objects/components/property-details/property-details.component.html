@@ -4,20 +4,30 @@
     Property details
   </h2>
   <p style="margin-top: -15px"><i>Property id: {{property.id}}</i>
-    <button *ngIf="loggedUser && property && property.owner && loggedUser.id===property.owner.id" [matTooltip]="'Delete property'"
-            style="float: right; margin-left: 5px" (click)="deleteProperty()"
-            mat-raised-button
-            color="warn">
-      <mat-icon>house</mat-icon>
+    <span *ngIf="loggedUser && property && property.owner && loggedUser.id===property.owner.id">
+    <button
+      [matTooltip]="'Delete property'"
+      style="float: right; margin-left: 5px" (click)="deleteProperty()"
+      mat-raised-button
+      color="warn">
       Delete
     </button>
-    <button *ngIf="loggedUser && property && property.owner && loggedUser.id===property.owner.id" [matTooltip]="'Edit property'"
-            style="float: right; margin-left: 5px" (click)="editProperty()"
-            mat-raised-button
-            color="primary">
-      <mat-icon>house</mat-icon>
+    <button
+      [matTooltip]="'Edit property'"
+      style="float: right; margin-left: 5px" (click)="editProperty()"
+      mat-raised-button
+      color="primary">
       Edit
     </button>
+    <button
+        [matTooltip]="'Add tenant'"
+        style="float: right; margin-left: 5px" (click)="openAddTenantDialog()"
+        mat-raised-button
+        color="primary">
+      <mat-icon>person</mat-icon>
+      Add tenant
+    </button>
+    </span>
   </p>
   <hr>
   <div class="row">
@@ -41,7 +51,7 @@
   </div>
   <div class="row" *ngFor="let tenant of property.tenants">
     <div class="label" style="font-weight: 400 !important;">{{ tenant.firstName }} {{ tenant.lastName }}</div>
-    <div class="value">
+    <div class="value" *ngIf="userRole === 'ROLE_ADMIN'">
       <button style="font-size: 12px" mat-stroked-button (click)="setOwner(tenant.id)">
         <mat-icon style="color: var(--blue)">star</mat-icon>
         Set owner

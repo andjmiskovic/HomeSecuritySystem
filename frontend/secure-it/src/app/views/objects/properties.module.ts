@@ -19,13 +19,15 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {PropertyEditFormDialogComponent} from './components/property-details-dialog/property-edit-form-dialog.component';
 import {PropertyDetailsComponent} from './components/property-details/property-details.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import { AddTenantDialogComponent } from './components/add-tenant-dialog/add-tenant-dialog.component';
 
 @NgModule({
   declarations: [
     PropertiesContainerComponent,
     PropertyCardComponent,
     PropertyEditFormDialogComponent,
-    PropertyDetailsComponent
+    PropertyDetailsComponent,
+    AddTenantDialogComponent
   ],
     imports: [
         MatFormFieldModule,

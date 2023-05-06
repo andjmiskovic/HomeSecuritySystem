@@ -1,4 +1,4 @@
-import {Component, Inject, Input} from '@angular/core';
+import {Component, Inject, Input, OnInit} from '@angular/core';
 import {FormBuilder} from "@angular/forms";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -9,7 +9,7 @@ import {AuthService} from "../../../../services/auth.service";
   templateUrl: './verification-message.component.html',
   styleUrls: ['./verification-message.component.css']
 })
-export class VerificationMessageComponent {
+export class VerificationMessageComponent implements OnInit{
   @Input() isInvalidVerificationCode!: boolean;
 
   constructor(

@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {AuthService} from "./auth.service";
 import {environment} from "../environment.development";
 import {BasicPropertyDetails, CreatePropertyRequest, PropertyDetails, UpdatePropertyRequest} from "../model/Property";
+import {InviteUserToPropertyRequest} from "../model/InviteUserToPropertyRequest";
 
 @Injectable({
   providedIn: 'root'
@@ -75,5 +76,13 @@ export class PropertyService {
 
   public deleteProperty(id: string) {
     return this.http.delete<void>(this.propertiesUrl + "/" + id, AuthService.getHttpOptions());
+  }
+
+  public sendInvitationToProperty(requestBody: InviteUserToPropertyRequest) {
+    return this.http.post<void>(this.propertiesUrl + "/invite", requestBody, AuthService.getHttpOptions());
+  }
+
+  public verifyInvite(verificationCode: string) {
+    return this.http.put<void>(this.propertiesUrl + "/invite/verify", {code: verificationCode}, AuthService.getHttpOptions());
   }
 }
