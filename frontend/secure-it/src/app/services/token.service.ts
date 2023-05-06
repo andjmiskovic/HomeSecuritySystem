@@ -20,4 +20,7 @@ export class TokenService {
     return this.http.get<BlacklistedTokenInfo[]>(this.tokenUrl, AuthService.getHttpOptions());
   }
 
+  addTokenToBlacklist(token: string) {
+    return this.http.post<any>(this.tokenUrl, {token: token}, AuthService.getHttpOptions());
+  }
 }

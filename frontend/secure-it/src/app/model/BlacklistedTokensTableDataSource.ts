@@ -7,7 +7,6 @@ export class BlacklistedTokenListItem {
   subject!: string;
   issuedAt!: string;
   expiresAt!: string;
-  error!: string;
   added!: Date;
 }
 
@@ -42,24 +41,14 @@ export class BlacklistedTokensTableDataSource implements DataSource<BlacklistedT
       finalize(() => this.loadingSubject.next(false))
     )
       .subscribe(blackList => {
-        // if (this.userRole === "ADMIN") {
-        //   this.certificateService.getValidities().subscribe((validities) => {
-        //     let certificateItems = this.getCertificateItems(search, certificates);
-        //     certificateItems.forEach((item) => {
-        //       item.validityStatus = validities[Number(item.serialNumber)].valid ? "VALID" : "INVALID"
-        //     })
-        this.tableSubject.next(blackList);
-        // })
-        // } else {
-        //   let certificateItems = this.getCertificateItems(search, certificates);
-        //   certificateItems.forEach((item) => {
-        //     this.certificateService.checkCertificateValidity(item.serialNumber).subscribe((validitiy) => {
-        //       item.validityStatus = validitiy.valid ? "VALID" : "INVALID"
-        //     })
-        //   })
-        //   this.certificatesSubject.next(certificateItems);
-        // }
-
+        console.log(blackList)
+        let result: BlacklistedTokenListItem[] = []
+        blackList.forEach((element) => {
+          if (!element.error) {
+            result.push(element)
+          }
+        })
+        this.tableSubject.next(result);
       });
   }
 }

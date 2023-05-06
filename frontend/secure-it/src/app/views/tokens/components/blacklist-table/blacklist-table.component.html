@@ -15,11 +15,6 @@
     <mat-cell *matCellDef="let element">{{element.expiresAt}}</mat-cell>
   </ng-container>
 
-  <ng-container matColumnDef="error">
-    <mat-header-cell *matHeaderCellDef mat-sort-header>Error</mat-header-cell>
-    <mat-cell *matCellDef="let element">{{element.error}}</mat-cell>
-  </ng-container>
-
   <ng-container matColumnDef="added">
     <mat-header-cell *matHeaderCellDef mat-sort-header>Added</mat-header-cell>
     <mat-cell *matCellDef="let element">{{element.added}}</mat-cell>
