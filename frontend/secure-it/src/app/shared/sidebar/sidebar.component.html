@@ -26,6 +26,12 @@
       </a>
       <span class="tooltip">Properties</span>
     </li>
+    <li *ngIf="userRole==='ROLE_ADMIN'">
+      <a (click)="navigate('/tokens')" [ngClass]="{ 'currentPage': currentPage === 'tokens' }">
+        <mat-icon>token</mat-icon>
+      </a>
+      <span class="tooltip">Tokens</span>
+    </li>
     <li>
       <a (click)="logout()">
         <mat-icon>logout</mat-icon>

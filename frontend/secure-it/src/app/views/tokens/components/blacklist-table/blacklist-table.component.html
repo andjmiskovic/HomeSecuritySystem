@@ -1,0 +1,33 @@
+<mat-table [dataSource]="dataSource" matSort matSortActive="start" matSortDirection="desc" matSortDisableClear>
+
+  <ng-container matColumnDef="subject">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Subject</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.subject}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="issuedAt">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Issued at</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.issuedAt}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="expiresAt">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Expires at</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.expiresAt}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="error">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Error</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.error}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="added">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Added</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.added}}</mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  <tr *matNoDataRow>
+    <td>No data matching the filters</td>
+  </tr>
+</mat-table>

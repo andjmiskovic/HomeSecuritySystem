@@ -12,6 +12,7 @@ import {PropertiesContainerComponent} from "./views/objects/container/properties
 import {
   TenantInvitationContainerComponent
 } from "./views/verification-screen/container/tenant-invitation-container/tenant-invitation-container.component";
+import {TokensContainerComponent} from "./views/tokens/container/tokens/tokens-container.component";
 
 const routes: Routes = [
   {path: '', component: HomepageContainerComponent},
@@ -21,6 +22,7 @@ const routes: Routes = [
   {path: 'properties', component: PropertiesContainerComponent, canActivate: [AuthGuard]},
   {path: 'registration/verification', component: VerificationScreenContainerComponent},
   {path: 'invitation', component: TenantInvitationContainerComponent},
+  {path: 'tokens', component: TokensContainerComponent},
   {path: '403', component: NotAuthorizedPageComponent},
   {path: '**', component: NotFoundPageComponent}
 ];
