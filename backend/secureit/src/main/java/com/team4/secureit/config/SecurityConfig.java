@@ -63,9 +63,10 @@ public class SecurityConfig {
                     .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                     .and()
                 .authorizeHttpRequests()
-                    .requestMatchers("/auth/**", "/h2-console/**")
+                    .requestMatchers("/auth/**", "/h2-console/**", "/devices/handshake/device/**")
                         .permitAll()
-                .requestMatchers("/property/invite/verify").permitAll()
+                    .requestMatchers("/property/invite/verify")
+                        .permitAll()
                     .anyRequest()
                         .authenticated();
 

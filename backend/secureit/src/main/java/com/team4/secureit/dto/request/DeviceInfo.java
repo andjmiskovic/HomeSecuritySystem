@@ -9,15 +9,19 @@ import lombok.Data;
 public class DeviceInfo {
     @NotBlank
     @NoHTMLTags
-    private String deviceId;
+    private String name;
+
+    @NotBlank
+    @NoHTMLTags
+    private String label;
+
+    @NotBlank
+    @NoHTMLTags
+    private String type;
 
     @NotBlank
     @NoHTMLTags
     private String manufacturer;
-
-    @NotBlank
-    @NoHTMLTags
-    private String model;
 
     @NotBlank
     @Pattern(regexp = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$", message = "Mac address is in invalid format.")

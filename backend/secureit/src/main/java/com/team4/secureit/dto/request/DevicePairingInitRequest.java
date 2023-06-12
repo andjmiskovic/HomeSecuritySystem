@@ -1,12 +1,13 @@
 package com.team4.secureit.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NonNull;
 
 import java.util.UUID;
 
 @Data
 public class DevicePairingInitRequest {
-    @NonNull
+
+    @NotNull
     private UUID propertyId;
 }

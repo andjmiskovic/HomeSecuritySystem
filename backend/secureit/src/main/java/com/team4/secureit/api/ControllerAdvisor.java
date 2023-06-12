@@ -103,4 +103,10 @@ public class ControllerAdvisor {
     public ResponseError handleInvalid2FaCodeException(Invalid2FaCodeException e) {
         return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(PairingRequestNotFound.class)
+    public ResponseError handlePairingRequestNotFound(PairingRequestNotFound e) {
+        return new ResponseError(HttpStatus.NOT_FOUND, "Pairing request not found.");
+    }
 }
