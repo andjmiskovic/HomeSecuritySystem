@@ -1,15 +1,17 @@
 import requests
 import json
+import datetime
 from flask import current_app
 from application.details import device_details
 from application.config import device_config
 from application.crypto import cryptography_manager
 
-PAIRING_TIMEOUT = 65 # seconds
+PAIRING_TIMEOUT = 65  # seconds
 
 headers = {
     'Content-Type': 'application/json'
 }
+
 
 def request_pairing(code):
     device_handshake_data = {
@@ -42,8 +44,13 @@ def request_pairing(code):
 
 
 def send_message():
+    if not device_config['DEVICE_ID']:
+        current_app.logger.info(
+            f'Device is not connected to SecureIT. Sending message skipped.')
+        return
+
     message = {
-        'data': f'Hello from {device_config.label}!',
+        'data': f'Hello from {device_config.label}! It\'s {datetime.datetime.now().strftime("%H:%M:%S")} on my clock.',
         'deviceId': device_config.device_id
     }
 
@@ -52,9 +59,11 @@ def send_message():
         'signature': cryptography_manager.sign(message_bytes)
     }
 
-    response = requests.post(
+    requests.post(
         f'http://localhost:8001/monitor/send',
         json=message,
         params=params,
         headers=headers
     )
+
+    current_app.logger.info(f'Server received {len(message_bytes)} bytes.')

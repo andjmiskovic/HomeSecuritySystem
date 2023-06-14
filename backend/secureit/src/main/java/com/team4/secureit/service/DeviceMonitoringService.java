@@ -33,7 +33,7 @@ public class DeviceMonitoringService {
 
         boolean isSignatureValid = verifySignature(rawRequestBody, signature, device.getPublicKeyPem());
         if (isSignatureValid) {
-            System.out.println("Signature is valid");
+            System.out.println(rawRequestBody);
         } else {
             System.out.println("Signature is not valid");
         }

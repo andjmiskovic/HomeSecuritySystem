@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_login import login_user, LoginManager
+from apscheduler.schedulers.background import BackgroundScheduler
 from application.models import User, ApiResponse
 from application.api import api
 from application.web import web
+from application.client import send_message
 import logging
 
 app = Flask(__name__)
@@ -22,6 +24,16 @@ app.logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
 for handler in app.logger.handlers:
     handler.setFormatter(formatter)
+
+
+def call_send_message():
+    with app.app_context():
+        send_message()
+
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=call_send_message, trigger='interval', seconds=3)
+scheduler.start()
 
 
 @app.errorhandler(400)

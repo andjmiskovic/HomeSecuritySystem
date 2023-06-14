@@ -8,4 +8,4 @@ with app.app_context():
     load_details()
     setup_keys()
 
-app.run(host='0.0.0.0', port=10000, debug=True)
+app.run(host='0.0.0.0', port=10000, debug=False)
