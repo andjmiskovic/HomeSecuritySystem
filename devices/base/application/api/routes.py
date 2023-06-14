@@ -40,7 +40,7 @@ def logout():
 def change_password():
     data = request.get_json()
     if not data or 'oldPassword' not in data or 'newPassword' not in data:
-        return ApiResponse('Missing old or new password.', 403).to_json()
+        return ApiResponse('Missing old or new password.', 400).to_json()
     old_password = data['oldPassword']
     new_password = data['newPassword']
 
@@ -54,13 +54,27 @@ def change_password():
         return ApiResponse('Wrong old password.', 403).to_json()
 
 
+@api.route('/label', methods=['PUT'])
+@login_required
+def change_label():
+    data = request.get_json()
+    if not data or 'label':
+        return ApiResponse('Missing label.', 400).to_json()
+    new_label = data['label']
+
+    device_config['LABEL'] = new_label
+    device_config.save()
+
+    return ApiResponse('Label updated successfully.', 200).to_json()
+
+
 @api.route('/pair', methods=['POST'])
 @login_required
 def pair_device():
     data = request.get_json()
     if not data or 'code' not in data:
         return ApiResponse('Connection PIN is missing.', 400).to_json()
-    
+
     code = data['code']
     result = client.request_pairing(code)
 
@@ -74,6 +88,7 @@ def pair_device():
 def testmessage():
     client.send_message()
     return "Sent"
+
 
 @api.errorhandler(400)
 def bad_request(e):

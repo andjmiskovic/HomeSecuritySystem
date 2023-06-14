@@ -4,6 +4,7 @@ import com.team4.secureit.api.ResponseError;
 import com.team4.secureit.api.ResponseOk;
 import com.team4.secureit.dto.request.DeviceHandshakeData;
 import com.team4.secureit.dto.response.CodeResponse;
+import com.team4.secureit.dto.response.DeviceDetailsResponse;
 import com.team4.secureit.dto.response.DeviceSuccessfulPairingResponse;
 import com.team4.secureit.exception.PairingRequestNotFound;
 import com.team4.secureit.exception.PropertyNotFoundException;
@@ -13,6 +14,7 @@ import com.team4.secureit.model.Property;
 import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.repository.DeviceRepository;
 import com.team4.secureit.repository.PropertyRepository;
+import com.team4.secureit.util.MappingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +26,12 @@ import org.springframework.web.context.request.async.DeferredResult;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import static com.team4.secureit.util.MappingUtils.toDeviceDetailsResponse;
 
 @Service
 public class DeviceManagementService {
@@ -121,5 +126,11 @@ public class DeviceManagementService {
             if (value.isExpired(now))
                 attemptedPairings.remove(key, value);
         });
+    }
+
+    public List<DeviceDetailsResponse> getUsersDevices(PropertyOwner propertyOwner) {
+        return deviceRepository.findByUser(propertyOwner).stream()
+                .map(MappingUtils::toDeviceDetailsResponse)
+                .toList();
     }
 }

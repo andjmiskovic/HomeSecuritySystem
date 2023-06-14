@@ -4,6 +4,7 @@ import com.team4.secureit.api.ResponseOk;
 import com.team4.secureit.dto.request.DeviceHandshakeData;
 import com.team4.secureit.dto.request.DevicePairingInitRequest;
 import com.team4.secureit.dto.response.CodeResponse;
+import com.team4.secureit.dto.response.DeviceDetailsResponse;
 import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.service.DeviceManagementService;
 import jakarta.validation.Valid;
@@ -13,6 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/devices")
@@ -39,5 +42,12 @@ public class DeviceManagementController {
         PropertyOwner propertyOwner = (PropertyOwner) authentication.getPrincipal();
         deviceManagementService.handshakeWeb(code, propertyOwner);
         return new ResponseOk("Device paired successfully.");
+    }
+
+    @GetMapping("/")
+    @PreAuthorize("hasRole('PROPERTY_OWNER')")
+    public List<DeviceDetailsResponse> getDevices(Authentication authentication) {
+        PropertyOwner propertyOwner = (PropertyOwner) authentication.getPrincipal();
+        return deviceManagementService.getUsersDevices(propertyOwner);
     }
 }

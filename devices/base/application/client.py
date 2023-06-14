@@ -21,8 +21,6 @@ def request_pairing(code):
         'publicKey': cryptography_manager.public_key_pem
     }
 
-    print(device_handshake_data)
-
     current_app.logger.info(f'Requested pairing for code {code}')
     response = requests.post(
         f'http://localhost:8001/devices/handshake/device/{code}',
@@ -32,7 +30,6 @@ def request_pairing(code):
     )
 
     response_data = json.loads(response.text)
-    print(response_data)
     device_config['DEVICE_ID'] = response_data['deviceId']
     device_config.save()
 
@@ -61,5 +58,3 @@ def send_message():
         params=params,
         headers=headers
     )
-
-    print(response.text)
