@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public class DeviceInfo {
+public class DeviceHandshakeData {
     @NotBlank
     @NoHTMLTags
     private String name;
@@ -26,5 +26,8 @@ public class DeviceInfo {
     @NotBlank
     @Pattern(regexp = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$", message = "Mac address is in invalid format.")
     private String macAddress;
+
+    @NotBlank
+    private String publicKey;
 
 }

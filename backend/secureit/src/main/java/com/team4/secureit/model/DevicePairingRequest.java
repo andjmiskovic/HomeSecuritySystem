@@ -1,7 +1,7 @@
 package com.team4.secureit.model;
 
 import com.team4.secureit.api.ResponseError;
-import com.team4.secureit.dto.request.DeviceInfo;
+import com.team4.secureit.dto.request.DeviceHandshakeData;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,11 +21,7 @@ public class DevicePairingRequest {
 
     private Instant expiresAt = Instant.now().plus(5, ChronoUnit.MINUTES);
 
-    private boolean deviceHandshake = false;
-
-    private boolean userHandshake = false;
-
-    private DeviceInfo deviceInfo = null;
+    private DeviceHandshakeData deviceHandshakeData = null;
 
     private DeferredResult<ResponseEntity<?>> response = new DeferredResult<>(60 * 1000L);
 

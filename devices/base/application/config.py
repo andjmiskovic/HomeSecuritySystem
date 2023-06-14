@@ -4,7 +4,7 @@ from datetime import timedelta
 import json
 
 class DeviceConfigManager:
-    CONFIG_PATH = 'config/config.json'
+    CONFIG_PATH = 'memory/config.json'
     CONFIG_KEY = 'DEVICE_CONFIG'
 
     def __init__(self, app):
@@ -24,14 +24,20 @@ class DeviceConfigManager:
     def get(self, key):
         return self.app.config[self.CONFIG_KEY].get(key, None)
 
+    def get_config(self):
+        return self.app.config[self.CONFIG_KEY]
+
     def __getitem__(self, key):
         return self.get(key)
 
     def __setitem__(self, key, value):
         self.set(key, value)
     
-    def get_config(self):
-        return self.app.config[self.CONFIG_KEY]
+    def __getattr__(self, attr):
+        key = attr.upper()
+        if key in self.app.config[self.CONFIG_KEY]:
+            return self.get(key)
+        raise AttributeError(f"'DeviceConfigManager' object has no attribute '{attr}'")
 
 device_config = DeviceConfigManager(current_app)
 

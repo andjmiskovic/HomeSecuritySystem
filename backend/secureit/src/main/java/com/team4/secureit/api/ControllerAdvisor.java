@@ -109,4 +109,10 @@ public class ControllerAdvisor {
     public ResponseError handlePairingRequestNotFound(PairingRequestNotFound e) {
         return new ResponseError(HttpStatus.NOT_FOUND, "Pairing request not found.");
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(DeviceNotFoundException.class)
+    public ResponseError handleDeviceNotFoundException(DeviceNotFoundException e) {
+        return new ResponseError(HttpStatus.NOT_FOUND, "Device not found.");
+    }
 }

@@ -63,14 +63,17 @@ def pair_device():
     
     code = data['code']
     result = client.request_pairing(code)
-    
-    # TODO: Setup device using the result
 
     if result:
         return ApiResponse('Pairing successful.', 200).to_json()
     else:
         return ApiResponse('Pairing timed out.', 408).to_json()
     
+
+@api.route('/testmessage', methods=['POST'])
+def testmessage():
+    client.send_message()
+    return "Sent"
 
 @api.errorhandler(400)
 def bad_request(e):

@@ -1,7 +1,7 @@
 package com.team4.secureit.controller;
 
 import com.team4.secureit.api.ResponseOk;
-import com.team4.secureit.dto.request.DeviceInfo;
+import com.team4.secureit.dto.request.DeviceHandshakeData;
 import com.team4.secureit.dto.request.DevicePairingInitRequest;
 import com.team4.secureit.dto.response.CodeResponse;
 import com.team4.secureit.model.PropertyOwner;
@@ -29,8 +29,8 @@ public class DeviceManagementController {
     }
 
     @PostMapping("/handshake/device/{code}")
-    public DeferredResult<ResponseEntity<?>> handshakeDevice(@RequestBody @Valid DeviceInfo deviceInfo, @PathVariable String code) {
-        return deviceManagementService.handshakeDevice(deviceInfo, code);
+    public DeferredResult<ResponseEntity<?>> handshakeDevice(@RequestBody @Valid DeviceHandshakeData deviceHandshakeData, @PathVariable String code) {
+        return deviceManagementService.handshakeDevice(deviceHandshakeData, code);
     }
 
     @PostMapping("/handshake/web/{code}")

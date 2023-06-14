@@ -2,13 +2,16 @@ package com.team4.secureit.service;
 
 import com.team4.secureit.api.ResponseError;
 import com.team4.secureit.api.ResponseOk;
-import com.team4.secureit.dto.request.DeviceInfo;
+import com.team4.secureit.dto.request.DeviceHandshakeData;
 import com.team4.secureit.dto.response.CodeResponse;
+import com.team4.secureit.dto.response.DeviceSuccessfulPairingResponse;
 import com.team4.secureit.exception.PairingRequestNotFound;
 import com.team4.secureit.exception.PropertyNotFoundException;
+import com.team4.secureit.model.Device;
 import com.team4.secureit.model.DevicePairingRequest;
 import com.team4.secureit.model.Property;
 import com.team4.secureit.model.PropertyOwner;
+import com.team4.secureit.repository.DeviceRepository;
 import com.team4.secureit.repository.PropertyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +33,9 @@ public class DeviceManagementService {
 
     @Autowired
     private PropertyRepository propertyRepository;
+
+    @Autowired
+    private DeviceRepository deviceRepository;
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
@@ -54,7 +60,7 @@ public class DeviceManagementService {
         return new CodeResponse(code);
     }
 
-    public DeferredResult<ResponseEntity<?>> handshakeDevice(DeviceInfo deviceInfo, String code) {
+    public DeferredResult<ResponseEntity<?>> handshakeDevice(DeviceHandshakeData deviceHandshakeData, String code) {
         /*
         This method is invoked by the device, and it begins the handshake process for the initiated pairing.
          */
@@ -69,17 +75,15 @@ public class DeviceManagementService {
             return response;
         }
 
-        pairing.setDeviceHandshake(true);
-        pairing.setDeviceInfo(deviceInfo);
+        pairing.setDeviceHandshakeData(deviceHandshakeData);
         pairing.setExpiresAt(Instant.now().plus(1, ChronoUnit.MINUTES));
 
         // Notify user about device pairing
         PropertyOwner propertyOwner = pairing.getRequestedBy();
-        messagingTemplate.convertAndSendToUser(propertyOwner.getUsername(), "/queue/devices", deviceInfo);
+        messagingTemplate.convertAndSendToUser(propertyOwner.getUsername(), "/queue/devices", deviceHandshakeData);
+        System.out.println("Is this your device?: " + deviceHandshakeData.getMacAddress() + ", " + deviceHandshakeData.getLabel());
 
-        System.out.println("Is this your device?: " + deviceInfo.getMacAddress() + " " + deviceInfo.getLabel());
-
-        return pairing.getResponse(); // Response is returned after handshakeWeb() method is called, or if it times out
+        return pairing.getResponse(); // Response is returned after handshakeWeb() method is called, or when it times out.
     }
 
     public void handshakeWeb(String code, PropertyOwner propertyOwner) {
@@ -90,15 +94,24 @@ public class DeviceManagementService {
         if (pairing == null || pairing.isExpired() || !pairing.getRequestedBy().equals(propertyOwner))
             throw new PairingRequestNotFound();
 
-        pairing.setUserHandshake(true);
+        DeviceHandshakeData handshakeData = pairing.getDeviceHandshakeData();
+        Device pairedDevice = new Device(
+                handshakeData.getName(),
+                handshakeData.getType(),
+                handshakeData.getManufacturer(),
+                handshakeData.getMacAddress(),
+                handshakeData.getLabel(),
+                handshakeData.getPublicKey(),
+                pairing.getProperty(),
+                pairing.getRequestedBy()
+        );
 
-        DeferredResult<ResponseEntity<?>> response = pairing.getResponse();
-        ResponseEntity<?> success = ResponseEntity
-                .ok()
-                .body(new ResponseOk("TODO: Send data useful for setting up the device."));
-        response.setResult(success);
-
+        deviceRepository.save(pairedDevice);
         attemptedPairings.remove(code);
+
+        pairing.getResponse().setResult(
+                ResponseEntity.ok().body(new DeviceSuccessfulPairingResponse(pairedDevice.getId()))
+        );
     }
 
     @Scheduled(cron = "* 2 * * * *")
