@@ -8,15 +8,13 @@ import com.team4.secureit.exception.PropertyDoesNotBelongToUserException;
 import com.team4.secureit.exception.PropertyNotFoundException;
 import com.team4.secureit.exception.UserNotFoundException;
 import com.team4.secureit.exception.VerificationFailedException;
-import com.team4.secureit.model.Property;
-import com.team4.secureit.model.PropertyOwner;
-import com.team4.secureit.model.PropertyType;
-import com.team4.secureit.model.TenantInvite;
+import com.team4.secureit.model.*;
 import com.team4.secureit.repository.PropertyOwnerRepository;
 import com.team4.secureit.repository.PropertyRepository;
 import com.team4.secureit.repository.TenantInviteRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -50,8 +48,8 @@ public class PropertyService {
         return getPropertyDetailsResponsesFromProperties(properties);
     }
 
-    public List<PropertyResponse> getPropertiesOfOwner(String email) {
-        PropertyOwner propertyOwner = propertyOwnerRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+    public List<PropertyResponse> getPropertiesOfOwner(Authentication authentication) {
+        PropertyOwner propertyOwner = (PropertyOwner) authentication.getPrincipal();
         List<Property> properties = propertyRepository.getPropertiesWhereUserIsOwner(propertyOwner.getId(), "", null);
         return getPropertyDetailsResponsesFromProperties(properties);
     }

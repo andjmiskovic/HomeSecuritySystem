@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.UUID;
@@ -56,8 +57,8 @@ public class PropertyController {
     }
 
     @GetMapping("/owner")
-    public List<PropertyResponse> getPropertiesOfOwner(@RequestParam(value = "email") String email) {
-        return propertyService.getPropertiesOfOwner(email);
+    public List<PropertyResponse> getPropertiesOfOwner(Authentication authentication) {
+        return propertyService.getPropertiesOfOwner(authentication);
     }
 
     @PostMapping("/set-owner")
