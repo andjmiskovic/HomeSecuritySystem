@@ -4,6 +4,7 @@ import {CsrService} from "../../../../services/csr.service";
 import {MatDialogRef} from "@angular/material/dialog";
 import {AuthService} from "../../../../services/auth.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {countryCodeValidator} from "../../../../utils/InputValidation";
 
 @Component({
   selector: 'app-csr-form',
@@ -20,7 +21,7 @@ export class CsrFormComponent {
       organization: ['', Validators.required],
       city: ['', Validators.required],
       state: ['', Validators.required],
-      country: ['', [Validators.required, CountryCodeValidator]],
+      country: ['', [Validators.required, countryCodeValidator]],
       algorithm: ['RSA', [Validators.required, Validators.pattern(/^(RSA|DSA|EC)$/)]],
       keySize: ['2048', [Validators.required, Validators.min(1)]]
     });
@@ -68,13 +69,12 @@ export class CsrFormComponent {
   get keySize() {
     return this.csrForm.get('keySize');
   }
-}
 
-function CountryCodeValidator(control: { value: any; }) {
-  const countryCode = control.value;
-  if (countryCode && countryCode.length === 2) {
-    return null;
-  } else {
-    return {invalidCountryCode: true};
+  invalidCountryCodeMessageErrorMessage() {
+    return this.csrForm.hasError('invalidCountryCode', 'country')
+      && !this.csrForm.hasError('required', 'country');
   }
 }
+
+
+

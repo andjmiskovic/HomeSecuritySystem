@@ -3,6 +3,7 @@ import {AbstractControl, FormBuilder, ValidatorFn, Validators} from "@angular/fo
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {AuthService} from "../../../../services/auth.service";
 import {RegisterCredentials} from "../../../../model/RegisterCredentials";
+import {passwordValidator, phoneNumberValidator} from "../../../../utils/InputValidation";
 
 @Component({
   selector: 'app-registration',
@@ -11,16 +12,6 @@ import {RegisterCredentials} from "../../../../model/RegisterCredentials";
 })
 export class RegistrationComponent {
   @Output() switchForm = new EventEmitter();
-
-  formGroup = this._formBuilder.group({
-    emailFormControl: ['email', [Validators.required, Validators.email]],
-    phoneFormControl: ['phoneNumber', [Validators.required]],
-    nameFormControl: ['name', [Validators.required]],
-    lastNameFormControl: ['lastName', [Validators.required]],
-    cityFormControl: ['city', [Validators.required]],
-    passwordFormControl: ['', [Validators.required, Validators.minLength(12), this.passwordValidator()]],
-    password2FormControl: ['password2', [Validators.required]]
-  });
 
   email = "";
   phoneNumber = "";
@@ -32,6 +23,16 @@ export class RegistrationComponent {
 
   hide = true;
   hide2 = true;
+
+  formGroup = this._formBuilder.group({
+    emailFormControl: ['email', [Validators.required, Validators.email]],
+    phoneFormControl: ['phoneNumber', [Validators.required, phoneNumberValidator()]],
+    nameFormControl: ['name', [Validators.required]],
+    lastNameFormControl: ['lastName', [Validators.required]],
+    cityFormControl: ['city', [Validators.required]],
+    passwordFormControl: ['', [Validators.required, Validators.minLength(12), passwordValidator()]],
+    password2FormControl: ['password2', [Validators.required, this.passwordMatchValidator()]]
+  });
 
   constructor(@Inject(MatSnackBar) private _snackBar: MatSnackBar, private _formBuilder: FormBuilder, private authService: AuthService) {
   }
@@ -62,11 +63,19 @@ export class RegistrationComponent {
       && !this.formGroup.hasError('minlength', 'passwordFormControl');
   }
 
-  passwordValidator(): ValidatorFn {
+  invalidPhoneNumberErrorMessage() {
+    return this.formGroup.hasError('invalidPhoneNumber', 'phoneFormControl')
+      && !this.formGroup.hasError('required', 'phoneFormControl');
+  }
+
+  notMatchingPasswords() {
+    return this.formGroup.hasError('invalidRepeatPassword', 'password2FormControl')
+      && !this.formGroup.hasError('required', 'password2FormControl');
+  }
+
+  passwordMatchValidator() {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{12,}$/;
-      const valid = passwordRegex.test(control.value);
-      return valid ? null : {invalidPassword: true};
+      return this.password === control.value ? null : {invalidRepeatPassword: true};
     };
   }
 
@@ -80,4 +89,6 @@ export class RegistrationComponent {
   switchToLoginForm() {
     this.switchForm.emit();
   }
+
+
 }

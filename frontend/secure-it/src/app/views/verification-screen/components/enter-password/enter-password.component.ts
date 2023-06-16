@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../../../services/auth.service";
 import {RegisterCredentials} from "../../../../model/RegisterCredentials";
 import {SetPasswordRequest} from "../../../../model/SetPasswordRequest";
+import {passwordValidator} from "../../../../utils/InputValidation";
 
 @Component({
   selector: 'app-enter-password',
@@ -13,12 +14,12 @@ import {SetPasswordRequest} from "../../../../model/SetPasswordRequest";
 })
 export class EnterPasswordComponent {
   formGroup = this._formBuilder.group({
-    passwordFormControl: ['', [Validators.required, Validators.minLength(12), this.passwordValidator()]],
-    password2FormControl: ['password2', [Validators.required]]
+    passwordFormControl: ['', [Validators.required, Validators.minLength(12), passwordValidator()]],
+    password2FormControl: ['password2', [Validators.required, this.passwordMatchValidator()]]
   });
 
   password!: string;
-  password2! : string;
+  password2!: string;
   hide = true;
   hide2 = true;
   verificationCode!: string;
@@ -50,14 +51,6 @@ export class EnterPasswordComponent {
       && !this.formGroup.hasError('minlength', 'passwordFormControl');
   }
 
-  passwordValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{12,}$/;
-      const valid = passwordRegex.test(control.value);
-      return valid ? null : {invalidPassword: true};
-    };
-  }
-
   setPassword() {
     if (this.password !== this.password2) {
       this.openSnackBar("Passwords are not the same.");
@@ -82,5 +75,16 @@ export class EnterPasswordComponent {
       duration: 3000,
       panelClass: ['snack-bar']
     })
+  }
+
+  passwordMatchValidator() {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      return this.password === control.value ? null : {invalidRepeatPassword: true};
+    };
+  }
+
+  notMatchingPasswords() {
+    return this.formGroup.hasError('invalidRepeatPassword', 'password2FormControl')
+      && !this.formGroup.hasError('required', 'password2FormControl');
   }
 }

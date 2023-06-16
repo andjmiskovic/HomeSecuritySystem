@@ -23,6 +23,9 @@
           <mat-error *ngIf="formGroup.hasError('required', 'phoneFormControl')">
             Phone number is <strong>required</strong>
           </mat-error>
+          <mat-error *ngIf="invalidPhoneNumberErrorMessage()">
+            Phone number is <strong>invalid</strong> Ex. +381 1234567
+          </mat-error>
         </mat-form-field>
       </p>
       <p>
@@ -54,7 +57,7 @@
           <mat-error *ngIf="formGroup.hasError('required', 'password2FormControl')">
             Re-entering is <strong>required</strong>
           </mat-error>
-          <mat-error *ngIf="!formGroup.hasError('required', 'password2FormControl') && password !== password2">
+          <mat-error *ngIf="notMatchingPasswords()">
             Passwords are not the same
           </mat-error>
         </mat-form-field>

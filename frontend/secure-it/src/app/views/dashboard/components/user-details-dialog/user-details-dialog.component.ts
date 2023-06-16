@@ -6,6 +6,7 @@ import {CreateUserCredentials} from "../../../../model/RegisterCredentials";
 import {UserService} from "../../../../services/user.service";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {ConfirmUserDeleteComponent} from "../confirm-user-delete/confirm-user-delete.component";
+import {phoneNumberValidator} from "../../../../utils/InputValidation";
 
 @Component({
   selector: 'app-user-details-dialog',
@@ -20,7 +21,7 @@ export class UserDetailsDialogComponent implements OnInit {
 
   formGroup = this._formBuilder.group({
     emailFormControl: ['email', [Validators.required, Validators.email]],
-    phoneFormControl: ['phoneNumber', [Validators.required]],
+    phoneFormControl: ['phoneNumber', [Validators.required, phoneNumberValidator()]],
     nameFormControl: ['name', [Validators.required]],
     lastNameFormControl: ['lastName', [Validators.required]],
     cityFormControl: ['city', [Validators.required]],
@@ -107,5 +108,10 @@ export class UserDetailsDialogComponent implements OnInit {
     dialogRef.componentInstance.parentDialog = this.dialogRef
     dialogRef.afterClosed().subscribe(() => {
     })
+  }
+
+  invalidPhoneNumberErrorMessage() {
+    return this.formGroup.hasError('invalidPhoneNumber', 'phoneFormControl')
+      && !this.formGroup.hasError('required', 'phoneFormControl');
   }
 }

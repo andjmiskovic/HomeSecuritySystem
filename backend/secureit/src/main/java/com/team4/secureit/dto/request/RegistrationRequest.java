@@ -10,7 +10,7 @@ import lombok.Data;
 @PasswordsMatch
 public class RegistrationRequest extends UserDetailsRequest {
     @NotBlank
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{12,}$",
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\s]).{12,}$",
             message = "Password must have at least 12 characters, at least one uppercase letter, " +
                     "one lowercase letter, one digit, and one special character.")
     @NotCommon

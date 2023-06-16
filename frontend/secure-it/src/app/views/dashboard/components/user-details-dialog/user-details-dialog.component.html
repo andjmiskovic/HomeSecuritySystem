@@ -22,6 +22,9 @@
           <mat-error *ngIf="formGroup.hasError('required', 'phoneFormControl')">
             Phone number is <strong>required</strong>
           </mat-error>
+          <mat-error *ngIf="invalidPhoneNumberErrorMessage()">
+            Phone number is <strong>invalid</strong> Ex. +381 1234567
+          </mat-error>
         </mat-form-field>
       </p>
       <p>

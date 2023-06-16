@@ -27,7 +27,7 @@
     <mat-label>Country Code</mat-label>
     <input matInput formControlName="country" required>
     <mat-error *ngIf="csrForm.get('country')?.hasError('required')">Country code cannot be blank</mat-error>
-    <mat-error *ngIf="csrForm.get('country')?.hasError('countryCode')">Invalid country code</mat-error>
+    <mat-error *ngIf="invalidCountryCodeMessageErrorMessage()">Invalid country code</mat-error>
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="input">
