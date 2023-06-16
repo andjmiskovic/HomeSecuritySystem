@@ -20,10 +20,10 @@
       Edit
     </button>
     <button
-        [matTooltip]="'Add tenant'"
-        style="float: right; margin-left: 5px" (click)="openAddTenantDialog()"
-        mat-raised-button
-        color="primary">
+      [matTooltip]="'Add tenant'"
+      style="float: right; margin-left: 5px" (click)="openAddTenantDialog()"
+      mat-raised-button
+      color="primary">
       <mat-icon>person</mat-icon>
       Add tenant
     </button>
@@ -59,6 +59,29 @@
       <button style="font-size: 12px; margin-left: 5px" mat-stroked-button (click)="removeFromProperty(tenant.id)">
         <mat-icon style="color: var(--red)">delete</mat-icon>
         Remove from property
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="label">Devices:</div>
+  </div>
+  <div class="row" *ngFor="let device of property.devices">
+    <div class="label" style="font-weight: 400 !important;">{{device.label}}</div>
+    <div class="value">
+      <button style="font-size: 12px; margin-left: 5px" mat-stroked-button (click)="deviceDetails(device.id)">
+        <mat-icon style="color: var(--red)">article</mat-icon>
+        Details
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="label" style="font-weight: 400 !important;"></div>
+    <div class="value">
+      <button style="font-size: 12px; margin-left: 5px" mat-stroked-button (click)="addNewDevice()">
+        <mat-icon style="color: var(--red)">plus</mat-icon>
+        Add new device
       </button>
     </div>
   </div>

@@ -3,7 +3,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from "rxjs";
 import {AuthService} from "./auth.service";
 import {environment} from "../environment.development";
-import {BasicPropertyDetails, CreatePropertyRequest, PropertyDetails, UpdatePropertyRequest} from "../model/Property";
+import {PropertyResponse, CreatePropertyRequest, PropertyDetails, UpdatePropertyRequest} from "../model/Property";
 import {InviteUserToPropertyRequest} from "../model/InviteUserToPropertyRequest";
 
 @Injectable({
@@ -17,12 +17,12 @@ export class PropertyService {
     this.propertiesUrl = environment.apiUrl + '/property';
   }
 
-  public getProperties(search: string, type: string | undefined): Observable<BasicPropertyDetails[]> {
+  public getProperties(search: string, type: string | undefined): Observable<PropertyResponse[]> {
     let queryParams = new HttpParams();
     queryParams = queryParams.append("search", search);
     if (type != undefined)
       queryParams = queryParams.append("type", type);
-    return this.http.get<BasicPropertyDetails[]>(this.propertiesUrl + "/all", AuthService.getHttpOptions(queryParams));
+    return this.http.get<PropertyResponse[]>(this.propertiesUrl + "/all", AuthService.getHttpOptions(queryParams));
   }
 
   public getPropertyTypes(): Observable<string[]> {
@@ -57,13 +57,13 @@ export class PropertyService {
     queryParams = queryParams.append("id", id);
     if (type != undefined)
       queryParams = queryParams.append("type", type);
-    return this.http.get<BasicPropertyDetails[]>(this.propertiesUrl + "/user", AuthService.getHttpOptions(queryParams));
+    return this.http.get<PropertyResponse[]>(this.propertiesUrl + "/user", AuthService.getHttpOptions(queryParams));
   }
 
   public getPropertiesOfOwner(email: string) {
     let queryParams = new HttpParams();
     queryParams = queryParams.append("email", email);
-    return this.http.get<BasicPropertyDetails[]>(this.propertiesUrl + "/owner", AuthService.getHttpOptions(queryParams));
+    return this.http.get<PropertyResponse[]>(this.propertiesUrl + "/owner", AuthService.getHttpOptions(queryParams));
   }
 
   public addNewProperty(requestBody: CreatePropertyRequest) {

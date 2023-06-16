@@ -1,7 +1,8 @@
 import {User} from "./User";
 import {T} from "@angular/cdk/keycodes";
+import {DeviceDetailsResponse} from "./Device";
 
-export class BasicPropertyDetails {
+export class PropertyResponse {
   id!: string;
   image: string = "";
   address!: string;
@@ -30,6 +31,7 @@ export class PropertyDetails {
   type: PropertyType = PropertyType.HOUSE;
   owner: User = new User();
   tenants: User[] = [];
+  devices: DeviceDetailsResponse[] = [];
 }
 
 export enum PropertyType {

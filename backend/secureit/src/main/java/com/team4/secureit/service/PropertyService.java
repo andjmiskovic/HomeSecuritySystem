@@ -1,6 +1,7 @@
 package com.team4.secureit.service;
 
 import com.team4.secureit.dto.request.*;
+import com.team4.secureit.dto.response.DeviceDetailsResponse;
 import com.team4.secureit.dto.response.PropertyDetailsResponse;
 import com.team4.secureit.dto.response.PropertyResponse;
 import com.team4.secureit.dto.response.UserInfoResponse;
@@ -36,6 +37,9 @@ public class PropertyService {
 
     @Autowired
     private MailingService mailingService;
+
+    @Autowired
+    private DeviceManagementService deviceManagementService;
 
     public List<PropertyResponse> getProperties(String search, PropertyType type) {
         List<Property> properties = propertyRepository.getAll(search.toLowerCase(), type);
@@ -85,7 +89,8 @@ public class PropertyService {
                 tenants.add(new UserInfoResponse(tenant.getId().toString(), tenant.getFirstName(), tenant.getLastName(), tenant.getEmail()));
             }
         }
-        return new PropertyDetailsResponse(property.getId(), property.getName(), property.getAddress(), property.getType(), property.getImage(), getUserInfo(property.getOwner().getId()), tenants);
+        List<DeviceDetailsResponse> devices = deviceManagementService.getUsersDevices(property.getOwner());
+        return new PropertyDetailsResponse(property.getId(), property.getName(), property.getAddress(), property.getType(), property.getImage(), getUserInfo(property.getOwner().getId()), tenants, devices);
     }
 
     public void deleteAllPropertiesForUser(PropertyOwner propertyOwner) {

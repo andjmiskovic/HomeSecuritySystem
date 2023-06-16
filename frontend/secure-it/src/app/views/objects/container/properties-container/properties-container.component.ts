@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {BasicPropertyDetails, getKeyFromValue, PropertyType} from "../../../../model/Property";
+import {PropertyResponse, getKeyFromValue, PropertyType} from "../../../../model/Property";
 import {PropertyService} from "../../../../services/property.service";
 import {MatSelectChange} from "@angular/material/select";
 import {MatDialog} from "@angular/material/dialog";
@@ -16,7 +16,7 @@ import {AuthService} from "../../../../services/auth.service";
 export class PropertiesContainerComponent {
   searchFilter = "";
   type: string | undefined = 'All';
-  properties: BasicPropertyDetails[] = [];
+  properties: PropertyResponse[] = [];
   public fileTypes = Object.values(PropertyType);
   userRole: string;
 

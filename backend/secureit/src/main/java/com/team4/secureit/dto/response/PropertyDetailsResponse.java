@@ -17,4 +17,5 @@ public class PropertyDetailsResponse {
     private String image;
     private UserInfoResponse owner;
     private List<UserInfoResponse> tenants;
+    private List<DeviceDetailsResponse> devices;
 }

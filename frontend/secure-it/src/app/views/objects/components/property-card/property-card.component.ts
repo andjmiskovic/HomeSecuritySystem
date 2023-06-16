@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {BasicPropertyDetails} from "../../../../model/Property";
+import {PropertyResponse} from "../../../../model/Property";
 import {MatDialog} from "@angular/material/dialog";
 import {PropertyDetailsComponent} from "../property-details/property-details.component";
 import {AuthService} from "../../../../services/auth.service";
@@ -11,7 +11,7 @@ import {AuthService} from "../../../../services/auth.service";
 })
 export class PropertyCardComponent implements OnInit {
   @Output() updateDisplay: EventEmitter<any> = new EventEmitter();
-  @Input() property!: BasicPropertyDetails;
+  @Input() property!: PropertyResponse;
   loggedUserId!: string;
   userRole!: string;
 
