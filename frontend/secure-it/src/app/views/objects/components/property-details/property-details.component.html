@@ -4,7 +4,7 @@
     Property details
   </h2>
   <p style="margin-top: -15px"><i>Property id: {{property.id}}</i>
-    <span *ngIf="loggedUser && property && property.owner && loggedUser.id===property.owner.id">
+    <span *ngIf="owner()">
     <button
       [matTooltip]="'Delete property'"
       style="float: right; margin-left: 5px" (click)="deleteProperty()"
@@ -65,6 +65,7 @@
 
   <div class="row">
     <div class="label">Devices:</div>
+    <div class="value" *ngIf="property.devices.length === 0">No devices yet</div>
   </div>
   <div class="row" *ngFor="let device of property.devices">
     <div class="label" style="font-weight: 400 !important;">{{device.label}}</div>
@@ -76,11 +77,11 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" *ngIf="owner()">
     <div class="label" style="font-weight: 400 !important;"></div>
     <div class="value">
       <button style="font-size: 12px; margin-left: 5px" mat-stroked-button (click)="addNewDevice()">
-        <mat-icon style="color: var(--red)">plus</mat-icon>
+        <mat-icon style="color: var(--blue)">add</mat-icon>
         Add new device
       </button>
     </div>

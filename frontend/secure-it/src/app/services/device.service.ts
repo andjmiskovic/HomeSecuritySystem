@@ -29,4 +29,8 @@ export class DeviceManagementService {
   public getDevices(): Observable<DeviceDetailsResponse[]> {
     return this.http.get<DeviceDetailsResponse[]>(`${this.devicesUrl}/`);
   }
+
+  public getDevice(id: string | null): Observable<DeviceDetailsResponse> {
+    return this.http.get<DeviceDetailsResponse>(`${this.devicesUrl}/` + id);
+  }
 }

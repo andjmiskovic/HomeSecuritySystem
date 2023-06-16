@@ -50,4 +50,10 @@ public class DeviceManagementController {
         PropertyOwner propertyOwner = (PropertyOwner) authentication.getPrincipal();
         return deviceManagementService.getUsersDevices(propertyOwner);
     }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('PROPERTY_OWNER')")
+    public DeviceDetailsResponse getDevices(@PathVariable String id) {
+        return deviceManagementService.getDevice(id);
+    }
 }

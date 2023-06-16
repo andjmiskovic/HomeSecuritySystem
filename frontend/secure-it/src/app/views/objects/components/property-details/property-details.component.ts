@@ -8,6 +8,7 @@ import {User} from "../../../../model/User";
 import {AddTenantDialogComponent} from "../add-tenant-dialog/add-tenant-dialog.component";
 import {DeviceManagementService} from "../../../../services/device.service";
 import {DevicePairingInitRequest} from "../../../../model/Device";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-property-details',
@@ -21,7 +22,8 @@ export class PropertyDetailsComponent implements OnInit {
   userRole!: string
 
   constructor(private authService: AuthService, private propertyService: PropertyService, private dialog: MatDialog,
-              private dialogRef: MatDialogRef<PropertyDetailsComponent>, private deviceService: DeviceManagementService) {
+              private dialogRef: MatDialogRef<PropertyDetailsComponent>, private deviceService: DeviceManagementService,
+              private router: Router) {
     this.userRole = localStorage.getItem("userRole") || ""
   }
 
@@ -85,7 +87,11 @@ export class PropertyDetailsComponent implements OnInit {
     })
   }
 
+  owner() {
+    return this.loggedUser && this.property && this.property.owner && this.loggedUser.id === this.property.owner.id;
+  }
+
   deviceDetails(id: string) {
-    
+    this.router.navigate(['/device/' + id]);
   }
 }

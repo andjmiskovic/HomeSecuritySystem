@@ -133,4 +133,8 @@ public class DeviceManagementService {
                 .map(MappingUtils::toDeviceDetailsResponse)
                 .toList();
     }
+
+    public DeviceDetailsResponse getDevice(String id) {
+        return toDeviceDetailsResponse(deviceRepository.findById(UUID.fromString(id)).get());
+    }
 }

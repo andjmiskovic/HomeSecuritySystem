@@ -24,6 +24,7 @@ import {MatCardModule} from "@angular/material/card";
 import {VerificationpageModule} from "./views/verification-screen/verificationpage.module";
 import {PropertiesModule} from "./views/objects/properties.module";
 import {TokensModule} from "./views/tokens/tokens.module";
+import {DeviceModule} from "./views/device/device.module";
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import {TokensModule} from "./views/tokens/tokens.module";
     MatCardModule,
     ReactiveFormsModule,
     PropertiesModule,
-    TokensModule
+    TokensModule,
+    DeviceModule
   ],
   providers: [],
   bootstrap: [AppComponent]
