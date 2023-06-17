@@ -58,7 +58,7 @@ def change_password():
 @login_required
 def change_label():
     data = request.get_json()
-    if not data or 'label':
+    if not data or 'label' not in data:
         return ApiResponse('Missing label.', 400).to_json()
     new_label = data['label']
 
