@@ -25,6 +25,8 @@ import {VerificationpageModule} from "./views/verification-screen/verificationpa
 import {PropertiesModule} from "./views/objects/properties.module";
 import {TokensModule} from "./views/tokens/tokens.module";
 import {DeviceModule} from "./views/device/device.module";
+import {HandshakeWebSocketAPI} from "./services/handshake/handshake-socket.service";
+import {HandshakeWebsocketShareService} from "./services/handshake/handshake-websocketshare.service";
 
 @NgModule({
   declarations: [
@@ -58,7 +60,7 @@ import {DeviceModule} from "./views/device/device.module";
     TokensModule,
     DeviceModule
   ],
-  providers: [],
+  providers: [HandshakeWebSocketAPI, HandshakeWebsocketShareService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

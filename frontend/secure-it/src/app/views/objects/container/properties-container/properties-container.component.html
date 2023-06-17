@@ -1,6 +1,5 @@
 <app-sidebar currentPage="properties"></app-sidebar>
 <img src="../../../../../assets/images/background-line.jpg" class="dashboard-background" alt="dashboard-background"/>
-
 <div style="margin-left: 90px; margin-right: 10px; margin-top: -80px">
   <h1 style="font-weight: 500; margin-left: 10px; color: white">Properties</h1>
   <p>
@@ -25,7 +24,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-6 col-md-4 col-lg-3 mb-4" *ngFor="let o of properties">
-        <app-property-card [property]="o" (updateDisplay)="getCards()"></app-property-card>
+        <app-property-card [property]="o" (updateDisplay)="getCards()" (updateGeneratedCode)="generatedCode($event)"></app-property-card>
       </div>
       <div *ngIf="properties.length === 0" class="d-flex justify-content-center" style="width: 100%">
         <img src="assets/images/SafeHouse.png" style="height: 400px">

@@ -87,6 +87,8 @@ public class DeviceManagementService {
 
         // Notify user about device pairing
         PropertyOwner propertyOwner = pairing.getRequestedBy();
+        System.out.println(propertyOwner.getUsername());
+        System.out.println(deviceHandshakeData);
         messagingTemplate.convertAndSendToUser(propertyOwner.getUsername(), "/queue/devices", deviceHandshakeData);
         System.out.println("Is this your device?: " + deviceHandshakeData.getMacAddress() + ", " + deviceHandshakeData.getLabel());
 

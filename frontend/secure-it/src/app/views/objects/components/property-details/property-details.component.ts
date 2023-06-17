@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {PropertyDetails} from "../../../../model/Property";
 import {PropertyService} from "../../../../services/property.service";
 import {PropertyEditFormDialogComponent} from "../property-details-dialog/property-edit-form-dialog.component";
@@ -19,7 +19,8 @@ export class PropertyDetailsComponent implements OnInit {
   @Input() id!: string;
   property: PropertyDetails = new PropertyDetails();
   loggedUser!: User;
-  userRole!: string
+  userRole!: string;
+  generatedCode: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(private authService: AuthService, private propertyService: PropertyService, private dialog: MatDialog,
               private dialogRef: MatDialogRef<PropertyDetailsComponent>, private deviceService: DeviceManagementService,
@@ -83,6 +84,7 @@ export class PropertyDetailsComponent implements OnInit {
     this.deviceService.initializePairing(reguest).subscribe({
       next: value => {
         console.log(value)
+        this.generatedCode.emit(value.code)
       }
     })
   }
