@@ -15,6 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.sql.Blob;
 import java.util.List;
 
 @RestController
@@ -55,5 +58,10 @@ public class DeviceManagementController {
     @PreAuthorize("hasRole('PROPERTY_OWNER')")
     public DeviceDetailsResponse getDevices(@PathVariable String id) {
         return deviceManagementService.getDevice(id);
+    }
+
+    @GetMapping("/report")
+    public ByteArrayInputStream getReport(@RequestParam String start, @RequestParam String end) throws IOException {
+        return deviceManagementService.generateReport(start, end);
     }
 }

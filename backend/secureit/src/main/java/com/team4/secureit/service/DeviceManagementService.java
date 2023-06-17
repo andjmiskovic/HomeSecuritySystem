@@ -16,6 +16,7 @@ import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.repository.DeviceRepository;
 import com.team4.secureit.repository.PropertyRepository;
 import com.team4.secureit.util.MappingUtils;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,17 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.sql.Blob;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -140,5 +149,10 @@ public class DeviceManagementService {
 
     public DeviceDetailsResponse getDevice(String id) {
         return toDeviceDetailsResponse(deviceRepository.findById(UUID.fromString(id)).orElseThrow(DeviceNotFoundException::new));
+    }
+
+    public ByteArrayInputStream generateReport(String start, String end) throws IOException {
+        File pdfFile = new File("src/main/resources/gen/report.pdf");
+        return new ByteArrayInputStream(FileUtils.readFileToByteArray(pdfFile));
     }
 }
