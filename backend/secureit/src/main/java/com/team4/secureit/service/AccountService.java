@@ -59,7 +59,7 @@ public class AccountService {
             throw new Missing2FaCodeException("Please provide 2FA code along with the credentials to authenticate.");
 
         if (!verify2FA(loginRequest.getCode(), user))
-            throw new Invalid2FaCodeException("Invalid 2FA code.");
+            throw new Invalid2FaCodeException("Invalid 2FA code.", user);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String accessToken = tokenProvider.createAccessToken(authentication);

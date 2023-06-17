@@ -1,12 +1,13 @@
 import requests
 import json
-import datetime
+import random
 from flask import current_app
+from datetime import datetime, timezone
 from application.details import device_details
 from application.config import device_config
 from application.crypto import cryptography_manager
 
-PAIRING_TIMEOUT = 65  # seconds
+alarm_simulation = False
 
 headers = {
     'Content-Type': 'application/json'
@@ -20,7 +21,8 @@ def request_pairing(code):
         'type': device_details['TYPE'],
         'macAddress': device_details['MAC_ADDRESS'],
         'label': device_config['LABEL'],
-        'publicKey': cryptography_manager.public_key_pem
+        'publicKey': cryptography_manager.public_key_pem,
+        'sensors': [{'name': s['name'], 'unit': s['unit']} for s in device_details['SENSORS']]
     }
 
     current_app.logger.info(f'Requested pairing for code {code}')
@@ -28,9 +30,10 @@ def request_pairing(code):
         f'http://localhost:8001/devices/handshake/device/{code}',
         json=device_handshake_data,
         headers=headers,
-        timeout=PAIRING_TIMEOUT
+        timeout=65  # seconds
     )
 
+    print(response.text)
     response_data = json.loads(response.text)
     device_config['DEVICE_ID'] = response_data['deviceId']
     device_config.save()
@@ -50,7 +53,8 @@ def send_message():
         return
 
     message = {
-        'data': f'Hello from {device_config.label}! It\'s {datetime.datetime.now().strftime("%H:%M:%S")} on my clock.',
+        'measures': { sensor['name']: generate_measurement(sensor) for sensor in device_details['SENSORS']},
+        'timestamp': str(datetime.now(timezone.utc)),
         'deviceId': device_config.device_id
     }
 
@@ -67,3 +71,15 @@ def send_message():
     )
 
     current_app.logger.info(f'Server received {len(message_bytes)} bytes.')
+
+
+def generate_measurement(sensor):
+    key = 'alarm' if alarm_simulation else 'regular'
+
+    if sensor['type'] == 'number':
+        return random.gauss(
+            sensor[key]['mu'],
+            sensor[key]['sigma']
+        )
+    elif sensor['type'] == 'state':
+        return sensor[key]

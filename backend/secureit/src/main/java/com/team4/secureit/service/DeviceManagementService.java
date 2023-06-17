@@ -1,11 +1,12 @@
 package com.team4.secureit.service;
 
 import com.team4.secureit.api.ResponseError;
-import com.team4.secureit.api.ResponseOk;
 import com.team4.secureit.dto.request.DeviceHandshakeData;
+import com.team4.secureit.dto.request.DeviceSensorInfo;
 import com.team4.secureit.dto.response.CodeResponse;
 import com.team4.secureit.dto.response.DeviceDetailsResponse;
 import com.team4.secureit.dto.response.DeviceSuccessfulPairingResponse;
+import com.team4.secureit.exception.DeviceNotFoundException;
 import com.team4.secureit.exception.PairingRequestNotFound;
 import com.team4.secureit.exception.PropertyNotFoundException;
 import com.team4.secureit.model.Device;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 import static com.team4.secureit.util.MappingUtils.toDeviceDetailsResponse;
 
@@ -107,6 +109,8 @@ public class DeviceManagementService {
                 handshakeData.getMacAddress(),
                 handshakeData.getLabel(),
                 handshakeData.getPublicKey(),
+                handshakeData.getSensors().stream().map(DeviceSensorInfo::getName).collect(Collectors.joining(",")),
+                handshakeData.getSensors().stream().map(DeviceSensorInfo::getUnit).collect(Collectors.joining(",")),
                 pairing.getProperty(),
                 pairing.getRequestedBy()
         );
@@ -135,6 +139,6 @@ public class DeviceManagementService {
     }
 
     public DeviceDetailsResponse getDevice(String id) {
-        return toDeviceDetailsResponse(deviceRepository.findById(UUID.fromString(id)).get());
+        return toDeviceDetailsResponse(deviceRepository.findById(UUID.fromString(id)).orElseThrow(DeviceNotFoundException::new));
     }
 }

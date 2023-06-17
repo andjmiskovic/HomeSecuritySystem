@@ -56,7 +56,8 @@ public class MappingUtils {
                 device.getManufacturer(),
                 device.getMacAddress(),
                 device.getLabel(),
-                propertyInfo
+                propertyInfo,
+                device.getSensorInfo()
         );
     }
 }

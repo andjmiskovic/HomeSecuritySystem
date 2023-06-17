@@ -1,8 +1,13 @@
 package com.team4.secureit.api;
 
 import com.team4.secureit.exception.*;
+import com.team4.secureit.model.LogSource;
+import com.team4.secureit.model.LogType;
+import com.team4.secureit.model.User;
+import com.team4.secureit.service.LogService;
 import io.jsonwebtoken.JwtException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,6 +20,9 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class ControllerAdvisor {
+
+    @Autowired
+    private LogService logService;
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -101,6 +109,15 @@ public class ControllerAdvisor {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(Invalid2FaCodeException.class)
     public ResponseError handleInvalid2FaCodeException(Invalid2FaCodeException e) {
+        User subject = e.getUser();
+        logService.log(
+                "User " + subject.getEmail() + " has entered an invalid 2FA code.",
+                LogSource.AUTHENTICATION,
+                subject.getId(),
+                subject.getId(),
+                LogType.WARNING
+        );
+
         return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
@@ -114,5 +131,11 @@ public class ControllerAdvisor {
     @ExceptionHandler(DeviceNotFoundException.class)
     public ResponseError handleDeviceNotFoundException(DeviceNotFoundException e) {
         return new ResponseError(HttpStatus.NOT_FOUND, "Device not found.");
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(ForbiddenSearchCriteriaException.class)
+    public ResponseError handleForbiddenSearchCriteriaException(ForbiddenSearchCriteriaException e) {
+        return new ResponseError(HttpStatus.FORBIDDEN, "Search criteria is not allowed for this type of user.");
     }
 }

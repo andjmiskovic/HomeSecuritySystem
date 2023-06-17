@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>SecureIT Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding-top: 50px;
+    }
+
+    h2 {
+      color: #333;
+      text-align: center;
+    }
+
+    form {
+      background-color: #ffffff;
+      margin: 2em auto;
+      padding: 2em;
+      width: 300px;
+      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 0.5em;
+    }
+
+    form input[type="text"],
+    form input[type="password"] {
+      border: 1px solid #ddd;
+      padding: 0.5em;
+      width: 100%;
+      margin-bottom: 1em;
+      box-sizing: border-box;
+    }
+
+    form input[type="submit"],
+    button {
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      padding: 0.5em 1em;
+      cursor: pointer;
+    }
+
+    form input[type="submit"]:hover,
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    p,
+    #pair-response {
+      text-align: center;
+      color: #333;
+    }
+
+    #buttons-container {
+      display: flex;
+      justify-content: center;
+      gap: 1em;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 1em;
+      margin-bottom: 2em;
+    }
+
+    .column {
+      flex: 1;
+      max-width: 400px;
+    }
+
+    .button-box {
+      background-color: #ffffff;
+      padding: 2em;
+      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="column">
+      <h2>Pair your device</h2>
+      <form id="pair-form">
+        <label for="code">Code:</label><br>
+        <input type="text" id="code" name="code"><br>
+        <input type="submit" value="Pair">
+      </form>
+      <p id="pair-response"></p>
+    </div>
+
+    <div class="column">
+      <h2>Change your label</h2>
+      <form id="label-form">
+        <label for="label">Device label:</label><br>
+        <input type="text" id="label" name="label" value="{{ label }}"><br>
+        <input type="submit" value="Change label">
+      </form>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="column">
+      <h2>Change your password</h2>
+      <form id="password-form">
+        <label for="oldPassword">Old password:</label><br>
+        <input type="password" id="oldPassword" name="oldPassword"><br>
+        <label for="newPassword">New password:</label><br>
+        <input type="password" id="newPassword" name="newPassword"><br>
+        <input type="submit" value="Change password">
+      </form>
+    </div>
+
+    <div class="column">
+      <h2>Other controls</h2>
+      <div class="button-box" id="buttons-container">
+        <button id="toggle-simulation">Toggle simulation</button>
+        <button id="logout">Logout</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function handleSubmit(event, path, responseElement, method = 'POST') {
+      event.preventDefault();
+
+      const data = Object.fromEntries(new FormData(event.target).entries());
+
+      fetch(path, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (responseElement) {
+            document.getElementById(responseElement).textContent = data.message;
+          } else {
+            alert(data.message);
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
+
+    document.getElementById('pair-form').addEventListener('submit', function (event) {
+      handleSubmit(event, '/api/pair', 'pair-response');
+      document.getElementById('pair-response').textContent = "Go to your SecureIT dashboard and confirm that this is your device.";
+    });
+
+    document.getElementById('label-form').addEventListener('submit', function (event) {
+      handleSubmit(event, '/api/label', null, 'PUT');
+    });
+
+    document.getElementById('password-form').addEventListener('submit', function (event) {
+      handleSubmit(event, '/api/password', null, 'PUT');
+    });
+
+    document.getElementById('toggle-simulation').addEventListener('click', function () {
+      fetch('/api/toggle-simulation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    });
+
+    document.getElementById('logout').addEventListener('click', function () {
+      fetch('/api/logout', {
+        method: 'GET'
+      })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message);
+          window.location.href = '/login';
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    });
+  </script>
+</body>
+
+</html>

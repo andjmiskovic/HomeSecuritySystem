@@ -6,11 +6,14 @@ import com.team4.secureit.model.PropertyOwner;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface DeviceRepository extends JpaRepository<Device, UUID> {
 
     List<Device> findByUser(PropertyOwner propertyOwner);
+
+    Optional<Device> findByUserAndId(PropertyOwner propertyOwner, UUID deviceId);
 
     List<Device> findByProperty(Property property);
 }
