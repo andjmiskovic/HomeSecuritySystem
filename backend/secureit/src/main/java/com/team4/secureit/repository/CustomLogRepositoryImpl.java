@@ -19,12 +19,11 @@ public class CustomLogRepositoryImpl implements CustomLogRepository {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public List<LogEntry> findByCriteria(String message, LogSource source, UUID sourceId, UUID userId, LogType type) {
-        // TODO: Fix data leakage
+    public List<LogEntry> findAllByCriteria(String pattern, LogSource source, UUID sourceId, UUID userId, LogType type) {
         Query query = new Query();
 
-        if (message != null)
-            query.addCriteria(Criteria.where("message").is(message));
+        if (pattern != null)
+            query.addCriteria(Criteria.where("message").regex(pattern, "i"));
 
         if (source != null)
             query.addCriteria(Criteria.where("source").is(source));
@@ -37,6 +36,26 @@ public class CustomLogRepositoryImpl implements CustomLogRepository {
 
         if (type != null)
             query.addCriteria(Criteria.where("type").is(type));
+
+        return mongoTemplate.find(query, LogEntry.class);
+    }
+
+    @Override
+    public List<LogEntry> findUserLogsByCriteria(String pattern, UUID deviceId, UUID userId, LogType type) {
+        Query query = new Query();
+
+        if (pattern != null)
+            query.addCriteria(Criteria.where("message").regex(pattern, "i"));
+
+        if (deviceId != null)
+            query.addCriteria(Criteria.where("sourceId").is(deviceId));
+        else
+            query.addCriteria(Criteria.where("userId").is(userId));
+
+        if (type != null)
+            query.addCriteria(Criteria.where("type").is(type));
+
+        query.addCriteria(Criteria.where("source").in(LogSource.DEVICE_MANAGEMENT, LogSource.DEVICE_MONITORING));
 
         return mongoTemplate.find(query, LogEntry.class);
     }

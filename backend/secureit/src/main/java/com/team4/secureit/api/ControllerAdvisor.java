@@ -91,6 +91,13 @@ public class ControllerAdvisor {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(JwtException.class)
     public ResponseError handleJwtExceptions(JwtException e) {
+        logService.log(
+                "A JwtException has occurred: " + e.getMessage(),
+                LogSource.AUTHENTICATION,
+                null,
+                null,
+                LogType.WARNING
+        );
         return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 

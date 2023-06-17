@@ -39,18 +39,10 @@ public class LogService {
         logRepository.save(entry);
     }
 
-    public List<LogEntry> findByCriteria(String message, LogSource source, UUID sourceId, UUID userId, LogType type, User user) {
+    public List<LogEntry> findByCriteria(String pattern, LogSource source, UUID sourceId, UUID userId, LogType type, User user) {
         if (user.getRole().equals(Role.ROLE_ADMIN))
-            return logRepository.findByCriteria(message, source, sourceId, userId, type);
+            return logRepository.findAllByCriteria(pattern, source, sourceId, userId, type);
 
-        if (userId != null && !userId.equals(user.getId()))
-            throw new ForbiddenSearchCriteriaException();
-
-        if (source != null && (source.equals(LogSource.DEVICE_MANAGEMENT) || source.equals(LogSource.DEVICE_MONITORING))) {
-            PropertyOwner owner = (PropertyOwner) user;
-            deviceRepository.findByUserAndId(owner, sourceId).orElseThrow(ForbiddenSearchCriteriaException::new);
-        }
-
-        return logRepository.findByCriteria(message, source, sourceId, userId, type);
+        return logRepository.findUserLogsByCriteria(pattern, sourceId, userId, type);
     }
 }
