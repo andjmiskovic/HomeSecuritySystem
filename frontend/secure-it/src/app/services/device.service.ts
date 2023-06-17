@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {CodeResponse, DeviceDetailsResponse, DeviceHandshakeData, DevicePairingInitRequest} from "../model/Device";
 import {environment} from "../environment.development";
 import {AuthService} from "./auth.service";
+import {FormControl, ɵValue} from "@angular/forms";
 
 @Injectable({
   providedIn: 'root'
@@ -33,5 +34,14 @@ export class DeviceManagementService {
 
   public getDevice(id: string | null): Observable<DeviceDetailsResponse> {
     return this.http.get<DeviceDetailsResponse>(`${this.devicesUrl}/` + id, AuthService.getHttpOptions());
+  }
+
+  public getReport(start: Date | null | undefined, end: Date | null | undefined): Observable<Blob> {
+    let queryParams = new HttpParams();
+    if (start && end) {
+      queryParams = queryParams.append("start", start.toString());
+      queryParams = queryParams.append("end", end.toString());
+    }
+    return this.http.get<Blob>(`${this.devicesUrl}/report`, AuthService.getHttpOptions(queryParams));
   }
 }

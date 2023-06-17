@@ -12,6 +12,10 @@ import {MatMenuModule} from "@angular/material/menu";
 import {DeviceContainerComponent} from "./container/device-container/device-container.component";
 import {SharedModule} from "../../shared/shared.module";
 import {MatTableModule} from "@angular/material/table";
+import {MatSelectModule} from "@angular/material/select";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatSortModule} from "@angular/material/sort";
+import {MatDatepickerModule} from "@angular/material/datepicker";
 
 @NgModule({
   declarations: [
@@ -31,7 +35,11 @@ import {MatTableModule} from "@angular/material/table";
     ReactiveFormsModule,
     MatMenuModule,
     SharedModule,
-    MatTableModule
+    MatTableModule,
+    MatSelectModule,
+    MatTooltipModule,
+    MatSortModule,
+    MatDatepickerModule
   ],
   exports: [
     DeviceContainerComponent
