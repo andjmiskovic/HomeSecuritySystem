@@ -29,6 +29,13 @@
                 "mu": 80,
                 "sigma": 2
             }
+        },
+        {
+            "name": "doors",
+            "unit": "state",
+            "type": "state",
+            "regular": "closed",
+            "alarm": "open"
         }
     ]
 }

@@ -84,10 +84,10 @@ def pair_device():
         return ApiResponse('Pairing timed out.', 408).to_json()
     
 
-@api.route('/testmessage', methods=['POST'])
+@api.route('/toggle-simulation', methods=['POST'])
 def testmessage():
-    client.send_message()
-    return "Sent"
+    client.alarm_simulation = not client.alarm_simulation
+    return ApiResponse(f"Simulation {'enabled' if client.alarm_simulation else 'disabled'}.", 200).to_json()
 
 
 @api.errorhandler(400)

@@ -1,8 +1,8 @@
 package com.team4.secureit.service;
 
 import com.team4.secureit.api.ResponseError;
-import com.team4.secureit.api.ResponseOk;
 import com.team4.secureit.dto.request.DeviceHandshakeData;
+import com.team4.secureit.dto.request.DeviceSensorInfo;
 import com.team4.secureit.dto.response.CodeResponse;
 import com.team4.secureit.dto.response.DeviceDetailsResponse;
 import com.team4.secureit.dto.response.DeviceSuccessfulPairingResponse;
@@ -30,8 +30,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import static com.team4.secureit.util.MappingUtils.toDeviceDetailsResponse;
+import java.util.stream.Collectors;
 
 @Service
 public class DeviceManagementService {
@@ -107,6 +106,8 @@ public class DeviceManagementService {
                 handshakeData.getMacAddress(),
                 handshakeData.getLabel(),
                 handshakeData.getPublicKey(),
+                handshakeData.getSensors().stream().map(DeviceSensorInfo::getName).collect(Collectors.joining(",")),
+                handshakeData.getSensors().stream().map(DeviceSensorInfo::getUnit).collect(Collectors.joining(",")),
                 pairing.getProperty(),
                 pairing.getRequestedBy()
         );
