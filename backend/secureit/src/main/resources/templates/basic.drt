@@ -7,6 +7,15 @@ parsing
 package templates;
 
 import com.team4.secureit.dto.request.DeviceMessage;
+import com.team4.secureit.model.Device;
+import com.team4.secureit.model.PropertyOwner;
+import com.team4.secureit.model.LogSource;
+import com.team4.secureit.model.LogType;
+import com.team4.secureit.service.LogService;
+
+global LogService logService;
+global Device device;
+global PropertyOwner user;
 
 template "basic-rules"
 
@@ -16,8 +25,13 @@ when
                             $val: measures["@{sensor}"] != null,
                             @{parsing} @{relation} @{value})
 then
-    System.out.println("Opaaaa @{sensor}");
-    System.out.println($message.getDeviceId());
+    logService.log(
+        "@{sensor} @{relation} @{value} on " + device.getLabel(),
+        LogSource.DEVICE_MONITORING,
+        device.getId(),
+        user.getId(),
+        LogType.WARNING
+    );
 end
 
 end template
