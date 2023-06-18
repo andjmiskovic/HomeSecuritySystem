@@ -32,3 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 /data/
+
+ssl_keystore.p12
+ssl_certificate.pem

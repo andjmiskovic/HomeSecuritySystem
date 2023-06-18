@@ -5,7 +5,7 @@ from flask import current_app
 from datetime import datetime, timezone
 from application.details import device_details
 from application.config import device_config
-from application.crypto import cryptography_manager
+from application.crypto import cryptography_manager as crypto
 
 alarm_simulation = False
 display_data = {}
@@ -22,17 +22,18 @@ def request_pairing(code):
         'type': device_details['TYPE'],
         'macAddress': device_details['MAC_ADDRESS'],
         'label': device_config['LABEL'],
-        'publicKey': cryptography_manager.public_key_pem,
+        'publicKey': crypto.public_key_pem,
         'sensors': [{'name': s['name'], 'unit': s['unit'], 'type': s['type']} for s in device_details['SENSORS']],
         'alarms': [row + [''] for row in device_details['ALARMS']]
     }
 
     current_app.logger.info(f'Requested pairing for code {code}')
     response = requests.post(
-        f'http://localhost:8001/devices/handshake/device/{code}',
+        f'{crypto.protocol}://localhost:8001/devices/handshake/device/{code}',
         json=device_handshake_data,
         headers=headers,
-        timeout=65  # seconds
+        timeout=65,  # seconds
+        verify=crypto.ssl_verify
     )
 
     print(response.text)
@@ -66,16 +67,17 @@ def send_message():
 
     message_bytes = json.dumps(message).encode('utf-8')
     params = {
-        'signature': cryptography_manager.sign(message_bytes)
+        'signature': crypto.sign(message_bytes)
     }
 
     current_app.logger.info(f'Sending {message["measures"]}')
 
     response = requests.post(
-        f'http://localhost:8001/monitor/send',
+        f'{crypto.protocol}://localhost:8001/monitor/send',
         json=message,
         params=params,
-        headers=headers
+        headers=headers,
+        verify=crypto.ssl_verify
     )
 
     if (response.status_code == requests.codes.ok):
