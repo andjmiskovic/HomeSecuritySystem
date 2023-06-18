@@ -4,7 +4,6 @@ import com.team4.secureit.api.ResponseError;
 import com.team4.secureit.dto.request.DeviceChangeAlarmsRequest;
 import com.team4.secureit.dto.request.DeviceHandshakeData;
 import com.team4.secureit.dto.request.DeviceSensorInfo;
-import com.team4.secureit.dto.request.ReportRequest;
 import com.team4.secureit.dto.response.AlarmItem;
 import com.team4.secureit.dto.response.CodeResponse;
 import com.team4.secureit.dto.response.DeviceDetailsResponse;
@@ -20,6 +19,7 @@ import com.team4.secureit.util.DroolsUtils;
 import com.team4.secureit.util.MappingUtils;
 import com.team4.secureit.util.TimeUtils;
 import org.apache.commons.io.FilenameUtils;
+import lombok.extern.java.Log;
 import org.drools.template.DataProvider;
 import org.drools.template.objects.ArrayDataProvider;
 import org.kie.api.runtime.KieSession;
@@ -298,7 +298,16 @@ public class DeviceManagementService {
         return pdfService.createPDF(infoLogs, warningLogs, errorLogs);
     }
 
-    public AlarmItem getAlarms(UUID deviceId) {
-        return null;
+    public List<AlarmItem> getAlarms(UUID deviceId, User user) {
+        List<LogEntry> logs = logService.findByCriteria("", LogSource.DEVICE_MONITORING, deviceId, null, null, user);
+        List<AlarmItem> alarms = new ArrayList<>();
+        for (LogEntry log : logs) {
+            alarms.add(AlarmItem.builder()
+                    .deviceId(deviceId.toString())
+                    .message(log.getMessage())
+                    .time(log.getTimestamp().toString())
+                    .build());
+        }
+        return alarms;
     }
 }

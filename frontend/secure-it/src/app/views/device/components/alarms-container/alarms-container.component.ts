@@ -25,6 +25,11 @@ export class AlarmsContainerComponent {
   }
 
   ngOnInit() {
+    this.loadAlarms();
+  }
+
+  loadAlarms() {
+    this.dataSource.loadAlarms(this.device.id);
   }
 
   editAlarms() {

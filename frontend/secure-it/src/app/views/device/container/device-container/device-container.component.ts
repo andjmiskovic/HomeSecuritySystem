@@ -25,7 +25,7 @@ export class DeviceContainerComponent implements OnInit {
     this.deviceId = this.router.snapshot.paramMap.get('id');
     this.deviceService.getDevice(this.deviceId).subscribe({
       next: value => {
-        this.device = value
+        this.device = value;
       }
     })
   }
