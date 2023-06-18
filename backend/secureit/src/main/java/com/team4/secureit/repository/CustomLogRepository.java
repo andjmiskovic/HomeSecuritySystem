@@ -3,7 +3,6 @@ package com.team4.secureit.repository;
 import com.team4.secureit.model.LogEntry;
 import com.team4.secureit.model.LogSource;
 import com.team4.secureit.model.LogType;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
 import java.util.List;

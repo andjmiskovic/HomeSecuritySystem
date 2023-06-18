@@ -95,5 +95,6 @@ export class PropertyDetailsComponent implements OnInit {
 
   deviceDetails(id: string) {
     this.router.navigate(['/device/' + id]);
+    this.dialogRef.close();
   }
 }
