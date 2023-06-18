@@ -15,36 +15,39 @@ public class PDFService {
 
     public ByteArrayInputStream createPDF(List<LogEntry> infoLogs, List<LogEntry> warningLogs, List<LogEntry> errorLogs) throws IOException {
         Document document = new Document(PageSize.A4);
-        try (FileOutputStream output = new FileOutputStream("src/main/resources/report.pdf")) {
+        FileOutputStream output = new FileOutputStream("src/main/resources/report.pdf");
+        try {
             PdfWriter.getInstance(document, output);
             document.open();
 
-            Paragraph title = new Paragraph("Report");
+            Paragraph title = new Paragraph("REPORT");
             document.add(title);
 
-            Paragraph infos = new Paragraph("Info");
+            Paragraph infos = new Paragraph("INFO");
             document.add(infos);
             for (LogEntry logEntry : infoLogs) {
-                Paragraph info = new Paragraph(logEntry.getType() + " :: " + logEntry.getTimestamp() + " :: " + logEntry.getMessage());
+                Paragraph info = new Paragraph(logEntry.getTimestamp() + " :: " + logEntry.getMessage());
                 document.add(info);
             }
 
-            Paragraph warnings = new Paragraph("Warnings");
+            Paragraph warnings = new Paragraph("WARNINGS");
             document.add(warnings);
             for (LogEntry logEntry : warningLogs) {
-                Paragraph warning = new Paragraph(logEntry.getType() + " :: " + logEntry.getTimestamp() + " :: " + logEntry.getMessage());
+                Paragraph warning = new Paragraph(logEntry.getTimestamp() + " :: " + logEntry.getMessage());
                 document.add(warning);
             }
-            Paragraph errors = new Paragraph("Errors");
+
+            Paragraph errors = new Paragraph("ERRORS");
             document.add(errors);
             for (LogEntry logEntry : errorLogs) {
-                Paragraph error = new Paragraph(logEntry.getType() + " :: " + logEntry.getTimestamp() + " :: " + logEntry.getMessage());
+                Paragraph error = new Paragraph(logEntry.getTimestamp() + " :: " + logEntry.getMessage());
                 document.add(error);
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             document.close();
+            output.close();
         }
 
         // Read the PDF file into a byte array
@@ -58,6 +61,7 @@ public class PDFService {
         }
         fileInputStream.close();
 
+        // Create a ByteArrayInputStream from the byte array
         byte[] pdfBytes = byteArrayOutputStream.toByteArray();
         return new ByteArrayInputStream(pdfBytes);
     }
