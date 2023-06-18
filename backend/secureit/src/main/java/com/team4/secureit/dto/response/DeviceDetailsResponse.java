@@ -18,4 +18,5 @@ public class DeviceDetailsResponse {
     private String label;
     private PropertyResponse property;
     private List<DeviceSensorInfo> sensors;
+    private String[][] alarms;
 }

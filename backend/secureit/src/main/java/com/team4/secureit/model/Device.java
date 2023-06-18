@@ -51,13 +51,16 @@ public class Device {
     @Column
     private String types;
 
+    @Column
+    private String alarms;
+
     @ManyToOne
     private Property property;
 
     @ManyToOne
     private PropertyOwner user;
 
-    public Device(String name, String type, String manufacturer, String macAddress, String label, String publicKeyPem, String sensorNames, String units, String types, Property property, PropertyOwner user) {
+    public Device(String name, String type, String manufacturer, String macAddress, String label, String publicKeyPem, String sensorNames, String units, String types, String alarms, Property property, PropertyOwner user) {
         this.name = name;
         this.type = type;
         this.manufacturer = manufacturer;
@@ -67,6 +70,7 @@ public class Device {
         this.sensorNames = sensorNames;
         this.units = units;
         this.types = types;
+        this.alarms = alarms;
         this.property = property;
         this.user = user;
     }

@@ -12,6 +12,8 @@ import org.modelmapper.ModelMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.team4.secureit.util.DroolsUtils.deserializeAlarmsData;
+
 public class MappingUtils {
     private static final ModelMapper modelMapper = new ModelMapper();
 
@@ -57,7 +59,8 @@ public class MappingUtils {
                 device.getMacAddress(),
                 device.getLabel(),
                 propertyInfo,
-                device.getSensorInfo()
+                device.getSensorInfo(),
+                deserializeAlarmsData(device.getAlarms())
         );
     }
 }

@@ -43,6 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
+import static com.team4.secureit.util.DroolsUtils.serializeAlarmsData;
 import static com.team4.secureit.util.MappingUtils.toDeviceDetailsResponse;
 
 @Service
@@ -140,6 +141,7 @@ public class DeviceManagementService {
                 handshakeData.getSensors().stream().map(DeviceSensorInfo::getName).collect(Collectors.joining(",")),
                 handshakeData.getSensors().stream().map(DeviceSensorInfo::getUnit).collect(Collectors.joining(",")),
                 handshakeData.getSensors().stream().map(DeviceSensorInfo::getType).collect(Collectors.joining(",")),
+                serializeAlarmsData(handshakeData.getAlarms()),
                 pairing.getProperty(),
                 pairing.getRequestedBy()
         );
@@ -187,6 +189,9 @@ public class DeviceManagementService {
         KieSession kieSession = DroolsUtils.createKieSessionFromDRL(drl);
         DroolsUtils.getKieSession(device).dispose();
         DroolsUtils.setKieSession(device, kieSession);
+
+        device.setAlarms(serializeAlarmsData(alarmsRequest.getAlarms()));
+        deviceRepository.save(device);
 
         logService.log(
                 "KieSession updated for device '" + device.getLabel() + "'.",
