@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,5 +59,15 @@ public class CustomLogRepositoryImpl implements CustomLogRepository {
         query.addCriteria(Criteria.where("source").in(LogSource.DEVICE_MANAGEMENT, LogSource.DEVICE_MONITORING));
 
         return mongoTemplate.find(query, LogEntry.class);
+    }
+
+    @Override
+    public List<LogEntry> findAllForDeviceInTimeRange(Date startDate, Date endDate, UUID deviceId) {
+//        Query query = new Query();
+//        if (startDate != null)
+//            query.
+
+
+            return null;
     }
 }
