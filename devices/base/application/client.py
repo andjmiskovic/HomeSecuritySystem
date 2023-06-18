@@ -22,8 +22,8 @@ def request_pairing(code):
         'macAddress': device_details['MAC_ADDRESS'],
         'label': device_config['LABEL'],
         'publicKey': cryptography_manager.public_key_pem,
-        'sensors': [{'name': s['name'], 'unit': s['unit']} for s in device_details['SENSORS']],
-        'alarms': device_details['ALARMS']
+        'sensors': [{'name': s['name'], 'unit': s['unit'], 'type': s['type']} for s in device_details['SENSORS']],
+        'alarms': [row + [''] for row in device_details['ALARMS']]
     }
 
     current_app.logger.info(f'Requested pairing for code {code}')
@@ -82,10 +82,15 @@ def send_message():
 def generate_measurement(sensor):
     key = 'alarm' if alarm_simulation else 'regular'
 
-    if sensor['type'] == 'number':
+    if sensor['type'] in ['double', 'float']:
         return random.gauss(
             sensor[key]['mu'],
             sensor[key]['sigma']
         )
-    elif sensor['type'] == 'state':
+    elif sensor['type'] in ['int', 'long']:
+        return round(random.gauss(
+            sensor[key]['mu'],
+            sensor[key]['sigma']
+        ))
+    elif sensor['type'] in ['string', 'boolean']:
         return sensor[key]

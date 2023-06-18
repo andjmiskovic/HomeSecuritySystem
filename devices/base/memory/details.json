@@ -7,7 +7,7 @@
         {
             "name": "temperature",
             "unit": "°C",
-            "type": "number",
+            "type": "float",
             "regular": {
                 "mu": 24,
                 "sigma": 0.1
@@ -20,7 +20,7 @@
         {
             "name": "humidity",
             "unit": "%",
-            "type": "number",
+            "type": "float",
             "regular": {
                 "mu": 45,
                 "sigma": 1
@@ -32,7 +32,7 @@
         }
     ],
     "ALARMS": [
-        ["temperature", ">=", "49", "AS_FLOAT"],
-        ["humidity", ">=", "79", "AS_FLOAT"]
+        ["temperature", ">=", "49"],
+        ["humidity", ">=", "79"]
     ]
 }

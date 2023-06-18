@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -131,14 +132,24 @@ public class DeviceManagementService {
                 handshakeData.getPublicKey(),
                 handshakeData.getSensors().stream().map(DeviceSensorInfo::getName).collect(Collectors.joining(",")),
                 handshakeData.getSensors().stream().map(DeviceSensorInfo::getUnit).collect(Collectors.joining(",")),
+                handshakeData.getSensors().stream().map(DeviceSensorInfo::getType).collect(Collectors.joining(",")),
                 pairing.getProperty(),
                 pairing.getRequestedBy()
         );
 
         DataProvider dataProvider = new ArrayDataProvider(
                 Arrays.stream(handshakeData.getAlarms())
-                        .peek(row -> row[3] = DroolsUtils.Parsing.valueOf(row[3]).getExpression())
-                        .toArray(String[][]::new)
+                        .peek(row -> {
+                            Optional<DeviceSensorInfo> matchingSensor = handshakeData.getSensors().stream()
+                                    .filter(sensor -> sensor.getName().equals(row[0]))
+                                    .findFirst();
+                            row[3] = matchingSensor
+                                    .map(DeviceSensorInfo::getType)
+                                    .map(type -> "AS_" + type.toUpperCase())
+                                    .map(DroolsUtils.Parsing::valueOf)
+                                    .map(DroolsUtils.Parsing::getExpression)
+                                    .orElse("");
+                        }).toArray(String[][]::new)
         );
 
         String drl = DroolsUtils.renderDRL("basic.drt", dataProvider);
