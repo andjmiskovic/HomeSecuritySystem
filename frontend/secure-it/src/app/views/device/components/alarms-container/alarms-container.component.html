@@ -1,0 +1,28 @@
+<mat-table [dataSource]="dataSource" matSort matSortActive="start" matSortDirection="desc" matSortDisableClear>
+
+  <button style="font-size: 12px; margin-left: 5px" mat-stroked-button (click)="editAlarms()">
+    <mat-icon style="color: var(--blue)">alarm</mat-icon>
+    Edit alarms
+  </button>
+
+  <ng-container matColumnDef="message">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Message</mat-header-cell>
+    <mat-cell *matCellDef="let alarm">{{alarm.message}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="time">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Time</mat-header-cell>
+    <mat-cell *matCellDef="let alarm">{{alarm.time}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="deviceId">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Device id</mat-header-cell>
+    <mat-cell *matCellDef="let alarm">{{alarm.deviceId}}</mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  <tr *matNoDataRow>
+    <td>No data matching the filters</td>
+  </tr>
+</mat-table>
