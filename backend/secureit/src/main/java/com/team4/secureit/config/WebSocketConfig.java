@@ -38,6 +38,7 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
                 .nullDestMatcher().authenticated()
                 .simpSubscribeDestMatchers("/user/queue/errors").permitAll()
                 .simpSubscribeDestMatchers("/user/queue/devices").hasAnyRole("PROPERTY_OWNER")
+                .simpSubscribeDestMatchers("/user/queue/alarms").hasAnyRole("PROPERTY_OWNER", "ROLE_ADMIN")
                 .simpSubscribeDestMatchers("/user/queue/notifications").authenticated()
                 .anyMessage().denyAll();
     }
