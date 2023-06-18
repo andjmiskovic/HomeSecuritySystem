@@ -16,6 +16,7 @@ import com.team4.secureit.repository.DeviceRepository;
 import com.team4.secureit.repository.PropertyRepository;
 import com.team4.secureit.util.DroolsUtils;
 import com.team4.secureit.util.MappingUtils;
+import org.apache.commons.io.FileUtils;
 import org.drools.template.DataProvider;
 import org.drools.template.objects.ArrayDataProvider;
 import org.kie.api.runtime.KieSession;
@@ -27,6 +28,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -263,4 +267,9 @@ public class DeviceManagementService {
         return true;
     }
 
+    public ByteArrayInputStream generateReport(String start, String end) throws IOException {
+        File pdfFile = new File("src/main/resources/gen/report.pdf");
+        // PDF Service
+        return new ByteArrayInputStream(FileUtils.readFileToByteArray(pdfFile));
+    }
 }
