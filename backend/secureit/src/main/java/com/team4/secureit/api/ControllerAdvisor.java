@@ -151,4 +151,10 @@ public class ControllerAdvisor {
     public ResponseError handleInvalidSignatureException(InvalidSignatureException e) {
         return new ResponseError(HttpStatus.BAD_REQUEST, "Invalid signature.");
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidAlarmSettingsException.class)
+    public ResponseError handleInvalidAlarmSettingsException(InvalidAlarmSettingsException e) {
+        return new ResponseError(HttpStatus.BAD_REQUEST, "Invalid alarm settings.");
+    }
 }

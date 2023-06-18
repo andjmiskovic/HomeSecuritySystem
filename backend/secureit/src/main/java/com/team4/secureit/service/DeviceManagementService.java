@@ -1,12 +1,14 @@
 package com.team4.secureit.service;
 
 import com.team4.secureit.api.ResponseError;
+import com.team4.secureit.dto.request.DeviceChangeAlarmsRequest;
 import com.team4.secureit.dto.request.DeviceHandshakeData;
 import com.team4.secureit.dto.request.DeviceSensorInfo;
 import com.team4.secureit.dto.response.CodeResponse;
 import com.team4.secureit.dto.response.DeviceDetailsResponse;
 import com.team4.secureit.dto.response.DeviceSuccessfulPairingResponse;
 import com.team4.secureit.exception.DeviceNotFoundException;
+import com.team4.secureit.exception.InvalidAlarmSettingsException;
 import com.team4.secureit.exception.PairingRequestNotFound;
 import com.team4.secureit.exception.PropertyNotFoundException;
 import com.team4.secureit.model.*;
@@ -137,20 +139,7 @@ public class DeviceManagementService {
                 pairing.getRequestedBy()
         );
 
-        DataProvider dataProvider = new ArrayDataProvider(
-                Arrays.stream(handshakeData.getAlarms())
-                        .peek(row -> {
-                            Optional<DeviceSensorInfo> matchingSensor = handshakeData.getSensors().stream()
-                                    .filter(sensor -> sensor.getName().equals(row[0]))
-                                    .findFirst();
-                            row[3] = matchingSensor
-                                    .map(DeviceSensorInfo::getType)
-                                    .map(type -> "AS_" + type.toUpperCase())
-                                    .map(DroolsUtils.Parsing::valueOf)
-                                    .map(DroolsUtils.Parsing::getExpression)
-                                    .orElse("");
-                        }).toArray(String[][]::new)
-        );
+        DataProvider dataProvider = parseAlarmsData(handshakeData.getAlarms(), handshakeData.getSensors());
 
         String drl = DroolsUtils.renderDRL("basic.drt", dataProvider);
         System.out.println(drl);
@@ -174,6 +163,35 @@ public class DeviceManagementService {
         );
     }
 
+    public List<DeviceDetailsResponse> getUsersDevices(PropertyOwner propertyOwner) {
+        return deviceRepository.findByUser(propertyOwner).stream()
+                .map(MappingUtils::toDeviceDetailsResponse)
+                .toList();
+    }
+
+    public DeviceDetailsResponse getDevice(UUID deviceId) {
+        return toDeviceDetailsResponse(deviceRepository.findById(deviceId).orElseThrow(DeviceNotFoundException::new));
+    }
+
+    public void changeAlarms(UUID deviceId, PropertyOwner propertyOwner, DeviceChangeAlarmsRequest alarmsRequest) {
+        Device device = deviceRepository.findByUserAndId(propertyOwner, deviceId).orElseThrow(DeviceNotFoundException::new);
+
+        DataProvider dataProvider = parseAlarmsData(alarmsRequest.getAlarms(), device.getSensorInfo());
+        String drl = DroolsUtils.renderDRL("basic.drt", dataProvider);
+
+        KieSession kieSession = DroolsUtils.createKieSessionFromDRL(drl);
+        DroolsUtils.getKieSession(device).dispose();
+        DroolsUtils.setKieSession(device, kieSession);
+
+        logService.log(
+                "KieSession updated for device '" + device.getLabel() + "'.",
+                LogSource.DEVICE_MANAGEMENT,
+                device.getId(),
+                propertyOwner.getId(),
+                LogType.INFO
+        );
+    }
+
     @Scheduled(cron = "* 2 * * * *")
     private void removeExpiredPairings() {
         Instant now = Instant.now();
@@ -189,13 +207,60 @@ public class DeviceManagementService {
         );
     }
 
-    public List<DeviceDetailsResponse> getUsersDevices(PropertyOwner propertyOwner) {
-        return deviceRepository.findByUser(propertyOwner).stream()
-                .map(MappingUtils::toDeviceDetailsResponse)
-                .toList();
+    private DataProvider parseAlarmsData(String[][] alarms, List<DeviceSensorInfo> sensors) {
+        if (!validateAlarmsData(alarms, sensors))
+            throw new InvalidAlarmSettingsException();
+
+        return new ArrayDataProvider(
+                Arrays.stream(alarms)
+                        .peek(row -> {
+                            Optional<DeviceSensorInfo> matchingSensor = sensors.stream()
+                                    .filter(sensor -> sensor.getName().equals(row[0]))
+                                    .findFirst();
+                            row[3] = matchingSensor
+                                    .map(DeviceSensorInfo::getType)
+                                    .map(type -> "AS_" + type.toUpperCase())
+                                    .map(DroolsUtils.Parsing::valueOf)
+                                    .map(DroolsUtils.Parsing::getExpression)
+                                    .orElse("");
+                        }).toArray(String[][]::new)
+        );
+
     }
 
-    public DeviceDetailsResponse getDevice(String id) {
-        return toDeviceDetailsResponse(deviceRepository.findById(UUID.fromString(id)).orElseThrow(DeviceNotFoundException::new));
+    public boolean validateAlarmsData(String[][] alarms, List<DeviceSensorInfo> sensors) {
+        for (String[] row : alarms) {
+            if (row.length != 4)
+                return false;
+
+            Optional<DeviceSensorInfo> matchingSensor = sensors.stream()
+                    .filter(sensor -> sensor.getName().equals(row[0]))
+                    .findFirst();
+
+            if (matchingSensor.isEmpty())
+                return false;
+
+            DeviceSensorInfo sensorInfo = matchingSensor.get();
+
+            if ((sensorInfo.getType().equals("boolean") || sensorInfo.getType().equals("string")) && !Arrays.asList("==", "!=").contains(row[1])) {
+                return false;
+            } else if (!sensorInfo.getType().equals("boolean") && !sensorInfo.getType().equals("string") &&
+                    !Arrays.asList(">", "<", "==", "!=", ">=", "<=").contains(row[1])) {
+                return false;
+            }
+
+            if (sensorInfo.getType().equals("boolean") && !Arrays.asList("true", "false").contains(row[2])) {
+                return false;
+            } else if (!sensorInfo.getType().equals("boolean") && !sensorInfo.getType().equals("string")) {
+                try {
+                    Double.parseDouble(row[2]);
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
+
 }
