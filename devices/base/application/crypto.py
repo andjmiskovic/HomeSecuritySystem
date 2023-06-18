@@ -7,6 +7,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa, padding
 class CryptographyManager:
     PRIVATE_KEY_PATH = "memory/private_key.pem"
     PUBLIC_KEY_PATH = "memory/public_key.pem"
+    SSL_CERT_PATH = "memory/ssl_certificate.pem"
     KEYS_KEY = 'CRYPTO'
 
     def __init__(self, app):
@@ -15,6 +16,8 @@ class CryptographyManager:
         self.public_key = None
         self.private_key_pem = None
         self.public_key_pem = None
+        self.ssl_verify = False
+        self.protocol = 'http'
 
     def load_keys(self):
         with open(self.PRIVATE_KEY_PATH) as private_key_file:
@@ -71,6 +74,10 @@ class CryptographyManager:
             format=serialization.PublicFormat.SubjectPublicKeyInfo
         ).decode()
 
+    def enable_ssl(self):
+        self.ssl_verify = self.SSL_CERT_PATH
+        self.protocol = 'https'
+
 cryptography_manager = CryptographyManager(current_app)
 
 def setup_keys():
@@ -79,3 +86,7 @@ def setup_keys():
     else:
         cryptography_manager.generate_new_keys()
         cryptography_manager.export_keys()
+
+def setup_ssl():
+    if os.path.isfile(cryptography_manager.SSL_CERT_PATH):
+        cryptography_manager.enable_ssl()

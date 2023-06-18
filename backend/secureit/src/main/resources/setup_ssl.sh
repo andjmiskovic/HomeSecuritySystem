@@ -1,6 +1,10 @@
 #!/bin/bash
 
 KEYSTORE="ssl_keystore.p12"
+ALIAS="selfsigned_localhost_sslserver"
+YAML="application.yml"
+SEARCH="classpath:$KEYSTORE"
+CERTIFICATE="ssl_certificate.pem"
 
 if [ -f "$KEYSTORE" ]; then
     # Ask the user if they want to overwrite it
@@ -17,24 +21,24 @@ if [ -f "$KEYSTORE" ]; then
     fi
 fi
 
-keytool -genkey -alias selfsigned_localhost_sslserver -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore ssl_keystore.p12 -validity 3650
+read -s -p "Enter the keystore password: " PASSWORD
+echo ""
+keytool -genkey -alias $ALIAS -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore $KEYSTORE -validity 3650 -storepass $PASSWORD -keypass $PASSWORD \
+  -dname "CN=localhost, OU=SecureIT Inc., O=SecureIT Inc., L=Novi Sad, S=Serbia, C=RS" \
+  -ext SAN=dns:localhost,ip:127.0.0.1 \
 
-if [ ! -f ssl_keystore.p12 ]; then
+if [ ! -f $KEYSTORE ]; then
   echo "Exiting: Keystore was not generated."
   exit 1
 fi
 
 echo "Keystore file generated."
-read -s -p "Enter the keystore password again to configure yaml: " PASSWORD
-
-YAML="application.yml"
-SEARCH="classpath:ssl_keystore.p12"
 
 APPEND="  ssl:
     key-store-type: PKCS12
-    key-store: classpath:ssl_keystore.p12
+    key-store: classpath:$KEYSTORE
     key-store-password: $PASSWORD
-    key-alias: selfsigned_localhost_sslserver"
+    key-alias: $ALIAS"
 
 if grep -q "$SEARCH" "$YAML"; then
   sed -i "s|key-store-password:.*|key-store-password: $PASSWORD|g" "$YAML"
@@ -42,5 +46,12 @@ else
   echo "$APPEND" >> "$YAML"
 fi
 
+echo "YAML configured."
 
-echo "YAML configured. Stay safe!"
+keytool -export -keystore $KEYSTORE -alias $ALIAS -file ssl_certificate.der -storepass $PASSWORD
+openssl x509 -in ssl_certificate.der -inform der -out $CERTIFICATE -outform pem
+rm ssl_certificate.der
+
+echo "Certificate converted to <ssl_certificate.pem>."
+
+echo "All done. Stay safe!"
