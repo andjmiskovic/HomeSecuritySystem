@@ -3,7 +3,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from "rxjs";
 import {AuthService} from "./auth.service";
 import {environment} from "../environment.development";
-import {LogListItem} from "../model/LogTableDataSource";
+import {LogListItem, LogSource, LogType} from "../model/LogTableDataSource";
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +16,14 @@ export class LogService {
     this.logsUrl = environment.apiUrl + '/logs';
   }
 
-  public getLogs(search: string, type: string | undefined, source: string): Observable<LogListItem[]> {
+  public getLogs(regex: string, source: LogSource | null, sourceId: string, type: LogType | null): Observable<LogListItem[]> {
     let queryParams = new HttpParams();
-    queryParams = queryParams.append("search", search);
-    if (type != undefined)
+    queryParams = queryParams.append("regex", regex);
+    if (source)
+      queryParams = queryParams.append("source", source);
+    queryParams = queryParams.append("sourceId", sourceId);
+    if (type)
       queryParams = queryParams.append("type", type);
-    queryParams = queryParams.append("source", source);
-    return this.http.get<LogListItem[]>(this.logsUrl + "/all", AuthService.getHttpOptions(queryParams));
+    return this.http.get<LogListItem[]>(this.logsUrl, AuthService.getHttpOptions(queryParams));
   }
 }

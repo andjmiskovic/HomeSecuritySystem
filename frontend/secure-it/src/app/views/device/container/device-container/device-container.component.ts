@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {DeviceDetailsResponse} from "../../../../model/Device";
 import {ActivatedRoute} from "@angular/router";
 import {DeviceManagementService} from "../../../../services/device.service";
-import {LogSource, LogTableDataSource} from "../../../../model/LogTableDataSource";
+import {LogSource, LogTableDataSource, LogType} from "../../../../model/LogTableDataSource";
 import {LogService} from "../../../../services/log.service";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
@@ -20,7 +20,7 @@ export class DeviceContainerComponent implements OnInit {
   @ViewChild(MatSort, {static: false}) sort!: MatSort;
 
   displayedColumns = ["message", "type", "time"];
-  logType = "all";
+  logType: LogType | null = null;
   logSources = [
     {value: LogSource.DEVICE_MONITORING, description: LogSource.DEVICE_MONITORING.valueOf()},
     {value: LogSource.DEVICE_MANAGEMENT, description: LogSource.DEVICE_MANAGEMENT.valueOf()},
@@ -30,7 +30,7 @@ export class DeviceContainerComponent implements OnInit {
   ];
   dataSource: LogTableDataSource;
   source: LogSource = LogSource.DEVICE_MONITORING;
-  search = "";
+  regex = "";
 
   campaignOne = new FormGroup({
     start: new FormControl(new Date),
@@ -50,8 +50,9 @@ export class DeviceContainerComponent implements OnInit {
 
   applyFilter() {
     this.dataSource.loadLogs(
+      this.regex,
       this.source,
-      this.search,
+      "",
       this.logType
     );
   }
