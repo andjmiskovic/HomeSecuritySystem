@@ -28,31 +28,31 @@
   </div>
   <div class="row">
     <div class="label">Property name:</div>
-    <div class="value">{{device.property.name}}</div>
+    <div class="value" *ngIf="device.property">{{device.property.name}}</div>
   </div>
   <div class="row">
     <div class="label">Property id:</div>
-    <div class="value">{{device.property.id}}</div>
+    <div class="value" *ngIf="device.property">{{device.property.id}}</div>
   </div>
   <div class="row">
     <div class="label">Property address:</div>
-    <div class="value">{{device.property.address}}</div>
+    <div class="value" *ngIf="device.property">{{device.property.address}}</div>
   </div>
   <div class="row">
     <div class="label">Generate a report:</div>
     <div class="value">
-<!--      <mat-form-field>-->
-<!--        <mat-label>First campaign</mat-label>-->
-<!--        <mat-date-range-input-->
-<!--          [formGroup]="campaignOne"-->
-<!--          [rangePicker]="campaignOnePicker">-->
-<!--          <input matStartDate placeholder="Start date" formControlName="start">-->
-<!--          <input matEndDate placeholder="End date" formControlName="end">-->
-<!--        </mat-date-range-input>-->
-<!--        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>-->
-<!--        <mat-datepicker-toggle matIconSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>-->
-<!--        <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>-->
-<!--      </mat-form-field>-->
+      <mat-form-field>
+        <mat-label>First campaign</mat-label>
+        <mat-date-range-input
+          [formGroup]="campaignOne"
+          [rangePicker]="campaignOnePicker">
+          <input matStartDate placeholder="Start date" formControlName="start">
+          <input matEndDate placeholder="End date" formControlName="end">
+        </mat-date-range-input>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+        <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+      </mat-form-field>
 
       <button style="font-size: 12px; margin-left: 5px" mat-stroked-button (click)="downloadReport()">
         <mat-icon style="color: var(--blue)">download</mat-icon>

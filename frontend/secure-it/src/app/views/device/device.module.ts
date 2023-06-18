@@ -16,13 +16,13 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatSortModule} from "@angular/material/sort";
 import {MatDatepickerModule} from "@angular/material/datepicker";
+import { MatNativeDateModule } from "@angular/material/core";
 
 @NgModule({
   declarations: [
     DeviceContainerComponent
   ],
   imports: [
-    MatFormFieldModule,
     MatIconModule,
     MatButtonModule,
     MatCardModule,
@@ -39,7 +39,8 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
     MatSelectModule,
     MatTooltipModule,
     MatSortModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   exports: [
     DeviceContainerComponent
