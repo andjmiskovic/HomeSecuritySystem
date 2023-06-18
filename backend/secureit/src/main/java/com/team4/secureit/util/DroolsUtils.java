@@ -20,12 +20,26 @@ public class DroolsUtils {
 
     public static final String TEMPLATE_DIR = "templates";
 
-    public static final String AS_INT = "Integer.parseInt($val)";
-    public static final String AS_LONG = "Long.parseLong($val)";
-    public static final String AS_FLOAT = "Float.parseFloat($val)";
-    public static final String AS_STRING = "$val";
-    public static final String AS_DOUBLE = "Double.parseDouble($val)";
-    public static final String AS_BOOLEAN = "Boolean.parseBoolean($val)";
+    public enum Parsing {
+
+        AS_INT("Integer.parseInt($val)"),
+        AS_LONG("Long.parseLong($val)"),
+        AS_FLOAT("Float.parseFloat($val)"),
+        AS_STRING("$val"),
+        AS_DOUBLE("Double.parseDouble($val)"),
+        AS_BOOLEAN("Boolean.parseBoolean($val)");
+
+        private final String expression;
+
+        Parsing(String expression) {
+            this.expression = expression;
+        }
+
+        public String getExpression() {
+            return this.expression;
+        }
+    }
+
 
     private static final ConcurrentMap<UUID, KieSession> deviceKieSessions = new ConcurrentHashMap<>();
 
@@ -41,18 +55,6 @@ public class DroolsUtils {
     public static KieSession createKieSessionFromDRL(String drl){
         KieHelper kieHelper = new KieHelper();
         kieHelper.addContent(drl, ResourceType.DRL);
-
-        Results results = kieHelper.verify();
-
-        if (results.hasMessages(Message.Level.WARNING, Message.Level.ERROR)){
-            List<Message> messages = results.getMessages(Message.Level.WARNING, Message.Level.ERROR);
-            for (Message message : messages) {
-                System.out.println("Error: "+message.getText());
-            }
-
-            throw new IllegalStateException("Compilation errors were found. Check the logs.");
-        }
-
         return kieHelper.build().newKieSession();
     }
 

@@ -22,7 +22,8 @@ def request_pairing(code):
         'macAddress': device_details['MAC_ADDRESS'],
         'label': device_config['LABEL'],
         'publicKey': cryptography_manager.public_key_pem,
-        'sensors': [{'name': s['name'], 'unit': s['unit']} for s in device_details['SENSORS']]
+        'sensors': [{'name': s['name'], 'unit': s['unit']} for s in device_details['SENSORS']],
+        'alarms': device_details['ALARMS']
     }
 
     current_app.logger.info(f'Requested pairing for code {code}')
@@ -62,6 +63,8 @@ def send_message():
     params = {
         'signature': cryptography_manager.sign(message_bytes)
     }
+
+    current_app.logger.info(f'Sending {message["measures"]}')
 
     response = requests.post(
         f'http://localhost:8001/monitor/send',

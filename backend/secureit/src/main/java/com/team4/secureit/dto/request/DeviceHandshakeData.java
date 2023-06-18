@@ -37,4 +37,7 @@ public class DeviceHandshakeData {
     @NotNull
     private List<@Valid DeviceSensorInfo> sensors;
 
+    @NotNull
+    private String[][] alarms;
+
 }

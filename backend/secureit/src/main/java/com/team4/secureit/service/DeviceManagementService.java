@@ -28,13 +28,13 @@ import org.springframework.web.context.request.async.DeferredResult;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
-import static com.team4.secureit.util.DroolsUtils.AS_FLOAT;
 import static com.team4.secureit.util.MappingUtils.toDeviceDetailsResponse;
 
 @Service
@@ -135,10 +135,11 @@ public class DeviceManagementService {
                 pairing.getRequestedBy()
         );
 
-        DataProvider dataProvider = new ArrayDataProvider(new String[][]{
-                new String[]{"temperature", ">=", "49", AS_FLOAT},
-                new String[]{"humidity", ">=", "79", AS_FLOAT},
-        });
+        DataProvider dataProvider = new ArrayDataProvider(
+                Arrays.stream(handshakeData.getAlarms())
+                        .peek(row -> row[3] = DroolsUtils.Parsing.valueOf(row[3]).getExpression())
+                        .toArray(String[][]::new)
+        );
 
         String drl = DroolsUtils.renderDRL("basic.drt", dataProvider);
         System.out.println(drl);
