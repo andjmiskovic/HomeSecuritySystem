@@ -34,11 +34,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -46,8 +42,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
-import java.nio.file.Path;
-
 import static com.team4.secureit.util.DroolsUtils.serializeAlarmsData;
 import static com.team4.secureit.util.MappingUtils.toDeviceDetailsResponse;
 
@@ -300,6 +294,7 @@ public class DeviceManagementService {
 
     public List<AlarmItem> getAlarms(UUID deviceId, User user) {
         List<LogEntry> logs = logService.findByCriteria("", LogSource.DEVICE_MONITORING, deviceId, null, null, user);
+        filterMonitoringLogs(logs);
         List<AlarmItem> alarms = new ArrayList<>();
         for (LogEntry log : logs) {
             alarms.add(AlarmItem.builder()
@@ -309,5 +304,9 @@ public class DeviceManagementService {
                     .build());
         }
         return alarms;
+    }
+
+    private void filterMonitoringLogs(List<LogEntry> logs) {
+        logs.removeIf(log -> !log.getSource().equals(LogSource.DEVICE_MONITORING));
     }
 }

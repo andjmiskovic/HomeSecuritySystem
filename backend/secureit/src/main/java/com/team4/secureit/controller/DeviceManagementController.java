@@ -73,7 +73,7 @@ public class DeviceManagementController {
         return new ResponseOk("Alarms updated.");
     }
 
-    @PostMapping("/{deviceId}/alarms")
+    @GetMapping("/{deviceId}/alarms")
     public List<AlarmItem> getAlarms(@PathVariable UUID deviceId, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return deviceManagementService.getAlarms(deviceId, user);
