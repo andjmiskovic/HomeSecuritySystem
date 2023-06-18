@@ -1,5 +1,8 @@
 <app-sidebar currentPage="properties"></app-sidebar>
 <img src="../../../../../assets/images/background-line.jpg" class="dashboard-background" alt="dashboard-background"/>
+<div style="margin-left: 90px; margin-right: 10px; margin-top: -40px">
+  <h1 style="font-weight: 500; margin-left: 10px; color: white">Device details</h1>
+</div>
 
 <div style="margin-left: 100px; margin-top:20px">
   <div class="row">
@@ -41,8 +44,8 @@
   <div class="row">
     <div class="label">Generate a report:</div>
     <div class="value">
-      <mat-form-field>
-        <mat-label>First campaign</mat-label>
+      <mat-form-field appearance="outline">
+        <mat-label>Date range</mat-label>
         <mat-date-range-input
           [formGroup]="campaignOne"
           [rangePicker]="campaignOnePicker">
@@ -60,67 +63,17 @@
       </button>
     </div>
   </div>
-</div>
 
-<hr style="width: 100%">
+  <hr style="width: 100%">
 
-<p style="margin-left: 100px">
-  <mat-form-field appearance="outline" style="width: 300px">
-    <mat-icon matPrefix>search</mat-icon>
-    <input matInput [(ngModel)]="regex" (keyup)="applyFilter()" placeholder="Search log messages...">
-  </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-select disableRipple [(ngModel)]="logType" (selectionChange)="applyFilter()">
-      <mat-option value="all">All types</mat-option>
-      <mat-option value="info">Info</mat-option>
-      <mat-option value="warning">Warning</mat-option>
-      <mat-option value="error">Error</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-select [(ngModel)]="source">
-      <mat-option *ngFor="let s of logSources" [value]="s.value">
-        {{s.description}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-</p>
+  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start"
+                 style="height: 100%; min-height: 200px; margin-bottom: 50px">
+    <mat-tab label="Logs">
+      <app-logs [deviceId]="device.id"></app-logs>
+    </mat-tab>
+    <mat-tab label="Alarms">
+      <app-alarms-container [device]="device"></app-alarms-container>
+    </mat-tab>
+  </mat-tab-group>
 
-
-<div style="margin-left: 90px; margin-right: 10px; margin-top: -80px">
-  <h1 style="font-weight: 500; margin-left: 10px; color: white">History of Device Logs</h1>
-
-  <mat-table [dataSource]="dataSource" matSort matSortActive="start" matSortDirection="desc" matSortDisableClear>
-
-    <ng-container matColumnDef="message">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Message</mat-header-cell>
-      <mat-cell *matCellDef="let log" [matTooltip]="log.message">{{log.message}}</mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="type">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Type</mat-header-cell>
-      <mat-cell *matCellDef="let log">
-        <span *ngIf="log.type === 'info'">
-          <mat-icon style="color: var(--blue)">info</mat-icon>
-        </span>
-        <span *ngIf="log.type === 'warning'">
-          <mat-icon style="color: orange">warning</mat-icon>
-        </span>
-        <span *ngIf="log.type === 'error'">
-          <mat-icon style="color: var(--red)">error</mat-icon>
-        </span>
-      </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="time">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Time</mat-header-cell>
-      <mat-cell *matCellDef="let log">{{log.timestamp}}</mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-    <tr *matNoDataRow>
-      <td>No logs matching the filters</td>
-    </tr>
-  </mat-table>
 </div>

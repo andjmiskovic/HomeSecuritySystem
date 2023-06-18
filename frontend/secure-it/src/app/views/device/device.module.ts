@@ -16,11 +16,18 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatSortModule} from "@angular/material/sort";
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import { MatNativeDateModule } from "@angular/material/core";
+import {MatNativeDateModule} from "@angular/material/core";
+import {MatTabsModule} from "@angular/material/tabs";
+import {AlarmsContainerComponent} from "./components/alarms-container/alarms-container.component";
+import {EditAlarmsDialogComponent} from "./components/edit-alarms-dialog/edit-alarms-dialog.component";
+import { LogsComponent } from './components/logs/logs.component';
 
 @NgModule({
   declarations: [
-    DeviceContainerComponent
+    DeviceContainerComponent,
+    AlarmsContainerComponent,
+    EditAlarmsDialogComponent,
+    LogsComponent
   ],
   imports: [
     MatIconModule,
@@ -41,6 +48,7 @@ import { MatNativeDateModule } from "@angular/material/core";
     MatSortModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatTabsModule,
   ],
   exports: [
     DeviceContainerComponent
