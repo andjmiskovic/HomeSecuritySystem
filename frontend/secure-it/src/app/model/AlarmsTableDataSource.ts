@@ -33,6 +33,7 @@ export class AlarmsTableDataSource implements DataSource<AlarmListItem> {
     this.loadingSubject.next(true);
     this.deviceService.getAlarms(deviceId).subscribe({
       next: (alarms) => {
+        alarms = alarms.reverse()
         this.behaviorSubject.next(alarms);
         this.loadingSubject.next(false)
       }

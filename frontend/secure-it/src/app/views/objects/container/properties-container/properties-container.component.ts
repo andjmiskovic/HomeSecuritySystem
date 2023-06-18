@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {PropertyResponse, getKeyFromValue, PropertyType} from "../../../../model/Property";
 import {PropertyService} from "../../../../services/property.service";
 import {MatSelectChange} from "@angular/material/select";
@@ -9,9 +9,7 @@ import {
 import {AuthService} from "../../../../services/auth.service";
 import {HandshakeWebsocketShareService} from "../../../../services/handshake/handshake-websocketshare.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import {ApproveCsrComponent} from "../../../csr/components/approve-csr/approve-csr.component";
 import {NotificationComponent} from "../../components/notification/notification.component";
-import {PropertyDetailsComponent} from "../../components/property-details/property-details.component";
 import {DeviceCodeInfoComponent} from "../../components/device-code-info/device-code-info.component";
 import { Subscription } from 'rxjs';
 
@@ -74,10 +72,7 @@ export class PropertiesContainerComponent implements OnInit {
     this.subscribeToNewNotifications();
   }
 
-  ngOnDestroy(): void {
-    this.socketSubscription?.unsubscribe();
-    this.websocketService.onNewValueReceive('');
-  }
+
 
   private subscribeToNewNotifications(): void {
     this.socketSubscription = this.websocketService.getNewValue().subscribe({
