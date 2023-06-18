@@ -18,7 +18,7 @@ export class NotificationComponent {
   }
 
   handshakeDevice() {
-    this.deviceManagementService.handshakeDevice(this.device!, this.code!).subscribe({
+    this.deviceManagementService.handshakeWeb(this.code!).subscribe({
       next: (res) => console.log(res),
       error: (err) => console.error(err)
     })

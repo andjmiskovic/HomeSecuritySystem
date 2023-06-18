@@ -21,6 +21,7 @@ import {PropertyDetailsComponent} from './components/property-details/property-d
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import { AddTenantDialogComponent } from './components/add-tenant-dialog/add-tenant-dialog.component';
 import { NotificationComponent } from './components/notification/notification.component';
+import { DeviceCodeInfoComponent } from './components/device-code-info/device-code-info.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { NotificationComponent } from './components/notification/notification.co
     PropertyEditFormDialogComponent,
     PropertyDetailsComponent,
     AddTenantDialogComponent,
-    NotificationComponent
+    NotificationComponent,
+    DeviceCodeInfoComponent
   ],
     imports: [
         MatFormFieldModule,

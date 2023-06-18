@@ -12,6 +12,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {ApproveCsrComponent} from "../../../csr/components/approve-csr/approve-csr.component";
 import {NotificationComponent} from "../../components/notification/notification.component";
 import {PropertyDetailsComponent} from "../../components/property-details/property-details.component";
+import {DeviceCodeInfoComponent} from "../../components/device-code-info/device-code-info.component";
 
 @Component({
   selector: 'app-properties-container',
@@ -88,8 +89,9 @@ export class PropertiesContainerComponent implements OnInit {
   }
 
   generatedCode(value: any) {
-    console.log("hej evo me")
     console.log(value);
     this.code = value
+    const dialogRef = this.dialog.open(DeviceCodeInfoComponent);
+    dialogRef.componentInstance.code = this.code
   }
 }
