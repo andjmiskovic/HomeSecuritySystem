@@ -289,7 +289,7 @@ public class DeviceManagementService {
         return true;
     }
 
-    public ResponseEntity<Resource> generateReport(String start, String end, String deviceId) throws IOException {
+    public ByteArrayInputStream generateReport(String start, String end, String deviceId) throws IOException {
         Date startDate = TimeUtils.convertToDate(start);
         Date endDate = TimeUtils.convertToDate(end);
         List<LogEntry> infoLogs = logService.findAllForDeviceInTimeRange(startDate, endDate, LogType.INFO, UUID.fromString(deviceId));

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {CodeResponse, DeviceDetailsResponse, DeviceHandshakeData, DevicePairingInitRequest} from "../model/Device";
 import {environment} from "../environment.development";
@@ -58,7 +58,19 @@ export class DeviceManagementService {
     if (deviceId) {
       queryParams = queryParams.append("deviceId", deviceId.toString());
     }
-    return this.http.get<Blob>(`${this.devicesUrl}/report`, AuthService.getHttpOptions(queryParams));
+    return this.http.get<Blob>(`${this.devicesUrl}/report`, this.getDownloadHttpOptions(queryParams));
+  }
+
+  private getDownloadHttpOptions(params: HttpParams = new HttpParams()) {
+    return {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      }),
+      params: params,
+      responseType: 'blob' as 'json',
+      withCredentials: true
+    };
   }
 
   public changeAlarms(deviceId: string, body: String[][]): Observable<void> {
