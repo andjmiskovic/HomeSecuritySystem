@@ -1,6 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {HandshakeWebsocketShareService} from "../../../../services/handshake/handshake-websocketshare.service";
-import {HttpErrorResponse} from "@angular/common/http";
+import {Component, Input} from '@angular/core';
 import {DeviceHandshakeData} from "../../../../model/Device";
 import {DeviceManagementService} from "../../../../services/device.service";
 

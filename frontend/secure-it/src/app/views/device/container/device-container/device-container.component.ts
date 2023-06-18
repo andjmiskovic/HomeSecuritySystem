@@ -1,11 +1,10 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {DeviceDetailsResponse} from "../../../../model/Device";
 import {ActivatedRoute} from "@angular/router";
 import {DeviceManagementService} from "../../../../services/device.service";
 import {MatDialog} from "@angular/material/dialog";
 import {FormControl, FormGroup} from "@angular/forms";
 import {AlarmsContainerComponent} from "../../components/alarms-container/alarms-container.component";
-import {MatPaginator} from "@angular/material/paginator";
 
 @Component({
   selector: 'app-device-container',
@@ -30,8 +29,6 @@ export class DeviceContainerComponent implements OnInit {
     this.deviceService.getDevice(this.deviceId).subscribe({
       next: value => {
         this.device = value;
-        console.log("HAAHA")
-        console.log(this.device)
         this.alarmsTableRef.loadAlarms(this.device)
       }
     })

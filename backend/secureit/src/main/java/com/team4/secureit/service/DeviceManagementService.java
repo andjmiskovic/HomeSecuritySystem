@@ -198,6 +198,7 @@ public class DeviceManagementService {
         kieSession.setGlobal("logService", logService);
         kieSession.setGlobal("device", device);
         kieSession.setGlobal("user", propertyOwner);
+        kieSession.setGlobal("messagingTemplate", messagingTemplate);
 
         DroolsUtils.getKieSession(device).dispose();
         DroolsUtils.setKieSession(device, kieSession);

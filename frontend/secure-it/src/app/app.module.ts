@@ -28,6 +28,8 @@ import {DeviceModule} from "./views/device/device.module";
 import {HandshakeWebSocketAPI} from "./services/handshake/handshake-socket.service";
 import {HandshakeWebsocketShareService} from "./services/handshake/handshake-websocketshare.service";
 import {LogsModule} from "./views/logs/logs.module";
+import {AlarmWebSocketAPI} from "./services/alarm/alarm.socket.service";
+import {AlarmWebsocketShareService} from "./services/alarm/alarm.websocketshare.service";
 
 @NgModule({
   declarations: [
@@ -62,7 +64,7 @@ import {LogsModule} from "./views/logs/logs.module";
     DeviceModule,
     LogsModule
   ],
-  providers: [HandshakeWebSocketAPI, HandshakeWebsocketShareService],
+  providers: [HandshakeWebSocketAPI, HandshakeWebsocketShareService, AlarmWebSocketAPI, AlarmWebsocketShareService],
   bootstrap: [AppComponent]
 })
 export class AppModule {
