@@ -15,7 +15,8 @@ export enum LogSource {
   DEVICE_MANAGEMENT = "Device management",
   CERTIFICATE_MANAGEMENT = "Certificate management",
   AUTHENTICATION = "Authetication",
-  AUTHORIZATION = "Authorization"
+  AUTHORIZATION = "Authorization",
+  MAILING = "Mailing"
 }
 
 export class LogTableDataSource implements DataSource<LogListItem> {

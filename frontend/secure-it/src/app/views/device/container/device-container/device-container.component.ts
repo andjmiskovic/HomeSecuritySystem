@@ -58,10 +58,10 @@ export class DeviceContainerComponent implements OnInit {
 
   downloadReport() {
     this.deviceService.getReport(this.campaignOne.value.start, this.campaignOne.value.end).subscribe({
-      next: (pdf: Blob) => {
+      next: (content) => {
         const element = document.createElement('a');
-        // const file = new Blob([content], {type: 'text/plain'});
-        element.href = URL.createObjectURL(pdf);
+        const file = new Blob([content], {type: 'application/pdf'});
+        element.href = URL.createObjectURL(file);
         element.download = "report.pdf";
         document.body.appendChild(element);
         element.click();

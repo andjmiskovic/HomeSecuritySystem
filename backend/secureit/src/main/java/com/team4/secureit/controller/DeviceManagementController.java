@@ -4,6 +4,7 @@ import com.team4.secureit.api.ResponseOk;
 import com.team4.secureit.dto.request.DeviceChangeAlarmsRequest;
 import com.team4.secureit.dto.request.DeviceHandshakeData;
 import com.team4.secureit.dto.request.DevicePairingInitRequest;
+import com.team4.secureit.dto.response.AlarmItem;
 import com.team4.secureit.dto.response.CodeResponse;
 import com.team4.secureit.dto.response.DeviceDetailsResponse;
 import com.team4.secureit.model.PropertyOwner;
@@ -68,6 +69,12 @@ public class DeviceManagementController {
         PropertyOwner propertyOwner = (PropertyOwner) authentication.getPrincipal();
         deviceManagementService.changeAlarms(deviceId, propertyOwner, alarmsRequest);
         return new ResponseOk("Alarms updated.");
+    }
+
+    @PutMapping("/{deviceId}/alarms")
+    @PreAuthorize("hasRole('ADMIN')")
+    public AlarmItem getAlarms(@PathVariable UUID deviceId, Authentication authentication) {
+        return deviceManagementService.getAlarms(deviceId);
     }
 
     @GetMapping("/report")
