@@ -7,14 +7,11 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.commons.io.FileUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
 
 public class PDFService {
 
-    public static ByteArrayInputStream createPDF() throws FileNotFoundException {
+    public static ByteArrayInputStream createPDF() throws IOException {
         Document document = new Document(PageSize.A4);
         FileOutputStream file = new FileOutputStream("report.pdf");
         try {
@@ -37,6 +34,6 @@ public class PDFService {
         } finally {
             document.close();
         }
-        return new ByteArrayInputStream(FileUtils.readFileToByteArray(file));
+        return new ByteArrayInputStream(FileUtils.readFileToByteArray(new File(String.valueOf(file))));
     }
 }

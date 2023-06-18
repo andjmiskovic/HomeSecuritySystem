@@ -153,6 +153,7 @@ public class DeviceManagementService {
 
     public ByteArrayInputStream generateReport(String start, String end) throws IOException {
         File pdfFile = new File("src/main/resources/gen/report.pdf");
+        // PDF Service
         return new ByteArrayInputStream(FileUtils.readFileToByteArray(pdfFile));
     }
 }
