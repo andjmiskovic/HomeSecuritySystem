@@ -62,12 +62,14 @@ public class CustomLogRepositoryImpl implements CustomLogRepository {
     }
 
     @Override
-    public List<LogEntry> findAllForDeviceInTimeRange(Date startDate, Date endDate, UUID deviceId) {
-//        Query query = new Query();
-//        if (startDate != null)
-//            query.
-
-
-            return null;
+    public List<LogEntry> findAllForDeviceInTimeRange(Date startDate, Date endDate, LogType type, UUID deviceId) {
+        Query query = new Query();
+        if (deviceId != null)
+            query.addCriteria(Criteria.where("sourceId").is(deviceId));
+        if (startDate != null && endDate != null)
+            query.addCriteria(Criteria.where("timestamp").gte(startDate).lte(endDate));
+        if (type != null)
+            query.addCriteria(Criteria.where("type").is(type));
+        return mongoTemplate.find(query, LogEntry.class);
     }
 }

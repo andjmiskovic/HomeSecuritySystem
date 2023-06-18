@@ -47,8 +47,8 @@ public class LogService {
         return logRepository.findUserLogsByCriteria(pattern, sourceId, userId, type);
     }
 
-    public List<LogEntry> findAllForDeviceInTimeRange(Date startDate, Date endDate, UUID deviceId) {
-        return logRepository.findAllForDeviceInTimeRange(startDate, endDate, deviceId);
+    public List<LogEntry> findAllForDeviceInTimeRange(Date startDate, Date endDate, LogType type, UUID deviceId) {
+        return logRepository.findAllForDeviceInTimeRange(startDate, endDate, type, deviceId);
 
     }
 }

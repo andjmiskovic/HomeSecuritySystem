@@ -18,6 +18,7 @@ import com.team4.secureit.repository.DeviceRepository;
 import com.team4.secureit.repository.PropertyRepository;
 import com.team4.secureit.util.DroolsUtils;
 import com.team4.secureit.util.MappingUtils;
+import com.team4.secureit.util.TimeUtils;
 import org.apache.commons.io.FileUtils;
 import org.drools.template.DataProvider;
 import org.drools.template.objects.ArrayDataProvider;
@@ -36,10 +37,7 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
@@ -272,13 +270,15 @@ public class DeviceManagementService {
         return true;
     }
 
-    public ByteArrayInputStream generateReport(ReportRequest reportRequest) throws IOException {
+    public ByteArrayInputStream generateReport(String start, String end, String deviceId) throws IOException {
         File pdfFile = new File("src/main/resources/gen/report.pdf");
-
-//        List<LogEntry> logs =
+        Date startDate = TimeUtils.convertToDate(start);
+        Date endDate = TimeUtils.convertToDate(end);
+        List<LogEntry> warningLogs = logService.findAllForDeviceInTimeRange(startDate, endDate, LogType.WARNING, UUID.fromString(deviceId));
+        List<LogEntry> errorLogs = logService.findAllForDeviceInTimeRange(startDate, endDate, LogType.ERROR, UUID.fromString(deviceId));
 
         // PDF Service
-        return pdfService.createPDF(reportRequest);
+        return pdfService.createPDF(warningLogs, errorLogs);
     }
 
     public AlarmItem getAlarms(UUID deviceId) {

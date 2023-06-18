@@ -59,5 +59,7 @@ public class MappingUtils {
                 propertyInfo,
                 device.getSensorInfo()
         );
+
+
     }
 }

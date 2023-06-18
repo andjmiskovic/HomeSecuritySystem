@@ -15,5 +15,5 @@ public interface CustomLogRepository {
 
     List<LogEntry> findUserLogsByCriteria(String pattern, UUID deviceId, UUID userId, LogType type);
 
-    List<LogEntry> findAllForDeviceInTimeRange(Date startDate, Date endDate, UUID deviceId);
+    List<LogEntry> findAllForDeviceInTimeRange(Date startDate, Date endDate, LogType type, UUID deviceId);
 }
