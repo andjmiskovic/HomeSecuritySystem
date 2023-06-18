@@ -59,6 +59,7 @@ export class LogTableDataSource implements DataSource<LogListItem> {
     this.loadingSubject.next(true);
     this.logService.getLogs(regex, source, sourceId, type).subscribe({
       next: (logItems) => {
+        logItems = logItems.reverse()
         console.log(logItems)
         this.behaviorSubject.next(logItems);
         this.loadingSubject.next(false)
