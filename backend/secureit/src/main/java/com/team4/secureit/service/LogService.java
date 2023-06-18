@@ -1,7 +1,6 @@
 package com.team4.secureit.service;
 
 import com.team4.secureit.model.*;
-import com.team4.secureit.repository.DeviceRepository;
 import com.team4.secureit.repository.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +48,5 @@ public class LogService {
 
     public List<LogEntry> findAllForDeviceInTimeRange(Date startDate, Date endDate, LogType type, UUID deviceId) {
         return logRepository.findAllForDeviceInTimeRange(startDate, endDate, type, deviceId);
-
     }
 }

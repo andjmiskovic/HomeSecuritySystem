@@ -284,13 +284,10 @@ public class DeviceManagementService {
     }
 
     public ByteArrayInputStream generateReport(String start, String end, String deviceId) throws IOException {
-        File pdfFile = new File("src/main/resources/gen/report.pdf");
         Date startDate = TimeUtils.convertToDate(start);
         Date endDate = TimeUtils.convertToDate(end);
         List<LogEntry> warningLogs = logService.findAllForDeviceInTimeRange(startDate, endDate, LogType.WARNING, UUID.fromString(deviceId));
         List<LogEntry> errorLogs = logService.findAllForDeviceInTimeRange(startDate, endDate, LogType.ERROR, UUID.fromString(deviceId));
-
-        // PDF Service
         return pdfService.createPDF(warningLogs, errorLogs);
     }
 
