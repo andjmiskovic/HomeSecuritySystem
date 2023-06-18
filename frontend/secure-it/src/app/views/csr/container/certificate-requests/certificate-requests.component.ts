@@ -6,6 +6,7 @@ import {CsrService} from "../../../../services/csr.service";
 import {CsrTableDataSource} from "../../../../model/CsrTableData";
 import {MatSelectChange} from "@angular/material/select";
 import {CsrDetailsDialogComponent} from "../../components/csr-details-dialog/csr-details-dialog.component";
+import {FormControl, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-certificate-requests',
@@ -22,6 +23,11 @@ export class CertificateRequestsComponent {
   @Input() id!: string;
   selectedFilter: string;
   searchFilter: string;
+
+  campaignOne = new FormGroup({
+    start: new FormControl(new Date),
+    end: new FormControl(new Date),
+  });
 
   constructor(private dialog: MatDialog, private csrService: CsrService) {
     this.dataSource = new CsrTableDataSource(csrService);

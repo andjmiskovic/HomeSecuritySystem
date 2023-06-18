@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 import {CodeResponse, DeviceDetailsResponse, DeviceHandshakeData, DevicePairingInitRequest} from "../model/Device";
 import {environment} from "../environment.development";
 import {AuthService} from "./auth.service";
-import {FormControl, ɵValue} from "@angular/forms";
+import {AlarmListItem} from "../model/AlarmsTableDataSource";
 
 @Injectable({
   providedIn: 'root'
@@ -43,5 +43,9 @@ export class DeviceManagementService {
       queryParams = queryParams.append("end", end.toString());
     }
     return this.http.get<Blob>(`${this.devicesUrl}/report`, AuthService.getHttpOptions(queryParams));
+  }
+
+  public getAlarms(deviceId: string): Observable<AlarmListItem[]> {
+    return this.http.get<AlarmListItem[]>(`${this.devicesUrl}/` + deviceId + `/alarms`, AuthService.getHttpOptions());
   }
 }

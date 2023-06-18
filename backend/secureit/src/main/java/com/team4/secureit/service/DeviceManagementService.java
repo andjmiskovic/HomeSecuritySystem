@@ -4,6 +4,7 @@ import com.team4.secureit.api.ResponseError;
 import com.team4.secureit.dto.request.DeviceChangeAlarmsRequest;
 import com.team4.secureit.dto.request.DeviceHandshakeData;
 import com.team4.secureit.dto.request.DeviceSensorInfo;
+import com.team4.secureit.dto.response.AlarmItem;
 import com.team4.secureit.dto.response.CodeResponse;
 import com.team4.secureit.dto.response.DeviceDetailsResponse;
 import com.team4.secureit.dto.response.DeviceSuccessfulPairingResponse;
@@ -271,5 +272,8 @@ public class DeviceManagementService {
         File pdfFile = new File("src/main/resources/gen/report.pdf");
         // PDF Service
         return new ByteArrayInputStream(FileUtils.readFileToByteArray(pdfFile));
+    }
+
+    public AlarmItem getAlarms(UUID deviceId) {
     }
 }

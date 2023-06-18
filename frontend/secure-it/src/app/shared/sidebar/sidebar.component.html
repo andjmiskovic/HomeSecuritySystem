@@ -32,6 +32,18 @@
       </a>
       <span class="tooltip">Tokens</span>
     </li>
+    <li *ngIf="userRole==='ROLE_ADMIN'">
+      <a (click)="navigate('/logs')" [ngClass]="{ 'currentPage': currentPage === 'logs' }">
+        <mat-icon>info</mat-icon>
+      </a>
+      <span class="tooltip">Logs</span>
+    </li>
+    <li *ngIf="userRole==='ROLE_ADMIN'">
+      <a (click)="navigate('/alarms')" [ngClass]="{ 'currentPage': currentPage === 'alarms' }">
+        <mat-icon>alarm</mat-icon>
+      </a>
+      <span class="tooltip">Alarms</span>
+    </li>
     <li>
       <a (click)="logout()">
         <mat-icon>logout</mat-icon>
