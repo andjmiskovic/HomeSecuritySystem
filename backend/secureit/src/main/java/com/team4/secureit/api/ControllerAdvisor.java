@@ -145,4 +145,10 @@ public class ControllerAdvisor {
     public ResponseError handleForbiddenSearchCriteriaException(ForbiddenSearchCriteriaException e) {
         return new ResponseError(HttpStatus.FORBIDDEN, "Search criteria is not allowed for this type of user.");
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidSignatureException.class)
+    public ResponseError handleInvalidSignatureException(InvalidSignatureException e) {
+        return new ResponseError(HttpStatus.BAD_REQUEST, "Invalid signature.");
+    }
 }

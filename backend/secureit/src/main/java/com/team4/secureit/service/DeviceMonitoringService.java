@@ -2,7 +2,10 @@ package com.team4.secureit.service;
 
 import com.team4.secureit.dto.request.DeviceMessage;
 import com.team4.secureit.exception.DeviceNotFoundException;
+import com.team4.secureit.exception.InvalidSignatureException;
 import com.team4.secureit.model.Device;
+import com.team4.secureit.model.LogSource;
+import com.team4.secureit.model.LogType;
 import com.team4.secureit.repository.DeviceRepository;
 import jakarta.xml.bind.DatatypeConverter;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -27,15 +30,25 @@ public class DeviceMonitoringService {
     @Autowired
     private DeviceRepository deviceRepository;
 
+    @Autowired
+    private LogService logService;
+
     public void processMessage(DeviceMessage message, String rawRequestBody, String signature) {
         UUID deviceId = message.getDeviceId();
         Device device = deviceRepository.findById(deviceId).orElseThrow(DeviceNotFoundException::new);
 
         boolean isSignatureValid = verifySignature(rawRequestBody, signature, device.getPublicKeyPem());
         if (isSignatureValid) {
-            System.out.println(rawRequestBody);
+            // System.out.println(rawRequestBody);
         } else {
-            System.out.println("Signature is not valid");
+            logService.log(
+                    "Received a message with invalid signature from device '" + device.getLabel() + "', " + device.getMacAddress(),
+                    LogSource.DEVICE_MONITORING,
+                    device.getId(),
+                    device.getUser().getId(),
+                    LogType.ERROR
+            );
+            throw new InvalidSignatureException();
         }
     }
 

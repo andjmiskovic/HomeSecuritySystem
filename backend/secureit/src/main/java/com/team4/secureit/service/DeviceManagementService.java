@@ -9,10 +9,7 @@ import com.team4.secureit.dto.response.DeviceSuccessfulPairingResponse;
 import com.team4.secureit.exception.DeviceNotFoundException;
 import com.team4.secureit.exception.PairingRequestNotFound;
 import com.team4.secureit.exception.PropertyNotFoundException;
-import com.team4.secureit.model.Device;
-import com.team4.secureit.model.DevicePairingRequest;
-import com.team4.secureit.model.Property;
-import com.team4.secureit.model.PropertyOwner;
+import com.team4.secureit.model.*;
 import com.team4.secureit.repository.DeviceRepository;
 import com.team4.secureit.repository.PropertyRepository;
 import com.team4.secureit.util.MappingUtils;
@@ -45,6 +42,9 @@ public class DeviceManagementService {
     private DeviceRepository deviceRepository;
 
     @Autowired
+    private LogService logService;
+
+    @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
     private final SecureRandom random = new SecureRandom();
@@ -63,6 +63,14 @@ public class DeviceManagementService {
 
         DevicePairingRequest request = new DevicePairingRequest(propertyOwner, property);
         attemptedPairings.put(code, request);
+
+        logService.log(
+                "User " + propertyOwner.getEmail() + " has initialized pairing.",
+                LogSource.DEVICE_MANAGEMENT,
+                null,
+                propertyOwner.getId(),
+                LogType.INFO
+        );
 
         return new CodeResponse(code);
     }
@@ -87,10 +95,15 @@ public class DeviceManagementService {
 
         // Notify user about device pairing
         PropertyOwner propertyOwner = pairing.getRequestedBy();
-        System.out.println(propertyOwner.getUsername());
-        System.out.println(deviceHandshakeData);
         messagingTemplate.convertAndSendToUser(propertyOwner.getUsername(), "/queue/devices", deviceHandshakeData);
-        System.out.println("Is this your device?: " + deviceHandshakeData.getMacAddress() + ", " + deviceHandshakeData.getLabel());
+
+        logService.log(
+                "Pairing request (pin " + code + ") accepted on the device.",
+                LogSource.DEVICE_MANAGEMENT,
+                null,
+                propertyOwner.getId(),
+                LogType.INFO
+        );
 
         return pairing.getResponse(); // Response is returned after handshakeWeb() method is called, or when it times out.
     }
@@ -123,6 +136,14 @@ public class DeviceManagementService {
         pairing.getResponse().setResult(
                 ResponseEntity.ok().body(new DeviceSuccessfulPairingResponse(pairedDevice.getId()))
         );
+
+        logService.log(
+                "Pairing request (pin " + code + ") accepted on the webapp. Device '" + pairedDevice.getLabel() + "' is now connected.",
+                LogSource.DEVICE_MANAGEMENT,
+                pairedDevice.getId(),
+                propertyOwner.getId(),
+                LogType.INFO
+        );
     }
 
     @Scheduled(cron = "* 2 * * * *")
@@ -132,6 +153,12 @@ public class DeviceManagementService {
             if (value.isExpired(now))
                 attemptedPairings.remove(key, value);
         });
+
+        logService.log(
+                "Cleared expired pairings from memory.",
+                LogSource.DEVICE_MANAGEMENT,
+                LogType.INFO
+        );
     }
 
     public List<DeviceDetailsResponse> getUsersDevices(PropertyOwner propertyOwner) {

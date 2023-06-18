@@ -63,14 +63,17 @@ def send_message():
         'signature': cryptography_manager.sign(message_bytes)
     }
 
-    requests.post(
+    response = requests.post(
         f'http://localhost:8001/monitor/send',
         json=message,
         params=params,
         headers=headers
     )
 
-    current_app.logger.info(f'Server received {len(message_bytes)} bytes.')
+    if (response.status_code == requests.codes.ok):
+        current_app.logger.info(f'Server received {json.loads(response.text)["message"]} bytes.')
+    else:
+        current_app.logger.info(f'Message denied. Invalid signature.')
 
 
 def generate_measurement(sensor):

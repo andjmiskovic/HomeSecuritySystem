@@ -7,6 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Data
@@ -14,6 +16,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LogEntry {
+
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+
     @Id
     private UUID id = UUID.randomUUID();
 
@@ -53,5 +61,20 @@ public class LogEntry {
         this.sourceId = sourceId;
         this.userId = userId;
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        String formattedTimestamp = timestamp.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        return getColorByType() + formattedTimestamp + "  " + type + " [" + source + "] : " + message + ANSI_RESET;
+    }
+
+    private String getColorByType() {
+        return switch (type.name()) {
+            case "INFO" -> ANSI_CYAN;
+            case "WARNING" -> ANSI_YELLOW;
+            case "ERROR" -> ANSI_RED;
+            default -> ANSI_RESET;
+        };
     }
 }

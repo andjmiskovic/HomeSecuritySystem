@@ -1,6 +1,5 @@
 package com.team4.secureit.service;
 
-import com.team4.secureit.exception.ForbiddenSearchCriteriaException;
 import com.team4.secureit.model.*;
 import com.team4.secureit.repository.DeviceRepository;
 import com.team4.secureit.repository.LogRepository;
@@ -16,26 +15,27 @@ public class LogService {
     @Autowired
     private LogRepository logRepository;
 
-    @Autowired
-    private DeviceRepository deviceRepository;
-
     public void log(String message, LogType type) {
         LogEntry entry = new LogEntry(message, type);
+        System.out.println(entry);
         logRepository.save(entry);
     }
 
     public void log(String message, LogSource source, LogType type) {
         LogEntry entry = new LogEntry(message, source, type);
+        System.out.println(entry);
         logRepository.save(entry);
     }
 
     public void log(String message, LogSource source, UUID sourceId, LogType type) {
         LogEntry entry = new LogEntry(message, source, sourceId, type);
+        System.out.println(entry);
         logRepository.save(entry);
     }
 
     public void log(String message, LogSource source, UUID sourceId, UUID userId, LogType type) {
         LogEntry entry = new LogEntry(message, source, sourceId, userId, type);
+        System.out.println(entry);
         logRepository.save(entry);
     }
 
