@@ -7,9 +7,7 @@ import com.team4.secureit.dto.request.LoginVerificationRequest;
 import com.team4.secureit.dto.response.CertificateValidityResponse;
 import com.team4.secureit.exception.CertificateAlreadyRevokedException;
 import com.team4.secureit.exception.VerificationFailedException;
-import com.team4.secureit.model.CertificateDetails;
-import com.team4.secureit.model.CertificateRevocation;
-import com.team4.secureit.model.User;
+import com.team4.secureit.model.*;
 import com.team4.secureit.repository.CertificateDetailsRepository;
 import com.team4.secureit.repository.CertificateRevocationRepository;
 import com.team4.secureit.util.CSRUtils;
@@ -54,6 +52,9 @@ public class CertificateService {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private LogService logService;
 
     public List<CertificateDetails> getAll() {
         return certificateDetailsRepository.findAll();
@@ -152,8 +153,16 @@ public class CertificateService {
     }
 
     public String getPrivateKey(BigInteger serialNumber, LoginVerificationRequest verificationRequest, User subscriber) throws IOException {
-        if (!accountService.verifyLogin(verificationRequest, subscriber))
+        if (!accountService.verifyLogin(verificationRequest, subscriber)) {
+            logService.log(
+                    "User " + subscriber.getEmail() + " has provided an invalid password when exporting private key.",
+                    LogSource.CERTIFICATE_MANAGEMENT,
+                    null,
+                    subscriber.getId(),
+                    LogType.WARNING
+            );
             throw new VerificationFailedException("Verification failed.");
+        }
 
         CertificateDetails details = certificateDetailsRepository.findBySerialNumberAndSubscriber(serialNumber, subscriber)
                 .orElseThrow(() -> new EntityNotFoundException("Certificate not found."));

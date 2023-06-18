@@ -85,10 +85,14 @@ def pair_device():
     
 
 @api.route('/toggle-simulation', methods=['POST'])
-def testmessage():
+def toggle_simulation():
     client.alarm_simulation = not client.alarm_simulation
     return ApiResponse(f"Simulation {'enabled' if client.alarm_simulation else 'disabled'}.", 200).to_json()
 
+
+@api.route('/data')
+def get_data():
+    return client.display_data
 
 @api.errorhandler(400)
 def bad_request(e):

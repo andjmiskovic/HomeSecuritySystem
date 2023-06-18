@@ -20,7 +20,6 @@
 
     form {
       background-color: #ffffff;
-      margin: 2em auto;
       padding: 2em;
       width: 300px;
       box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
@@ -83,18 +82,32 @@
       padding: 2em;
       box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
     }
+
+    .data-box {
+      background-color: #ffffff;
+      padding: 2em;
+      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+    }
   </style>
 </head>
 
 <body>
   <div class="container">
     <div class="column">
-      <h2>Pair your device</h2>
-      <form id="pair-form">
-        <label for="code">Code:</label><br>
-        <input type="text" id="code" name="code"><br>
-        <input type="submit" value="Pair">
-      </form>
+      <h2>Connect your device</h2>
+      {% if is_paired %}
+        <form id="pair-form">
+            <label for="code">Code:</label><br>
+            <input type="text" id="code" name="code" value="Your device is already paired." disabled><br>
+            <input type="submit" value="Paired" disabled>
+        </form>
+    {% else %}
+        <form id="pair-form">
+            <label for="code">Code:</label><br>
+            <input type="text" id="code" name="code"><br>
+            <input type="submit" value="Pair">
+        </form>
+    {% endif %}
       <p id="pair-response"></p>
     </div>
 
@@ -110,7 +123,7 @@
 
   <div class="container">
     <div class="column">
-      <h2>Change your password</h2>
+      <h2>Change device password</h2>
       <form id="password-form">
         <label for="oldPassword">Old password:</label><br>
         <input type="password" id="oldPassword" name="oldPassword"><br>
@@ -121,13 +134,22 @@
     </div>
 
     <div class="column">
+      <h2>Sensor Data</h2>
+      <div class="data-box">
+        <ul id="sensor-data">
+          Waiting for sensor data to show up...
+        </ul>
+      </div>
+    </div>
+
+
+    <div class="column">
       <h2>Other controls</h2>
       <div class="button-box" id="buttons-container">
         <button id="toggle-simulation">Toggle simulation</button>
         <button id="logout">Logout</button>
       </div>
     </div>
-
   </div>
 
   <script>
@@ -198,6 +220,28 @@
           console.error('Error:', error);
         });
     });
+
+    function updateSensorData() {
+      fetch('/api/data')
+        .then(response => response.json())
+        .then(data => {
+          const sensorDataList = document.getElementById('sensor-data');
+          // Clear the list
+          sensorDataList.innerHTML = '';
+          // Add each sensor data to the list
+          for (let key in data) {
+            let listItem = document.createElement('li');
+            listItem.textContent = `${key}: ${data[key]}`;
+            sensorDataList.appendChild(listItem);
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
+
+    // Update sensor data every 3 seconds
+    setInterval(updateSensorData, 3000);
   </script>
 </body>
 

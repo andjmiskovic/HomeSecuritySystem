@@ -26,7 +26,7 @@ public class LogController {
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'PROPERTY_OWNER')")
     public List<LogEntry> getLogsByCriteria(
-            @RequestParam(required = false) String message,
+            @RequestParam(required = false) String regex,
             @RequestParam(required = false) LogSource source,
             @RequestParam(required = false) UUID sourceId,
             @RequestParam(required = false) UUID userId,
@@ -34,6 +34,6 @@ public class LogController {
             Authentication authentication
     ) {
         User user = (User) authentication.getPrincipal();
-        return logService.findByCriteria(message, source, sourceId, userId, type, user);
+        return logService.findByCriteria(regex, source, sourceId, userId, type, user);
     }
 }

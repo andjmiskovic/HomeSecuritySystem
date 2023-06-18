@@ -1,8 +1,11 @@
 package com.team4.secureit.security;
 
 import com.team4.secureit.config.AppProperties;
+import com.team4.secureit.model.LogSource;
+import com.team4.secureit.model.LogType;
 import com.team4.secureit.model.User;
 import com.team4.secureit.repository.UserRepository;
+import com.team4.secureit.service.LogService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +32,9 @@ public class AuthenticationManagerWrapper implements AuthenticationManager {
 
     @Autowired
     private AppProperties appProperties;
+
+    @Autowired
+    private LogService logService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -60,6 +66,14 @@ public class AuthenticationManagerWrapper implements AuthenticationManager {
             if (user.getLoginAttempts() >= appProperties.getAuth().getLoginAttemptLimit()) {
                 user.lockAccount(appProperties.getAuth().getLockoutDuration(), ChronoUnit.MINUTES, "Too many failed login attempts.");
                 userRepository.save(user);
+
+                logService.log(
+                        "Account of user " + user.getEmail() + " has been locked until " + user.getLockedUntil() + " because '" + user.getLockReason() + "'.",
+                        LogSource.AUTHENTICATION,
+                        null,
+                        user.getId(),
+                        LogType.WARNING
+                );
             }
 
             // Valid email + invalid password => Bad credentials

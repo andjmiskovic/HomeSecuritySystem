@@ -12,6 +12,7 @@ import {AuthService} from "../../../../services/auth.service";
 export class PropertyCardComponent implements OnInit {
   @Output() updateDisplay: EventEmitter<any> = new EventEmitter();
   @Input() property!: PropertyResponse;
+  @Output() updateGeneratedCode: EventEmitter<string> = new EventEmitter<string>();
   loggedUserId!: string;
   userRole!: string;
 
@@ -31,6 +32,9 @@ export class PropertyCardComponent implements OnInit {
       width: '800px'
     });
     dialogRef.componentInstance.id = id;
+    dialogRef.componentInstance.generatedCode.subscribe((value: string) => {
+      this.updateGeneratedCode.emit(value)
+    });
     dialogRef.afterClosed().subscribe(() => this.updateDisplay.emit())
   }
 }

@@ -1,6 +1,7 @@
 package com.team4.secureit.controller;
 
 import com.team4.secureit.api.ResponseOk;
+import com.team4.secureit.dto.request.DeviceChangeAlarmsRequest;
 import com.team4.secureit.dto.request.DeviceHandshakeData;
 import com.team4.secureit.dto.request.DevicePairingInitRequest;
 import com.team4.secureit.dto.response.CodeResponse;
@@ -19,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.Blob;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/devices")
@@ -54,10 +56,18 @@ public class DeviceManagementController {
         return deviceManagementService.getUsersDevices(propertyOwner);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{deviceId}")
     @PreAuthorize("hasRole('PROPERTY_OWNER')")
-    public DeviceDetailsResponse getDevices(@PathVariable String id) {
-        return deviceManagementService.getDevice(id);
+    public DeviceDetailsResponse getDevices(@PathVariable UUID deviceId) {
+        return deviceManagementService.getDevice(deviceId);
+    }
+
+    @PutMapping("/{deviceId}")
+    @PreAuthorize("hasRole('PROPERTY_OWNER')")
+    public ResponseOk changeAlarms(@RequestBody @Valid DeviceChangeAlarmsRequest alarmsRequest, @PathVariable UUID deviceId, Authentication authentication) {
+        PropertyOwner propertyOwner = (PropertyOwner) authentication.getPrincipal();
+        deviceManagementService.changeAlarms(deviceId, propertyOwner, alarmsRequest);
+        return new ResponseOk("Alarms updated.");
     }
 
     @GetMapping("/report")

@@ -2,9 +2,7 @@ package com.team4.secureit.service;
 
 import com.google.zxing.WriterException;
 import com.team4.secureit.config.AppProperties;
-import com.team4.secureit.model.PropertyOwner;
-import com.team4.secureit.model.TenantInvite;
-import com.team4.secureit.model.User;
+import com.team4.secureit.model.*;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.apache.commons.io.FileUtils;
@@ -31,6 +29,9 @@ public class MailingService {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private LogService logService;
 
     private final Path templatesLocation;
 
@@ -86,6 +87,12 @@ public class MailingService {
             helper.setFrom(senderAddress);
             helper.setSubject(subject);
             mailSender.send(mimeMessage);
+
+            logService.log(
+                    "An email with the subject + '" + subject + "' is sent to " + to,
+                    LogSource.MAILING,
+                    LogType.INFO
+            );
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }

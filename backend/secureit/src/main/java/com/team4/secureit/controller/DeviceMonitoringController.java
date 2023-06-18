@@ -1,6 +1,7 @@
 package com.team4.secureit.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team4.secureit.api.ResponseOk;
 import com.team4.secureit.dto.request.DeviceMessage;
 import com.team4.secureit.service.DeviceMonitoringService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,11 +22,12 @@ public class DeviceMonitoringController {
     private DeviceMonitoringService deviceMonitoringService;
 
     @PostMapping("/send")
-    public void processMessage(@RequestParam(value = "signature") String signature, HttpServletRequest request) throws IOException {
+    public ResponseOk processMessage(@RequestParam(value = "signature") String signature, HttpServletRequest request) throws IOException {
         String rawRequestBody = getRawRequestBody(request);
         DeviceMessage message = objectMapper.readValue(rawRequestBody, DeviceMessage.class);
 
         deviceMonitoringService.processMessage(message, rawRequestBody, signature);
+        return new ResponseOk(String.valueOf(rawRequestBody.length()));
     }
 
 }

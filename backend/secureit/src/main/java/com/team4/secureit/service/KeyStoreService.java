@@ -1,6 +1,8 @@
 package com.team4.secureit.service;
 
 import com.team4.secureit.model.CertificateDetails;
+import com.team4.secureit.model.LogSource;
+import com.team4.secureit.model.LogType;
 import com.team4.secureit.repository.CertificateDetailsRepository;
 import com.team4.secureit.util.CertificateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,9 @@ public class KeyStoreService {
     @Autowired
     private CertificateDetailsRepository certificateDetailsRepository;
 
+    @Autowired
+    private LogService logService;
+
     public void init() {
         try {
             FileInputStream fis = new FileInputStream(KEYSTORE_PATH);
@@ -53,6 +58,13 @@ public class KeyStoreService {
         try {
             PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, keyPass);
             PublicKey publicKey = getCertificate(alias).getPublicKey();
+
+            logService.log(
+                    "Key pair '" + alias + "' loaded from keystore.",
+                    LogSource.CERTIFICATE_MANAGEMENT,
+                    LogType.INFO
+            );
+
             return new KeyPair(publicKey, privateKey);
         } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
             return null;
@@ -60,10 +72,22 @@ public class KeyStoreService {
     }
 
     public X509Certificate getCertificate(String alias) throws KeyStoreException {
+        logService.log(
+                "Certificate '" + alias + "' loaded from keystore.",
+                LogSource.CERTIFICATE_MANAGEMENT,
+                LogType.INFO
+        );
+
         return (X509Certificate) keyStore.getCertificate(alias);
     }
 
     public X509Certificate[] getCertificateChain(String alias, X509Certificate newCert) throws KeyStoreException {
+        logService.log(
+                "Certificate chain '" + alias + "' loaded from keystore.",
+                LogSource.CERTIFICATE_MANAGEMENT,
+                LogType.INFO
+        );
+
         Certificate[] chain = keyStore.getCertificateChain(alias);
         X509Certificate[] x509chain = Arrays.stream(chain)
                 .map(cert -> (X509Certificate) cert)
@@ -77,8 +101,18 @@ public class KeyStoreService {
             PrivateKey privateKey = keyPair.getPrivate();
             keyStore.setKeyEntry(alias, privateKey, keyPass, chain);
             keyStore.store(new FileOutputStream(KEYSTORE_PATH), KEYSTORE_PASS);
-        } catch (KeyStoreException | CertificateException | IOException | NoSuchAlgorithmException ignore) {
 
+            logService.log(
+                    "Key pair '" + alias + "' stored to keystore.",
+                    LogSource.CERTIFICATE_MANAGEMENT,
+                    LogType.INFO
+            );
+        } catch (KeyStoreException | CertificateException | IOException | NoSuchAlgorithmException ignore) {
+            logService.log(
+                    "Storing key pair '" + alias + "' to keystore failed.",
+                    LogSource.CERTIFICATE_MANAGEMENT,
+                    LogType.ERROR
+            );
         }
     }
 
@@ -98,5 +132,11 @@ public class KeyStoreService {
 
         certificateDetailsRepository.deleteAll();
         certificateDetailsRepository.saveAll(issuerCerts);
+
+        logService.log(
+                "H2 Database synchronised with the keystore.",
+                LogSource.CERTIFICATE_MANAGEMENT,
+                LogType.INFO
+        );
     }
 }

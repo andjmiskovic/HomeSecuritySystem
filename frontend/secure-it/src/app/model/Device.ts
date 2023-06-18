@@ -4,6 +4,11 @@ export class DevicePairingInitRequest {
   propertyId!: string;
 }
 
+export class Sensor {
+  name!: string;
+  unit!: string;
+}
+
 export class DeviceHandshakeData {
   name!: string;
   label!: string;
@@ -11,6 +16,7 @@ export class DeviceHandshakeData {
   manufacturer!: string;
   macAddress!: string;
   publicKey!: string;
+  sensors?: Sensor[]
 }
 
 export class DeviceDetailsResponse {

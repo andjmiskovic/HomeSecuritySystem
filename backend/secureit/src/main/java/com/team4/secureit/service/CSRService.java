@@ -2,9 +2,7 @@ package com.team4.secureit.service;
 
 import com.team4.secureit.dto.request.CSRCreationRequest;
 import com.team4.secureit.dto.request.CertificateCreationOptions;
-import com.team4.secureit.model.CSRDetails;
-import com.team4.secureit.model.RequestStatus;
-import com.team4.secureit.model.User;
+import com.team4.secureit.model.*;
 import com.team4.secureit.repository.CSRDetailsRepository;
 import com.team4.secureit.repository.CertificateDetailsRepository;
 import com.team4.secureit.repository.UserRepository;
@@ -48,13 +46,22 @@ public class CSRService {
     private CertificateDetailsRepository certificateDetailsRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private LogService logService;
 
     @SuppressWarnings("ConstantConditions")
     public CSRDetails generateAndPersistCSR(CSRCreationRequest request, User subscriber) throws OperatorCreationException, IOException {
         KeyPair keyPair = generateKeyPair(request.getAlgorithm(), request.getKeySize());
         PKCS10CertificationRequest csr = generateCSR(request, keyPair, subscriber.getEmail());
         CSRDetails csrDetails = csrToCSRDetails(request, keyPair, csr, subscriber);
+
+        logService.log(
+                "CSR created for user " + subscriber.getEmail() + ".",
+                LogSource.CERTIFICATE_MANAGEMENT,
+                csrDetails.getId(),
+                subscriber.getId(),
+                LogType.INFO
+        );
+
         return csrDetailsRepository.save(csrDetails);
     }
 
@@ -103,6 +110,14 @@ public class CSRService {
         keyStoreService.storeKeyPair(keyPair, alias, "keypassword".toCharArray(), chain);
         certificateDetailsRepository.save(CertificateUtils.convertToDetails(cert, alias, subscriber));
         csrDetailsRepository.save(csrDetails);
+
+        logService.log(
+                "Certificate issued for user " + subscriber.getEmail() + ".",
+                LogSource.CERTIFICATE_MANAGEMENT,
+                csrDetails.getId(),
+                subscriber.getId(),
+                LogType.INFO
+        );
     }
 
     public void rejectRequest(UUID id, String reason) {
@@ -113,6 +128,14 @@ public class CSRService {
         request.setProcessed(Instant.now());
 
         csrDetailsRepository.save(request);
+
+        logService.log(
+                "CSR rejected for user " + request.getSubscriber().getEmail() + ".",
+                LogSource.CERTIFICATE_MANAGEMENT,
+                request.getId(),
+                request.getSubscriber().getId(),
+                LogType.INFO
+        );
     }
 
     private PKCS10CertificationRequest generateCSR(CSRCreationRequest request, KeyPair keyPair, String commonName) throws OperatorCreationException {

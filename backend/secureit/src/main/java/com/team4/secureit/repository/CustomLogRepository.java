@@ -9,6 +9,7 @@ import java.util.UUID;
 
 public interface CustomLogRepository {
 
-    List<LogEntry> findByCriteria(String message, LogSource source, UUID sourceId, UUID userId, LogType type);
+    List<LogEntry> findAllByCriteria(String message, LogSource source, UUID sourceId, UUID userId, LogType type);
 
+    List<LogEntry> findUserLogsByCriteria(String pattern, UUID deviceId, UUID userId, LogType type);
 }

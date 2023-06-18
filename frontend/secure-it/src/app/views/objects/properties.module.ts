@@ -20,6 +20,7 @@ import {PropertyEditFormDialogComponent} from './components/property-details-dia
 import {PropertyDetailsComponent} from './components/property-details/property-details.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import { AddTenantDialogComponent } from './components/add-tenant-dialog/add-tenant-dialog.component';
+import { NotificationComponent } from './components/notification/notification.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { AddTenantDialogComponent } from './components/add-tenant-dialog/add-ten
     PropertyCardComponent,
     PropertyEditFormDialogComponent,
     PropertyDetailsComponent,
-    AddTenantDialogComponent
+    AddTenantDialogComponent,
+    NotificationComponent
   ],
     imports: [
         MatFormFieldModule,

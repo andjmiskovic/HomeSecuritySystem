@@ -4,9 +4,7 @@ import com.team4.secureit.config.AppProperties;
 import com.team4.secureit.dto.request.*;
 import com.team4.secureit.dto.response.LoginResponse;
 import com.team4.secureit.exception.*;
-import com.team4.secureit.model.PropertyOwner;
-import com.team4.secureit.model.Role;
-import com.team4.secureit.model.User;
+import com.team4.secureit.model.*;
 import com.team4.secureit.repository.UserRepository;
 import com.team4.secureit.security.AuthenticationManagerWrapper;
 import com.team4.secureit.security.TokenAuthenticationFilter;
@@ -48,6 +46,9 @@ public class AccountService {
     @Autowired
     private MailingService mailingService;
 
+    @Autowired
+    private LogService logService;
+
     public LoginResponse login(LoginRequest loginRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(),
@@ -72,6 +73,15 @@ public class AccountService {
         );
 
         Long expiresAt = tokenProvider.readClaims(accessToken).getExpiration().getTime();
+
+        logService.log(
+                "User " + user.getEmail() + " has logged in.",
+                LogSource.AUTHENTICATION,
+                null,
+                user.getId(),
+                LogType.INFO
+        );
+
         return new LoginResponse(accessToken, expiresAt, user.getRole());
     }
 
@@ -93,6 +103,12 @@ public class AccountService {
         propertyOwner.lockAccount("Email address for this account has not been verified.");
         userRepository.save(propertyOwner);
         mailingService.sendEmailVerificationMail(propertyOwner);
+
+        logService.log(
+                "User " + registrationRequest.getEmail() + " registered.",
+                LogSource.AUTHENTICATION,
+                LogType.INFO
+        );
     }
 
     public void verifyEmail(VerificationRequest verificationRequest) {
@@ -105,6 +121,14 @@ public class AccountService {
         userToVerify.setEmailVerified(true);
         userRepository.save(userToVerify);
         mailingService.sendTwoFactorSetupKey(userToVerify);
+
+        logService.log(
+                "User " + userToVerify.getEmail() + " has verified their email address.",
+                LogSource.AUTHENTICATION,
+                null,
+                userToVerify.getId(),
+                LogType.INFO
+        );
     }
 
     private void checkEmailAvailability(String email) {
@@ -118,6 +142,14 @@ public class AccountService {
         propertyOwner.setPasswordSet(false);
         userRepository.save(propertyOwner);
         mailingService.sendEmailVerificationMail(propertyOwner);
+
+        logService.log(
+                "A new property owner (" + propertyOwner.getEmail() + ") has been registered.",
+                LogSource.AUTHENTICATION,
+                null,
+                propertyOwner.getId(),
+                LogType.INFO
+        );
     }
 
     private PropertyOwner populatePropertyOwner(UserDetailsRequest createUserRequest) {
@@ -145,8 +177,18 @@ public class AccountService {
 
     public void setPassword(SetPasswordRequest setPasswordRequest) {
         User userToVerify = userRepository.findByVerificationCode(setPasswordRequest.getVerificationCode()).orElseThrow(InvalidVerificationCodeException::new);
-        if (!setPasswordRequest.getPassword().equals(setPasswordRequest.getPasswordConfirmation()))
+        if (!setPasswordRequest.getPassword().equals(setPasswordRequest.getPasswordConfirmation())) {
+            logService.log(
+                    "User " + userToVerify.getEmail() + " has provided an invalid password when changing their password.",
+                    LogSource.AUTHENTICATION,
+                    null,
+                    userToVerify.getId(),
+                    LogType.WARNING
+            );
+
             throw new PasswordsDoNotMatchException();
+        }
+
         if (userToVerify.isEmailVerified())
             throw new EmailAlreadyVerifiedException();
         userToVerify.unlockAccount();
@@ -155,5 +197,13 @@ public class AccountService {
         userToVerify.setPasswordSet(true);
         userRepository.save(userToVerify);
         mailingService.sendTwoFactorSetupKey(userToVerify);
+
+        logService.log(
+                "User " + userToVerify.getEmail() + " has changed their password.",
+                LogSource.AUTHENTICATION,
+                null,
+                userToVerify.getId(),
+                LogType.INFO
+        );
     }
 }

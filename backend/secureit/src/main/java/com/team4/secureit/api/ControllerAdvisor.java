@@ -91,6 +91,13 @@ public class ControllerAdvisor {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(JwtException.class)
     public ResponseError handleJwtExceptions(JwtException e) {
+        logService.log(
+                "A JwtException has occurred: " + e.getMessage(),
+                LogSource.AUTHENTICATION,
+                null,
+                null,
+                LogType.WARNING
+        );
         return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
@@ -137,5 +144,17 @@ public class ControllerAdvisor {
     @ExceptionHandler(ForbiddenSearchCriteriaException.class)
     public ResponseError handleForbiddenSearchCriteriaException(ForbiddenSearchCriteriaException e) {
         return new ResponseError(HttpStatus.FORBIDDEN, "Search criteria is not allowed for this type of user.");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidSignatureException.class)
+    public ResponseError handleInvalidSignatureException(InvalidSignatureException e) {
+        return new ResponseError(HttpStatus.BAD_REQUEST, "Invalid signature.");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidAlarmSettingsException.class)
+    public ResponseError handleInvalidAlarmSettingsException(InvalidAlarmSettingsException e) {
+        return new ResponseError(HttpStatus.BAD_REQUEST, "Invalid alarm settings.");
     }
 }

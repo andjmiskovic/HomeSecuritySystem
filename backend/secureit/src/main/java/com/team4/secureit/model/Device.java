@@ -48,13 +48,16 @@ public class Device {
     @Column
     private String units;
 
+    @Column
+    private String types;
+
     @ManyToOne
     private Property property;
 
     @ManyToOne
     private PropertyOwner user;
 
-    public Device(String name, String type, String manufacturer, String macAddress, String label, String publicKeyPem, String sensorNames, String units, Property property, PropertyOwner user) {
+    public Device(String name, String type, String manufacturer, String macAddress, String label, String publicKeyPem, String sensorNames, String units, String types, Property property, PropertyOwner user) {
         this.name = name;
         this.type = type;
         this.manufacturer = manufacturer;
@@ -63,6 +66,7 @@ public class Device {
         this.publicKeyPem = publicKeyPem;
         this.sensorNames = sensorNames;
         this.units = units;
+        this.types = types;
         this.property = property;
         this.user = user;
     }
@@ -70,9 +74,13 @@ public class Device {
     public List<DeviceSensorInfo> getSensorInfo() {
         List<String> sensorNamesList = Arrays.asList(sensorNames.split(","));
         List<String> unitsList = Arrays.asList(units.split(","));
+        List<String> typesList = Arrays.asList(types.split(","));
 
         return sensorNamesList.stream()
-                .map(name -> new DeviceSensorInfo(name, unitsList.get(sensorNamesList.indexOf(name))))
-                .collect(Collectors.toList());
+                .map(name -> new DeviceSensorInfo(
+                        name,
+                        unitsList.get(sensorNamesList.indexOf(name)),
+                        typesList.get(sensorNamesList.indexOf(name)))
+                ).collect(Collectors.toList());
     }
 }

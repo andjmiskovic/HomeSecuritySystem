@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Observable} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {LoginResponseDto} from '../model/LoginResponseDto';
 import {LoginCredentials} from '../model/LoginCredentials';
 import {CreateUserCredentials, RegisterCredentials} from '../model/RegisterCredentials';
@@ -14,6 +14,16 @@ import {SetPasswordRequest} from "../model/SetPasswordRequest";
 export class AuthService {
 
   private readonly authUrl: string;
+
+  private loggedUserSubject = new BehaviorSubject<User | undefined>(undefined);
+
+  getNewLoggedUser(): Observable<User | undefined> {
+    return this.loggedUserSubject.asObservable();
+  }
+
+  onNewUserReceived(msg: User | undefined) {
+    this.loggedUserSubject.next(msg);
+  }
 
   constructor(private http: HttpClient) {
     this.authUrl = environment.apiUrl + '/auth';

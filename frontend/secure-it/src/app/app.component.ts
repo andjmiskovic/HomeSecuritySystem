@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {AuthGuard} from "./model/AuthGuard";
 import {AuthService} from "./services/auth.service";
+import {HandshakeWebSocketAPI} from "./services/handshake/handshake-socket.service";
 
 @Component({
   selector: 'app-root',
@@ -10,4 +11,9 @@ import {AuthService} from "./services/auth.service";
 })
 export class AppComponent {
   title = 'secure-it';
+
+  constructor(private handshakeWebSocketAPI: HandshakeWebSocketAPI) {
+
+  }
+
 }
