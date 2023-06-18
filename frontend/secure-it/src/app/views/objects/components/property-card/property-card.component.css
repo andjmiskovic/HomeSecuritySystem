@@ -1,0 +1,9 @@
+mat-card {
+  padding: 0 !important;
+}
+
+mat-icon {
+  color: var(--blue);
+  font-size: 16px;
+  vertical-align: middle;
+}

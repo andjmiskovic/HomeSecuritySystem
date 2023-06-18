@@ -9,9 +9,10 @@ import {AuthService} from "../../services/auth.service";
 })
 export class SidebarComponent {
   @Input() currentPage = 'dashboard';
-  @Input() userRole = 'ADMIN';
+  userRole = 'ROLE_ADMIN';
 
   constructor(private router: Router, private authService: AuthService) {
+    this.userRole = localStorage.getItem("userRole")!;
   }
 
   navigate(page: string) {
@@ -19,14 +20,12 @@ export class SidebarComponent {
   }
 
   logout() {
-    // this.authService.logout().subscribe({
-    //   next: () => {
-        localStorage.removeItem('token');
+    this.authService.logout().subscribe({
+      next: () => {
         localStorage.removeItem('userRole');
         this.router.navigate(['']);
-      // },
-      // error: (err) => console.error(err)
-    // })
-
+      },
+      error: (err) => console.error(err)
+    })
   }
 }

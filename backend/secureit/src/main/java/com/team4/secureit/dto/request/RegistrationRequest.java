@@ -1,29 +1,21 @@
 package com.team4.secureit.dto.request;
 
+import com.team4.secureit.validation.NotCommon;
 import com.team4.secureit.validation.PasswordsMatch;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
 @PasswordsMatch
-public class RegistrationRequest {
-    @Email
-    private String email;
-
+public class RegistrationRequest extends UserDetailsRequest {
     @NotBlank
-    @Size(min = 12, message = "Password must be longer than 12 characters.")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\s]).{12,}$",
+            message = "Password must have at least 12 characters, at least one uppercase letter, " +
+                    "one lowercase letter, one digit, and one special character.")
+    @NotCommon
     private String password;
 
     @NotBlank
     private String passwordConfirmation;
-
-    @NotBlank
-    @Size(max = 40, message = "First name cannot be longer than 40 characters.")
-    private String firstName;
-
-    @NotBlank
-    @Size(max = 40, message = "Last name cannot be longer than 40 characters.")
-    private String lastName;
 }

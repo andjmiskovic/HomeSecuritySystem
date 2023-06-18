@@ -1,0 +1,6 @@
+{
+    "PASSWORD_HASH": "pbkdf2:sha256:260000$xPXvhK9EqJt2zG31$754b57a5d3ba939c97ec351025dc27eaf0b92b6782c6323fdac6ab5b09afcfa9",
+    "APP_SECRET": "8a2ef36ec19e0b82e83e051766f499a778346042bd1f5477ca7edbceff0fa7f2",
+    "LABEL": "Untitled Device 123",
+    "DEVICE_ID": "2316f6f8-5f6f-4867-b1ac-e0617b8a0df9"
+}

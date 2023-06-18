@@ -1,8 +1,9 @@
 import {Component, EventEmitter, Inject, Output} from '@angular/core';
-import {FormBuilder, Validators} from "@angular/forms";
+import {AbstractControl, FormBuilder, ValidatorFn, Validators} from "@angular/forms";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {AuthService} from "../../../../services/auth.service";
 import {RegisterCredentials} from "../../../../model/RegisterCredentials";
+import {passwordValidator, phoneNumberValidator} from "../../../../utils/InputValidation";
 
 @Component({
   selector: 'app-registration',
@@ -11,16 +12,6 @@ import {RegisterCredentials} from "../../../../model/RegisterCredentials";
 })
 export class RegistrationComponent {
   @Output() switchForm = new EventEmitter();
-
-  formGroup = this._formBuilder.group({
-    emailFormControl: ['email', [Validators.required, Validators.email]],
-    phoneFormControl: ['phoneNumber', [Validators.required]],
-    nameFormControl: ['name', [Validators.required]],
-    lastNameFormControl: ['lastName', [Validators.required]],
-    cityFormControl: ['city', [Validators.required]],
-    passwordFormControl: ['password', [Validators.required, Validators.minLength(6)]],
-    password2FormControl: ['password2', [Validators.required]]
-  });
 
   email = "";
   phoneNumber = "";
@@ -32,6 +23,16 @@ export class RegistrationComponent {
 
   hide = true;
   hide2 = true;
+
+  formGroup = this._formBuilder.group({
+    emailFormControl: ['email', [Validators.required, Validators.email]],
+    phoneFormControl: ['phoneNumber', [Validators.required, phoneNumberValidator()]],
+    nameFormControl: ['name', [Validators.required]],
+    lastNameFormControl: ['lastName', [Validators.required]],
+    cityFormControl: ['city', [Validators.required]],
+    passwordFormControl: ['', [Validators.required, Validators.minLength(12), passwordValidator()]],
+    password2FormControl: ['password2', [Validators.required, this.passwordMatchValidator()]]
+  });
 
   constructor(@Inject(MatSnackBar) private _snackBar: MatSnackBar, private _formBuilder: FormBuilder, private authService: AuthService) {
   }
@@ -49,12 +50,33 @@ export class RegistrationComponent {
         "city": this.city,
         "passwordConfirmation": this.password2
       }
-      console.log(requestBody)
       this.authService.register(requestBody).subscribe({
         next: () => this.openSnackBar("We sent you registration link"),
         error: (message) => this.openSnackBar(message)
       });
     }
+  }
+
+  largePasswordErrorMessage() {
+    return this.formGroup.hasError('invalidPassword', 'passwordFormControl')
+      && !this.formGroup.hasError('required', 'passwordFormControl')
+      && !this.formGroup.hasError('minlength', 'passwordFormControl');
+  }
+
+  invalidPhoneNumberErrorMessage() {
+    return this.formGroup.hasError('invalidPhoneNumber', 'phoneFormControl')
+      && !this.formGroup.hasError('required', 'phoneFormControl');
+  }
+
+  notMatchingPasswords() {
+    return this.formGroup.hasError('invalidRepeatPassword', 'password2FormControl')
+      && !this.formGroup.hasError('required', 'password2FormControl');
+  }
+
+  passwordMatchValidator() {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      return this.password === control.value ? null : {invalidRepeatPassword: true};
+    };
   }
 
   openSnackBar(message: string) {
@@ -67,4 +89,6 @@ export class RegistrationComponent {
   switchToLoginForm() {
     this.switchForm.emit();
   }
+
+
 }

@@ -19,6 +19,7 @@ import {CertificateRequestsComponent} from './container/certificate-requests/cer
 import {RejectCsrComponent} from "./components/reject-csr/reject-csr.component";
 import {ApproveCsrComponent} from "./components/approve-csr/approve-csr.component";
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatSortModule} from "@angular/material/sort";
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
         SharedModule,
         MatPaginatorModule,
         MatCheckboxModule,
+        MatSortModule,
     ],
   exports: [],
   bootstrap: []

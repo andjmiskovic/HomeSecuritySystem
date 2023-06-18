@@ -1,0 +1,76 @@
+<mat-card>
+  <mat-card-title>User details</mat-card-title>
+  <mat-card-content style="padding: 0px">
+    <form [formGroup]="formGroup">
+      <p style="margin-top: 10px">
+        <mat-form-field class="example-full-width" style="width: 49%; margin-right: 1%" appearance="outline">
+          <mat-label>Email</mat-label>
+          <input type="email" matInput [(ngModel)]="email" formControlName="emailFormControl" [readonly]="disabled"
+                 placeholder="Ex. pat@example.com">
+          <mat-error
+            *ngIf="formGroup.hasError('email', 'emailFormControl') && !formGroup.hasError('required', 'emailFormControl')">
+            Please enter a valid email address
+          </mat-error>
+          <mat-error *ngIf="formGroup.hasError('required', 'emailFormControl')">
+            Email is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field style="width: 49%; margin-left: 1%" appearance="outline">
+          <mat-label>Phone number</mat-label>
+          <input matInput type="tel" [(ngModel)]="phoneNumber" formControlName="phoneFormControl"
+                 placeholder="Ex. +381 1234567">
+          <mat-error *ngIf="formGroup.hasError('required', 'phoneFormControl')">
+            Phone number is <strong>required</strong>
+          </mat-error>
+          <mat-error *ngIf="invalidPhoneNumberErrorMessage()">
+            Phone number is <strong>invalid</strong> Ex. +381 1234567
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field style="width: 49%; margin-right: 1%" appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="nameFormControl" [(ngModel)]="name">
+          <mat-error *ngIf="formGroup.hasError('required', 'nameFormControl')">
+            Name is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field style="width: 49%; margin-left: 1%" appearance="outline">
+          <mat-label>Last name</mat-label>
+          <input matInput formControlName="lastNameFormControl" [(ngModel)]="lastName">
+          <mat-error *ngIf="formGroup.hasError('required', 'lastNameFormControl')">
+            Last name is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field style="width: 100%" appearance="outline">
+          <mat-label>City you live in</mat-label>
+          <input matInput formControlName="cityFormControl" [(ngModel)]="city">
+          <mat-error *ngIf="formGroup.hasError('required', 'cityFormControl')">
+            City is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <div [ngSwitch]="mode">
+        <div *ngSwitchCase="'create'">
+          <button mat-raised-button id="register-button" color="primary" type="submit"
+                  style="width: 100%; margin-top: -10px;" (click)="registerNewUser()" [disabled]="formGroup.invalid">
+            Create an account
+          </button>
+        </div>
+        <div *ngSwitchCase="'edit'">
+          <button mat-raised-button id="edit-button" color="primary" type="submit"
+                  style="width: 49%; margin-top: -10px; margin-right: 2%" (click)="editUser()" [disabled]="formGroup.invalid">
+            Save changes
+          </button>
+          <button mat-raised-button id="delete-button" color="warn" type="submit"
+                  style="width: 49%; margin-top: -10px;" (click)="deleteUser()">
+            Delete user
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </mat-card-content>
+</mat-card>

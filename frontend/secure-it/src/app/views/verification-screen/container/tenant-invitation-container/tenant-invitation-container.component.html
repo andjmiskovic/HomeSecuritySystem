@@ -1,0 +1,33 @@
+<div class="jumbotron jumbotron-fluid" id="banner"
+     style="background-image: url(../../../../../assets/images/living-room.jpg); height: 100%;">
+  <div class="container text-center text-md-left">
+    <header>
+      <div class="row justify-content-between">
+        <div class="col-2">
+          <img src="../../../../../assets/logo/logo_blue.png" style="margin-top: -20px" alt="logo">
+        </div>
+      </div>
+    </header>
+  </div>
+  <div class="example-card">
+    <mat-card style="margin: 0 10px; display: inline-block;">
+      <mat-card-header>
+        <mat-card-title>{{title}}</mat-card-title>
+        <mat-card-subtitle>{{subtitle}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-footer *ngIf="affirmative">
+        <button mat-raised-button (click)="navigate()" color="primary" style="margin-top: 10px">Login</button>
+      </mat-card-footer>
+    </mat-card>
+
+<!--    <mat-card style="margin: 0 10px; display: inline-block;" *ngIf="isInvalidVerificationCode">-->
+<!--      <mat-card-header>-->
+<!--        <mat-card-title>There was a problem in verification your profile.</mat-card-title>-->
+<!--        <mat-card-subtitle>Please contact our customer support</mat-card-subtitle>-->
+<!--      </mat-card-header>-->
+<!--    </mat-card>-->
+  </div>
+
+
+</div>
+

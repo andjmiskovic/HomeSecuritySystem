@@ -63,7 +63,9 @@ public class SecurityConfig {
                     .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                     .and()
                 .authorizeHttpRequests()
-                    .requestMatchers("/auth/**", "/h2-console/**")
+                    .requestMatchers("/auth/**", "/h2-console/**", "/devices/handshake/device/**", "/monitor/send")
+                        .permitAll()
+                    .requestMatchers("/property/invite/verify")
                         .permitAll()
                     .anyRequest()
                         .authenticated();
@@ -78,9 +80,9 @@ public class SecurityConfig {
                 "/",
                 "/*.html",
                 "favicon.ico",
-                "/**/*.html",
-                "/**/*.css",
-                "/**/*.js",
+                "/*/*.html",
+                "/*/*.css",
+                "/*/*.js",
                 "/swagger-resources/**",
                 "/swagger-ui.html",
                 "/v2/api-docs",

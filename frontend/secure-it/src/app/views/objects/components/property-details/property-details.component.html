@@ -1,0 +1,89 @@
+<div style="padding: 20px">
+  <h2>
+    <mat-icon style="color: var(--blue)">house</mat-icon>
+    Property details
+  </h2>
+  <p style="margin-top: -15px"><i>Property id: {{property.id}}</i>
+    <span *ngIf="owner()">
+    <button
+      [matTooltip]="'Delete property'"
+      style="float: right; margin-left: 5px" (click)="deleteProperty()"
+      mat-raised-button
+      color="warn">
+      Delete
+    </button>
+    <button
+      [matTooltip]="'Edit property'"
+      style="float: right; margin-left: 5px" (click)="editProperty()"
+      mat-raised-button
+      color="primary">
+      Edit
+    </button>
+    <button
+      [matTooltip]="'Add tenant'"
+      style="float: right; margin-left: 5px" (click)="openAddTenantDialog()"
+      mat-raised-button
+      color="primary">
+      <mat-icon>person</mat-icon>
+      Add tenant
+    </button>
+    </span>
+  </p>
+  <hr>
+  <div class="row">
+    <div class="label">Name:</div>
+    <div class="value">{{property.name}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Address:</div>
+    <div class="value">{{property.address}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Property type:</div>
+    <div class="value">{{property.type}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Owner:</div>
+    <div class="value">{{ property.owner.firstName }} {{ property.owner.lastName }}</div>
+  </div>
+  <div class="row">
+    <div class="label">Tenants:</div>
+  </div>
+  <div class="row" *ngFor="let tenant of property.tenants">
+    <div class="label" style="font-weight: 400 !important;">{{ tenant.firstName }} {{ tenant.lastName }}</div>
+    <div class="value" *ngIf="userRole === 'ROLE_ADMIN'">
+      <button style="font-size: 12px" mat-stroked-button (click)="setOwner(tenant.id)">
+        <mat-icon style="color: var(--blue)">star</mat-icon>
+        Set owner
+      </button>
+      <button style="font-size: 12px; margin-left: 5px" mat-stroked-button (click)="removeFromProperty(tenant.id)">
+        <mat-icon style="color: var(--red)">delete</mat-icon>
+        Remove from property
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="label">Devices:</div>
+    <div class="value" *ngIf="property.devices.length === 0">No devices yet</div>
+  </div>
+  <div class="row" *ngFor="let device of property.devices">
+    <div class="label" style="font-weight: 400 !important;">{{device.label}}</div>
+    <div class="value">
+      <button style="font-size: 12px; margin-left: 5px" mat-stroked-button (click)="deviceDetails(device.id)">
+        <mat-icon style="color: var(--red)">article</mat-icon>
+        Details
+      </button>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="owner()">
+    <div class="label" style="font-weight: 400 !important;"></div>
+    <div class="value">
+      <button style="font-size: 12px; margin-left: 5px" mat-stroked-button (click)="addNewDevice()">
+        <mat-icon style="color: var(--blue)">add</mat-icon>
+        Add new device
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<p>Dear {{ firstName }},</p>
+<p>Thank you for registering with our service. To add an extra layer of security to your account, we require enabling two-factor authentication (2FA).</p>
+<p>To set up 2FA, please follow these steps:</p>
+<ol>
+  <li>Download and install a 2FA app on your mobile device. We recommend Google Authenticator or Authy.</li>
+  <li>Open the app and scan the QR code below:</li>
+</ol>
+<img src="data:image/png;base64,{{ qrcode }}" alt="QR Code">
+<p>Alternatively, you can manually enter the following key: {{ secretKey }}</p>
+<p>If you have any questions or concerns, please do not hesitate to contact us.</p>
+<p>Best regards,<br>Secure IT</p>

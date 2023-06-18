@@ -8,17 +8,35 @@
       </a>
       <span class="tooltip">Dashboard</span>
     </li>
-    <li *ngIf="userRole == 'ADMIN'">
+    <li>
       <a (click)="navigate('/certificates')" [ngClass]="{ 'currentPage': currentPage === 'certificates' }">
         <mat-icon>article</mat-icon>
       </a>
       <span class="tooltip">Certificates</span>
     </li>
-    <li *ngIf="userRole == 'ADMIN'">
+    <li>
       <a (click)="navigate('/requests')" [ngClass]="{ 'currentPage': currentPage === 'requests' }">
         <mat-icon>dehaze</mat-icon>
       </a>
       <span class="tooltip">CSRs</span>
+    </li>
+    <li>
+      <a (click)="navigate('/properties')" [ngClass]="{ 'currentPage': currentPage === 'properties' }">
+        <mat-icon>house</mat-icon>
+      </a>
+      <span class="tooltip">Properties</span>
+    </li>
+    <li *ngIf="userRole==='ROLE_ADMIN'">
+      <a (click)="navigate('/tokens')" [ngClass]="{ 'currentPage': currentPage === 'tokens' }">
+        <mat-icon>token</mat-icon>
+      </a>
+      <span class="tooltip">Tokens</span>
+    </li>
+    <li *ngIf="userRole==='ROLE_ADMIN'">
+      <a (click)="navigate('/logs')" [ngClass]="{ 'currentPage': currentPage === 'logs' }">
+        <mat-icon>info</mat-icon>
+      </a>
+      <span class="tooltip">Logs</span>
     </li>
     <li>
       <a (click)="logout()">

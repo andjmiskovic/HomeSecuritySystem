@@ -9,16 +9,30 @@ import {
 } from "./views/dashboard/container/dashboard-container/dashboard-container.component";
 import {CertificateRequestsComponent} from "./views/csr/container/certificate-requests/certificate-requests.component";
 import {AuthGuard} from "./model/AuthGuard";
-import {VerificationCodeComponent} from "./views/homepage/components/verification-code/verification-code.component";
-import {VerificationScreenComponent} from "./views/verification-screen/verification-screen.component";
+import {
+  VerificationScreenContainerComponent
+} from "./views/verification-screen/container/verification-screen-container/verification-screen-container.component";
+import {
+  PropertiesContainerComponent
+} from "./views/objects/container/properties-container/properties-container.component";
+import {
+  TenantInvitationContainerComponent
+} from "./views/verification-screen/container/tenant-invitation-container/tenant-invitation-container.component";
+import {TokensContainerComponent} from "./views/tokens/container/tokens/tokens-container.component";
+import {DeviceContainerComponent} from "./views/device/container/device-container/device-container.component";
+import {LogsContainerComponent} from "./views/logs/container/logs-container/logs-container.component";
 
 const routes: Routes = [
   {path: '', component: HomepageContainerComponent},
-  {path: 'certificates', component: CertificateListComponent, canActivate: [AuthGuard]},
-  {path: 'requests', component: CertificateRequestsComponent, canActivate: [AuthGuard]},
-  {path: 'dashboard', component: DashboardContainerComponent, canActivate: [AuthGuard]},
-  // {path: 'registration/verification?code=/:verificationCode', component: VerificationScreenComponent},
-  {path: 'registration/verification', component: VerificationScreenComponent},
+  {path: 'certificates', component: CertificateListComponent, canActivate: [AuthGuard],data: {roles: ['ROLE_PROPERTY_OWNER','ROLE_ADMIN']}},
+  {path: 'requests', component: CertificateRequestsComponent, canActivate: [AuthGuard],data: {roles: ['ROLE_PROPERTY_OWNER', 'ROLE_ADMIN']}},
+  {path: 'dashboard', component: DashboardContainerComponent, canActivate: [AuthGuard],data: {roles: ['ROLE_PROPERTY_OWNER', 'ROLE_ADMIN']}},
+  {path: 'properties', component: PropertiesContainerComponent, canActivate: [AuthGuard],data: {roles: ['ROLE_PROPERTY_OWNER', 'ROLE_ADMIN']}},
+  {path: 'registration/verification', component: VerificationScreenContainerComponent},
+  {path: 'invitation', component: TenantInvitationContainerComponent},
+  {path: 'tokens', component: TokensContainerComponent, canActivate: [AuthGuard], data: {roles: ['ROLE_ADMIN']}},
+  {path: 'logs', component: LogsContainerComponent, canActivate: [AuthGuard], data: {roles: ['ROLE_ADMIN']}},
+  {path: 'device/:id', component: DeviceContainerComponent},
   {path: '403', component: NotAuthorizedPageComponent},
   {path: '**', component: NotFoundPageComponent}
 ];

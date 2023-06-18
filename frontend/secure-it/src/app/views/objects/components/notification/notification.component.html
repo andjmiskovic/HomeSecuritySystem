@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Confirm new device!</h2>
+<div mat-dialog-content *ngIf="device">
+  <h3><b>Is this your device?</b></h3>
+  <p>Name: {{device.name}}</p>
+  <p>Label: {{device.label}}</p>
+  <p>Manufacturer: {{device.manufacturer}}</p>
+  <p>Type: {{device.type}}</p>
+</div>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>No</button>
+  <button mat-button mat-dialog-close (click)="handshakeDevice()" cdkFocusInitial>Yes</button>
+</mat-dialog-actions>

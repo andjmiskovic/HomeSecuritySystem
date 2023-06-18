@@ -1,0 +1,38 @@
+{
+    "NAME": "Smart Thermostat",
+    "TYPE": "thermostat",
+    "MANUFACTURER": "SecureIT Inc.",
+    "MAC_ADDRESS": "59:7b:f5:f4:2b:6e",
+    "SENSORS": [
+        {
+            "name": "temperature",
+            "unit": "°C",
+            "type": "float",
+            "regular": {
+                "mu": 24,
+                "sigma": 0.1
+            },
+            "alarm": {
+                "mu": 50,
+                "sigma": 1
+            }
+        },
+        {
+            "name": "humidity",
+            "unit": "%",
+            "type": "float",
+            "regular": {
+                "mu": 45,
+                "sigma": 1
+            },
+            "alarm": {
+                "mu": 80,
+                "sigma": 2
+            }
+        }
+    ],
+    "ALARMS": [
+        ["temperature", ">=", "49"],
+        ["humidity", ">=", "79"]
+    ]
+}

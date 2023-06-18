@@ -1,0 +1,20 @@
+<img src="../../../../../assets/images/background-line.jpg" class="dashboard-background" alt="dashboard-background"/>
+
+<app-sidebar currentPage="tokens"></app-sidebar>
+<div style="margin-left: 90px; margin-right: 10px; margin-top: -80px">
+  <h1 style="font-weight: 500; margin-left: 10px; color: white">Tokens</h1>
+  <div style="margin-top: 75px;">
+    <mat-form-field appearance="outline" style="width: 300px; margin-right: 20px">
+      <input [(ngModel)]="token" matInput placeholder="Add token to blacklist..." #input>
+    </mat-form-field>
+
+    <button [matTooltip]="'Enter token...'" (click)="addTokenToBlackList()"
+            mat-raised-button
+            color="primary">
+      Add token
+    </button>
+  </div>
+  <div>
+    <app-blacklist-table></app-blacklist-table>
+  </div>
+</div>

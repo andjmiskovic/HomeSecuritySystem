@@ -1,0 +1,62 @@
+<app-sidebar currentPage="logs"></app-sidebar>
+<img src="../../../../../assets/images/background-line.jpg" class="dashboard-background" alt="dashboard-background"/>
+
+<div style="margin-left: 90px; margin-right: 10px; margin-top: -80px">
+  <h1 style="font-weight: 500; margin-left: 10px; color: white">Application logs</h1>
+  <p>
+    <mat-form-field appearance="outline" style="width: 300px">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput [(ngModel)]="regex" (keyup)="loadLogs()"
+             placeholder="Regex expression">
+    </mat-form-field>
+    <mat-form-field appearance="outline" style="width: 300px; margin-left: 10px">
+      <mat-select [(ngModel)]="source" (selectionChange)="loadLogs()">
+        <mat-option *ngFor="let s of logSources" [value]="s.value">
+          {{s.description}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" style="margin-left: 10px">
+      <mat-select disableRipple [(ngModel)]="type" (selectionChange)="loadLogs()">
+        <mat-option value="all">All types</mat-option>
+        <mat-option value="info">Info</mat-option>
+        <mat-option value="warning">Warning</mat-option>
+        <mat-option value="error">Error</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </p>
+
+  <mat-table [dataSource]="dataSource" matSort matSortActive="start" matSortDirection="desc" matSortDisableClear>
+
+    <ng-container matColumnDef="message">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Message</mat-header-cell>
+      <mat-cell *matCellDef="let alarm">{{alarm.message}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Type</mat-header-cell>
+      <mat-cell *matCellDef="let log">
+        <span *ngIf="log.type === 'INFO'">
+          <mat-icon style="color: var(--blue)">info</mat-icon>
+        </span>
+        <span *ngIf="log.type === 'WARNING'">
+          <mat-icon style="color: orange">warning</mat-icon>
+        </span>
+        <span *ngIf="log.type === 'ERROR'">
+          <mat-icon style="color: var(--red)">error</mat-icon>
+        </span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="timestamp">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Time</mat-header-cell>
+      <mat-cell *matCellDef="let alarm">{{alarm.timestamp}}</mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    <tr *matNoDataRow>
+      <td>No data matching the filters</td>
+    </tr>
+  </mat-table>
+</div>

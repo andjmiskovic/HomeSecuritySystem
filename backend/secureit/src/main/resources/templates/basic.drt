@@ -1,0 +1,50 @@
+template header
+sensor
+relation
+value
+parsing
+
+package templates;
+
+import com.team4.secureit.dto.request.DeviceMessage;
+import com.team4.secureit.model.Device;
+import com.team4.secureit.model.PropertyOwner;
+import com.team4.secureit.model.LogSource;
+import com.team4.secureit.model.LogType;
+import com.team4.secureit.dto.response.AlarmItem;
+import com.team4.secureit.service.LogService;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+
+global LogService logService;
+global Device device;
+global PropertyOwner user;
+global SimpMessagingTemplate messagingTemplate;
+
+template "basic-rules"
+
+rule "Alarm when @{sensor} @{relation} @{value}"
+when
+    $message: DeviceMessage(measures != null,
+                            $val: measures["@{sensor}"] != null,
+                            @{parsing} @{relation} @{value})
+then
+    logService.log(
+        "@{sensor} @{relation} @{value} on " + device.getLabel(),
+        LogSource.DEVICE_MONITORING,
+        device.getId(),
+        user.getId(),
+        LogType.WARNING
+    );
+
+    messagingTemplate.convertAndSendToUser(
+        user.getUsername(),
+        "/queue/alarms",
+        new AlarmItem(
+            device.getId().toString(),
+            $message.getTimestamp(),
+            "@{sensor} @{relation} @{value} on " + device.getLabel()
+        )
+    );
+end
+
+end template

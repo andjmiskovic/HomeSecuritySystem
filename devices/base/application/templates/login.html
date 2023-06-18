@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureIT Smart Thermostat - Login Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    form {
+      background-color: #ffffff;
+      margin: 2em auto;
+      padding: 2em;
+      width: 300px;
+      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 0.5em;
+    }
+
+    form input[type="text"],
+    form input[type="password"] {
+      border: 1px solid #ddd;
+      padding: 0.5em;
+      width: 100%;
+      margin-bottom: 1em;
+      box-sizing: border-box;
+    }
+
+    form input[type="submit"],
+    button {
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      padding: 0.5em 1em;
+      cursor: pointer;
+    }
+
+    form input[type="submit"]:hover,
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    p,
+    #pair-response {
+      text-align: center;
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <form id="login-form">
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password"><br>
+    <input type="submit" value="Login">
+  </form>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      var password = document.getElementById('password').value;
+
+      fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          password: password
+        }),
+      })
+        .then(function (response) {
+          if (response.ok) {
+            window.location.href = '/';
+          } else {
+            alert('Invalid password');
+          }
+        })
+        .catch(function (error) {
+          console.error('Error:', error);
+        });
+    });
+  </script>
+</body>
+
+</html>

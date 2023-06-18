@@ -1,0 +1,46 @@
+<mat-card>
+  <mat-card-title>Edit property details</mat-card-title>
+  <mat-card-content style="padding: 0">
+    <form [formGroup]="formGroup">
+      <p style="margin-top: 10px">
+        <mat-form-field style="width: 49%; margin-right: 2%" appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput [(ngModel)]="name" formControlName="nameFormControl">
+          <mat-error *ngIf="formGroup.hasError('required', 'nameFormControl')">
+            Name is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field style="width: 49%;" appearance="outline">
+          <mat-label>Address</mat-label>
+          <input matInput formControlName="addressFormControl" [(ngModel)]="address">
+          <mat-error *ngIf="formGroup.hasError('required', 'addressFormControl')">
+            Address is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field style="width: 100%" appearance="outline">
+          <mat-label>Type</mat-label>
+          <mat-select disableRipple [(value)]="type">
+            <mat-option *ngFor="let fileType of fileTypes" [value]="fileType">{{fileType}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </p>
+      <div [ngSwitch]="mode">
+        <div *ngSwitchCase="'create'">
+          <button mat-raised-button id="register-button" color="primary" type="submit"
+                  style="width: 100%; margin-top: -10px;" (click)="addNewProperty()" [disabled]="formGroup.invalid">
+            Create
+          </button>
+        </div>
+        <div *ngSwitchCase="'edit'">
+          <button mat-raised-button id="edit-button" color="primary" type="submit"
+                  style="width: 100%; margin-top: -10px;" (click)="editProperty()"
+                  [disabled]="formGroup.invalid">
+            Save changes
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

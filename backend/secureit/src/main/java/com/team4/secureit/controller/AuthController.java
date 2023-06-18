@@ -1,9 +1,7 @@
 package com.team4.secureit.controller;
 
 import com.team4.secureit.api.ResponseOk;
-import com.team4.secureit.dto.request.LoginRequest;
-import com.team4.secureit.dto.request.RegistrationRequest;
-import com.team4.secureit.dto.request.VerificationRequest;
+import com.team4.secureit.dto.request.*;
 import com.team4.secureit.dto.response.LoginResponse;
 import com.team4.secureit.dto.response.UserInfoResponse;
 import com.team4.secureit.model.User;
@@ -40,6 +38,13 @@ public class AuthController {
         return new ResponseOk("User registered successfully.");
     }
 
+    @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseOk create(@Valid @RequestBody UserDetailsRequest createUserRequest) {
+        accountService.createPropertyOwner(createUserRequest);
+        return new ResponseOk("User created successfully.");
+    }
+
     @PostMapping("/register/verify")
     public ResponseOk verify(@Valid @RequestBody VerificationRequest verificationRequest) {
         accountService.verifyEmail(verificationRequest);
@@ -51,5 +56,16 @@ public class AuthController {
     public UserInfoResponse getLoggedUserInfo(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return new UserInfoResponse(user);
+    }
+
+    @GetMapping("/is-password-set/{verificationCode}")
+    public boolean isPasswordSet(@PathVariable String verificationCode) {
+        return accountService.isPasswordSet(verificationCode);
+    }
+
+    @PutMapping("/set-password")
+    public ResponseOk setPassword(@RequestBody SetPasswordRequest setPasswordRequest) {
+        accountService.setPassword(setPasswordRequest);
+        return new ResponseOk("Password set successfully. User is verified.");
     }
 }

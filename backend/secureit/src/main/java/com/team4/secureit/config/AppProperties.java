@@ -14,6 +14,9 @@ public class AppProperties {
     public static class Auth {
         private String tokenSecret;
         private Integer tokenExpirationSeconds;
+        private Integer loginAttemptLimit;
+        private Integer loginAttemptTimeWindow;
+        private Integer lockoutDuration;
     }
 
     @Getter

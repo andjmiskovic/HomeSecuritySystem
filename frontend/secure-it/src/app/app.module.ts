@@ -15,43 +15,56 @@ import {MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatSortModule} from "@angular/material/sort";
 import {MatInputModule} from "@angular/material/input";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {DashboardModule} from "./views/dashboard/dashboard.module";
 import {CertificatesModule} from "./views/certificates/certificates.module";
 import {CsrModule} from "./views/csr/csr.module";
-import { VerificationScreenComponent } from './views/verification-screen/verification-screen.component';
 import {MatCardModule} from "@angular/material/card";
+import {VerificationpageModule} from "./views/verification-screen/verificationpage.module";
+import {PropertiesModule} from "./views/objects/properties.module";
+import {TokensModule} from "./views/tokens/tokens.module";
+import {DeviceModule} from "./views/device/device.module";
+import {HandshakeWebSocketAPI} from "./services/handshake/handshake-socket.service";
+import {HandshakeWebsocketShareService} from "./services/handshake/handshake-websocketshare.service";
+import {LogsModule} from "./views/logs/logs.module";
+import {AlarmWebSocketAPI} from "./services/alarm/alarm.socket.service";
+import {AlarmWebsocketShareService} from "./services/alarm/alarm.websocketshare.service";
 
 @NgModule({
   declarations: [
     AppComponent,
     NotFoundPageComponent,
     NotAuthorizedPageComponent,
-    VerificationScreenComponent,
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        HomepageModule,
-        HttpClientModule,
-        MatButtonModule,
-        MatIconModule,
-        MatSelectModule,
-        SharedModule,
-        BrowserAnimationsModule,
-        MatProgressSpinnerModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatSortModule,
-        MatInputModule,
-        FormsModule,
-        DashboardModule,
-        CertificatesModule,
-        CsrModule,
-        MatCardModule
-    ],
-  providers: [],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HomepageModule,
+    VerificationpageModule,
+    HttpClientModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+    SharedModule,
+    BrowserAnimationsModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatInputModule,
+    FormsModule,
+    DashboardModule,
+    CertificatesModule,
+    CsrModule,
+    MatCardModule,
+    ReactiveFormsModule,
+    PropertiesModule,
+    TokensModule,
+    DeviceModule,
+    LogsModule
+  ],
+  providers: [HandshakeWebSocketAPI, HandshakeWebsocketShareService, AlarmWebSocketAPI, AlarmWebsocketShareService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

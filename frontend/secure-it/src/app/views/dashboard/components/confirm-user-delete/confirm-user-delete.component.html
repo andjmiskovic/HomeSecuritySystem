@@ -1,0 +1,20 @@
+<div style="padding: 20px">
+  <p>Are you sure you want to delete this user?</p>
+  <p>User is owner of properties:</p>
+  <ul>
+    <li *ngFor="let prop of properties">
+      <p *ngIf="prop.name">{{prop.name}}, {{prop.address}}</p>
+      <p *ngIf="!prop.name">{{prop.address}}</p>
+    </li>
+  </ul>
+  <div style="margin-top: 20px;">
+    <button mat-raised-button id="edit-button" color="primary" type="submit"
+            style="width: 49%; margin-top: -10px; margin-right: 2%" (click)="cancelDelete()">
+      Cancel
+    </button>
+    <button mat-raised-button id="delete-button" color="warn" type="submit"
+            style="width: 49%; margin-top: -10px;" (click)="deleteUser()">
+      Delete user
+    </button>
+  </div>
+</div>

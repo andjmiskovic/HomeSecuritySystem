@@ -1,6 +1,6 @@
 export function downloadTxtFile(content: string, fileName: string): void {
   const element = document.createElement('a');
-  const file = new Blob([content], {type: 'text/plain'});
+  const file = new Blob([content], {type: 'application/pdf'});
   element.href = URL.createObjectURL(file);
   element.download = fileName;
   document.body.appendChild(element);

@@ -1,0 +1,78 @@
+<app-sidebar currentPage="properties"></app-sidebar>
+<img src="../../../../../assets/images/background-line.jpg" class="dashboard-background" alt="dashboard-background"/>
+<div style="margin-left: 90px; margin-right: 10px; margin-top: -40px">
+  <h1 style="font-weight: 500; margin-left: 10px; color: white">Device details</h1>
+</div>
+
+<div style="margin-left: 100px; margin-top:20px">
+  <div class="row">
+    <div class="label">Id:</div>
+    <div class="value">{{device.id}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Name:</div>
+    <div class="value">{{device.name}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Label:</div>
+    <div class="value">{{device.label}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Type:</div>
+    <div class="value">{{device.type}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Manufacturer:</div>
+    <div class="value">{{device.manufacturer}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Mac Address:</div>
+    <div class="value">{{device.macAddress}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Property name:</div>
+    <div class="value" *ngIf="device.property">{{device.property.name}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Property id:</div>
+    <div class="value" *ngIf="device.property">{{device.property.id}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Property address:</div>
+    <div class="value" *ngIf="device.property">{{device.property.address}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Generate a report:</div>
+    <div class="value">
+      <mat-form-field appearance="outline">
+        <mat-label>Date range</mat-label>
+        <mat-date-range-input
+          [formGroup]="campaignOne"
+          [rangePicker]="campaignOnePicker">
+          <input matStartDate placeholder="Start date" formControlName="start">
+          <input matEndDate placeholder="End date" formControlName="end">
+        </mat-date-range-input>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+        <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+      </mat-form-field>
+
+      <button style="font-size: 12px; margin-left: 5px" mat-stroked-button (click)="downloadReport()">
+        <mat-icon style="color: var(--blue)">download</mat-icon>
+        Download
+      </button>
+    </div>
+  </div>
+
+  <hr style="width: 100%">
+
+  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start"
+                 style="height: 100%; min-height: 200px; margin-bottom: 50px">
+    <mat-tab label="Logs">
+      <app-logs *ngIf="device.id" [deviceId]="device.id"></app-logs>
+    </mat-tab>
+    <mat-tab label="Alarms">
+      <app-alarms-container [device]="device"></app-alarms-container>
+    </mat-tab>
+  </mat-tab-group>
+</div>

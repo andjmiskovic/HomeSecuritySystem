@@ -1,0 +1,18 @@
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+.label {
+  flex-basis: 200px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.value {
+  flex-basis: calc(100% - 200px);
+  text-align: left;
+}

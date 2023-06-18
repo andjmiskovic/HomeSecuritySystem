@@ -1,7 +1,8 @@
 package com.team4.secureit.service;
 
+import com.google.zxing.WriterException;
 import com.team4.secureit.config.AppProperties;
-import com.team4.secureit.model.PropertyOwner;
+import com.team4.secureit.model.*;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.apache.commons.io.FileUtils;
@@ -20,11 +21,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.team4.secureit.util.LoginUtils.generateGoogleAuthenticatorLink;
+import static com.team4.secureit.util.LoginUtils.generateQRCodeBase64;
+
 @Service
 public class MailingService {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private LogService logService;
 
     private final Path templatesLocation;
 
@@ -46,6 +53,31 @@ public class MailingService {
         sendMail(propertyOwner.getEmail(), "Welcome to Secure IT! Complete verification", content);
     }
 
+    @Async
+    public void sendTwoFactorSetupKey(User user) {
+        try {
+            String content = renderTemplate("2fa.html",
+                    "firstName", user.getFirstName(),
+                    "secretKey", user.getTwoFactorKey(),
+                    "qrcode", generateQRCodeBase64(generateGoogleAuthenticatorLink(user)));
+
+            sendMail(user.getEmail(), "Set up Two-Factor Authentication for Your Account", content);
+        } catch (WriterException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Async
+    public void sendInvitationToProperty(TenantInvite tenantInvite) {
+        String content = renderTemplate("invitationToProperty.html",
+                "firstName", tenantInvite.getUser().getFirstName(),
+                "owner", tenantInvite.getProperty().getOwner().getFirstName() + " " + tenantInvite.getProperty().getOwner().getLastName(),
+                "property", tenantInvite.getProperty().getName() + ", " + tenantInvite.getProperty().getAddress(),
+                "code", tenantInvite.getVerificationCode());
+
+        sendMail(tenantInvite.getUser().getEmail(), "Invitation to property", content);
+    }
+
     private void sendMail(String to, String subject, String body) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -55,6 +87,12 @@ public class MailingService {
             helper.setFrom(senderAddress);
             helper.setSubject(subject);
             mailSender.send(mimeMessage);
+
+            logService.log(
+                    "An email with the subject + '" + subject + "' is sent to " + to,
+                    LogSource.MAILING,
+                    LogType.INFO
+            );
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
