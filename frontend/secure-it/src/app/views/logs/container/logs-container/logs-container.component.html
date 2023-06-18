@@ -6,20 +6,23 @@
   <p>
     <mat-form-field appearance="outline" style="width: 300px">
       <mat-icon matPrefix>search</mat-icon>
-      <input matInput [(ngModel)]="regex" (keyup)="applySearchFilter($event)"
+      <input matInput [(ngModel)]="regex" (keyup)="loadLogs()"
              placeholder="Regex expression">
     </mat-form-field>
-    <mat-form-field>
-      <mat-label>Date range</mat-label>
-      <mat-date-range-input
-        [formGroup]="campaignOne"
-        [rangePicker]="campaignOnePicker">
-        <input matStartDate placeholder="Start date" formControlName="start">
-        <input matEndDate placeholder="End date" formControlName="end">
-      </mat-date-range-input>
-      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
-      <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+    <mat-form-field appearance="outline" style="width: 300px; margin-left: 10px">
+      <mat-select [(ngModel)]="source" (selectionChange)="loadLogs()">
+        <mat-option *ngFor="let s of logSources" [value]="s.value">
+          {{s.description}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" style="margin-left: 10px">
+      <mat-select disableRipple [(ngModel)]="type" (selectionChange)="loadLogs()">
+        <mat-option value="all">All types</mat-option>
+        <mat-option value="info">Info</mat-option>
+        <mat-option value="warning">Warning</mat-option>
+        <mat-option value="error">Error</mat-option>
+      </mat-select>
     </mat-form-field>
   </p>
 
@@ -30,14 +33,24 @@
       <mat-cell *matCellDef="let alarm">{{alarm.message}}</mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="time">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Time</mat-header-cell>
-      <mat-cell *matCellDef="let alarm">{{alarm.time}}</mat-cell>
+    <ng-container matColumnDef="type">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Type</mat-header-cell>
+      <mat-cell *matCellDef="let log">
+        <span *ngIf="log.type === 'INFO'">
+          <mat-icon style="color: var(--blue)">info</mat-icon>
+        </span>
+        <span *ngIf="log.type === 'WARNING'">
+          <mat-icon style="color: orange">warning</mat-icon>
+        </span>
+        <span *ngIf="log.type === 'ERROR'">
+          <mat-icon style="color: var(--red)">error</mat-icon>
+        </span>
+      </mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="deviceId">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Device id</mat-header-cell>
-      <mat-cell *matCellDef="let alarm">{{alarm.deviceId}}</mat-cell>
+    <ng-container matColumnDef="timestamp">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Time</mat-header-cell>
+      <mat-cell *matCellDef="let alarm">{{alarm.timestamp}}</mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {DeviceDetailsResponse} from "../../../../model/Device";
 import {ActivatedRoute} from "@angular/router";
 import {DeviceManagementService} from "../../../../services/device.service";
-import {EditAlarmsDialogComponent} from "../../components/edit-alarms-dialog/edit-alarms-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {FormControl, FormGroup} from "@angular/forms";
 

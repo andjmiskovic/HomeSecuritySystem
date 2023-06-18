@@ -58,7 +58,6 @@ public class DeviceManagementController {
     }
 
     @GetMapping("/{deviceId}")
-    @PreAuthorize("hasRole('PROPERTY_OWNER')")
     public DeviceDetailsResponse getDevices(@PathVariable UUID deviceId) {
         return deviceManagementService.getDevice(deviceId);
     }

@@ -12,13 +12,13 @@
         <mat-option value="error">Error</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" style="width: 300px; margin-left: 10px">
-      <mat-select [(ngModel)]="source">
-        <mat-option *ngFor="let s of logSources" [value]="s.value">
-          {{s.description}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+<!--    <mat-form-field appearance="outline" style="width: 300px; margin-left: 10px">-->
+<!--      <mat-select [(ngModel)]="source" (selectionChange)="applyFilter()">-->
+<!--        <mat-option *ngFor="let s of logSources" [value]="s.value">-->
+<!--          {{s.description}}-->
+<!--        </mat-option>-->
+<!--      </mat-select>-->
+<!--    </mat-form-field>-->
   </p>
 
   <mat-table [dataSource]="dataSource" matSort matSortActive="start" matSortDirection="desc" matSortDisableClear>
@@ -31,13 +31,13 @@
     <ng-container matColumnDef="type">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Type</mat-header-cell>
       <mat-cell *matCellDef="let log">
-        <span *ngIf="log.type === 'info'">
+        <span *ngIf="log.type === 'INFO'">
           <mat-icon style="color: var(--blue)">info</mat-icon>
         </span>
-        <span *ngIf="log.type === 'warning'">
+        <span *ngIf="log.type === 'WARNING'">
           <mat-icon style="color: orange">warning</mat-icon>
         </span>
-        <span *ngIf="log.type === 'error'">
+        <span *ngIf="log.type === 'ERROR'">
           <mat-icon style="color: var(--red)">error</mat-icon>
         </span>
       </mat-cell>

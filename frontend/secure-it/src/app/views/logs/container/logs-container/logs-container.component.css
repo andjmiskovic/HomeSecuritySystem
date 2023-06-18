@@ -1,0 +1,4 @@
+::ng-deep .mdc-text-field--outlined {
+  background-color: white !important;
+  border-radius: 5px !important;
+}

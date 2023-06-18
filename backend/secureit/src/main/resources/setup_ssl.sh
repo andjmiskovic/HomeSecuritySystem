@@ -4,7 +4,7 @@ KEYSTORE="ssl_keystore.p12"
 ALIAS="selfsigned_localhost_sslserver"
 YAML="application.yml"
 SEARCH="classpath:$KEYSTORE"
-CERTIFICATE="ssl_certificate.pem"
+CERTIFICATE="cert.pem"
 
 if [ -f "$KEYSTORE" ]; then
     # Ask the user if they want to overwrite it
@@ -25,7 +25,7 @@ read -s -p "Enter the keystore password: " PASSWORD
 echo ""
 keytool -genkey -alias $ALIAS -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore $KEYSTORE -validity 3650 -storepass $PASSWORD -keypass $PASSWORD \
   -dname "CN=localhost, OU=SecureIT Inc., O=SecureIT Inc., L=Novi Sad, S=Serbia, C=RS" \
-  -ext SAN=dns:localhost,ip:127.0.0.1 \
+  -ext SAN=dns:localhost,ip:127.0.0.1
 
 if [ ! -f $KEYSTORE ]; then
   echo "Exiting: Keystore was not generated."
@@ -48,10 +48,9 @@ fi
 
 echo "YAML configured."
 
-keytool -export -keystore $KEYSTORE -alias $ALIAS -file ssl_certificate.der -storepass $PASSWORD
-openssl x509 -in ssl_certificate.der -inform der -out $CERTIFICATE -outform pem
-rm ssl_certificate.der
+openssl pkcs12 -in $KEYSTORE -passin pass:$PASSWORD -nodes -nocerts | openssl rsa -out key.pem
+openssl pkcs12 -in $KEYSTORE -passin pass:$PASSWORD -nokeys -clcerts | openssl x509 -out cert.pem
 
-echo "Certificate converted to <ssl_certificate.pem>."
+echo "Certificate and key exported."
 
 echo "All done. Stay safe!"

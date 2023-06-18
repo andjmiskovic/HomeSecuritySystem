@@ -14,29 +14,31 @@ import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import {SharedModule} from "../../shared/shared.module";
 import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatSelectModule} from "@angular/material/select";
 
 @NgModule({
   declarations: [
     LogsContainerComponent
   ],
-  imports: [
-    MatFormFieldModule,
-    MatIconModule,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDialogModule,
-    FormsModule,
-    CommonModule,
-    MatSnackBarModule,
-    ReactiveFormsModule,
-    MatMenuModule,
-    MatTableModule,
-    MatSortModule,
-    SharedModule,
-    MatDatepickerModule
-  ],
+    imports: [
+        MatFormFieldModule,
+        MatIconModule,
+        MatButtonModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDialogModule,
+        FormsModule,
+        CommonModule,
+        MatSnackBarModule,
+        ReactiveFormsModule,
+        MatMenuModule,
+        MatTableModule,
+        MatSortModule,
+        SharedModule,
+        MatDatepickerModule,
+        MatSelectModule
+    ],
   exports: [
     LogsContainerComponent
   ],
