@@ -34,6 +34,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -157,6 +158,7 @@ public class DeviceManagementService {
         kieSession.setGlobal("logService", logService);
         kieSession.setGlobal("device", pairedDevice);
         kieSession.setGlobal("user", propertyOwner);
+        kieSession.setGlobal("messagingTemplate", messagingTemplate);
 
         DroolsUtils.setKieSession(pairedDevice, kieSession);
 
@@ -283,7 +285,7 @@ public class DeviceManagementService {
         return true;
     }
 
-    public ResponseEntity<Resource> generateReport(String start, String end, String deviceId) throws IOException {
+    public ByteArrayInputStream generateReport(String start, String end, String deviceId) throws IOException {
         Date startDate = TimeUtils.convertToDate(start);
         Date endDate = TimeUtils.convertToDate(end);
         List<LogEntry> infoLogs = logService.findAllForDeviceInTimeRange(startDate, endDate, LogType.INFO, UUID.fromString(deviceId));

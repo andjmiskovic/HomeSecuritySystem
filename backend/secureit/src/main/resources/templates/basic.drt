@@ -11,11 +11,14 @@ import com.team4.secureit.model.Device;
 import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.model.LogSource;
 import com.team4.secureit.model.LogType;
+import com.team4.secureit.dto.response.AlarmItem;
 import com.team4.secureit.service.LogService;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 global LogService logService;
 global Device device;
 global PropertyOwner user;
+global SimpMessagingTemplate messagingTemplate;
 
 template "basic-rules"
 
@@ -31,6 +34,16 @@ then
         device.getId(),
         user.getId(),
         LogType.WARNING
+    );
+
+    messagingTemplate.convertAndSendToUser(
+        user.getUsername(),
+        "/queue/alarms",
+        new AlarmItem(
+            device.getId().toString(),
+            $message.getTimestamp(),
+            "@{sensor} @{relation} @{value} on " + device.getLabel()
+        )
     );
 end
 
