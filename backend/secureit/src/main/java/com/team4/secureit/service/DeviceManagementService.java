@@ -12,7 +12,11 @@ import com.team4.secureit.exception.PropertyNotFoundException;
 import com.team4.secureit.model.*;
 import com.team4.secureit.repository.DeviceRepository;
 import com.team4.secureit.repository.PropertyRepository;
+import com.team4.secureit.util.DroolsUtils;
 import com.team4.secureit.util.MappingUtils;
+import org.drools.template.DataProvider;
+import org.drools.template.objects.ArrayDataProvider;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
+import static com.team4.secureit.util.DroolsUtils.AS_FLOAT;
 import static com.team4.secureit.util.MappingUtils.toDeviceDetailsResponse;
 
 @Service
@@ -129,6 +134,17 @@ public class DeviceManagementService {
                 pairing.getProperty(),
                 pairing.getRequestedBy()
         );
+
+        DataProvider dataProvider = new ArrayDataProvider(new String[][]{
+                new String[]{"temperature", ">=", "49", AS_FLOAT},
+                new String[]{"humidity", ">=", "79", AS_FLOAT},
+        });
+
+        String drl = DroolsUtils.renderDRL("basic.drt", dataProvider);
+        System.out.println(drl);
+
+        KieSession kieSession = DroolsUtils.createKieSessionFromDRL(drl);
+        DroolsUtils.setKieSession(pairedDevice, kieSession);
 
         deviceRepository.save(pairedDevice);
         attemptedPairings.remove(code);

@@ -1,0 +1,23 @@
+template header
+sensor
+relation
+value
+parsing
+
+package templates;
+
+import com.team4.secureit.dto.request.DeviceMessage;
+
+template "basic-rules"
+
+rule "Alarm when @{sensor} @{relation} @{value}"
+when
+    $message: DeviceMessage(measures != null,
+                            $val: measures["@{sensor}"] != null,
+                            @{parsing} @{relation} @{value})
+then
+    System.out.println("Opaaaa @{sensor}");
+    System.out.println($message.getDeviceId());
+end
+
+end template

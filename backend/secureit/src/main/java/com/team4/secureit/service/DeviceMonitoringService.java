@@ -7,11 +7,13 @@ import com.team4.secureit.model.Device;
 import com.team4.secureit.model.LogSource;
 import com.team4.secureit.model.LogType;
 import com.team4.secureit.repository.DeviceRepository;
+import com.team4.secureit.util.DroolsUtils;
 import jakarta.xml.bind.DatatypeConverter;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +41,9 @@ public class DeviceMonitoringService {
 
         boolean isSignatureValid = verifySignature(rawRequestBody, signature, device.getPublicKeyPem());
         if (isSignatureValid) {
-            // System.out.println(rawRequestBody);
+            KieSession kieSession = DroolsUtils.getKieSession(device);
+            kieSession.insert(message);
+            kieSession.fireAllRules();
         } else {
             logService.log(
                     "Received a message with invalid signature from device '" + device.getLabel() + "', " + device.getMacAddress(),

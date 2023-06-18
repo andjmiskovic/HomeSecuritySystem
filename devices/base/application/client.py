@@ -73,7 +73,7 @@ def send_message():
     if (response.status_code == requests.codes.ok):
         current_app.logger.info(f'Server received {json.loads(response.text)["message"]} bytes.')
     else:
-        current_app.logger.info(f'Message denied. Invalid signature.')
+        current_app.logger.info(f'Message denied: {json.loads(response.text)["message"]}')
 
 
 def generate_measurement(sensor):
