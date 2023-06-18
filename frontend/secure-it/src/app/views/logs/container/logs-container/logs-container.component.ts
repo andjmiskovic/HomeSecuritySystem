@@ -11,7 +11,7 @@ import {FormControl, FormGroup} from "@angular/forms";
   styleUrls: ['./logs-container.component.css']
 })
 export class LogsContainerComponent implements OnInit {
-  displayedColumns = ["message", "type", "time"];
+  displayedColumns = ["message", "type", "timestamp"];
   dataSource: LogTableDataSource;
   @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort!: MatSort;
@@ -25,6 +25,14 @@ export class LogsContainerComponent implements OnInit {
   type: LogType | null = null;
   source: LogSource | null = null;
 
+  logSources = [
+    {value: LogSource.DEVICE_MONITORING, description: LogSource.DEVICE_MONITORING.valueOf()},
+    {value: LogSource.DEVICE_MANAGEMENT, description: LogSource.DEVICE_MANAGEMENT.valueOf()},
+    {value: LogSource.AUTHENTICATION, description: LogSource.AUTHENTICATION.valueOf()},
+    {value: LogSource.AUTHORIZATION, description: LogSource.AUTHORIZATION.valueOf()},
+    {value: LogSource.CERTIFICATE_MANAGEMENT, description: LogSource.CERTIFICATE_MANAGEMENT.valueOf()},
+  ];
+
   constructor(private logService: LogService) {
     this.dataSource = new LogTableDataSource(logService);
   }
@@ -35,9 +43,5 @@ export class LogsContainerComponent implements OnInit {
 
   loadLogs() {
     this.dataSource.loadLogs(this.regex, this.source, this.sourceId, this.type);
-  }
-
-  applySearchFilter($event: KeyboardEvent) {
-
   }
 }

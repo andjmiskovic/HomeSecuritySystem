@@ -69,7 +69,7 @@
   <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start"
                  style="height: 100%; min-height: 200px; margin-bottom: 50px">
     <mat-tab label="Logs">
-      <app-logs [deviceId]="device.id"></app-logs>
+      <app-logs *ngIf="device.id" [deviceId]="device.id"></app-logs>
     </mat-tab>
     <mat-tab label="Alarms">
       <app-alarms-container [device]="device"></app-alarms-container>

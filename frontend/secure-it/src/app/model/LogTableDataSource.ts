@@ -1,6 +1,7 @@
 import {CollectionViewer, DataSource} from "@angular/cdk/collections";
 import {BehaviorSubject, Observable} from "rxjs";
 import {LogService} from "../services/log.service";
+import {PropertyType} from "./Property";
 
 export class LogListItem {
   id!: string;
@@ -23,6 +24,15 @@ export enum LogSource {
   AUTHENTICATION = "Authetication",
   AUTHORIZATION = "Authorization",
   MAILING = "Mailing"
+}
+
+export function getKeyByValue(enumObject: any, value: string): string | undefined {
+  for (const key in enumObject) {
+    if (enumObject[key] === value) {
+      return key;
+    }
+  }
+  return undefined;
 }
 
 export class LogTableDataSource implements DataSource<LogListItem> {
@@ -49,8 +59,12 @@ export class LogTableDataSource implements DataSource<LogListItem> {
     this.loadingSubject.next(true);
     this.logService.getLogs(regex, source, sourceId, type).subscribe({
       next: (logItems) => {
+        console.log(logItems)
         this.behaviorSubject.next(logItems);
         this.loadingSubject.next(false)
+      },
+      error: (err: any) => {
+        console.log(err)
       }
     })
   }

@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {LogSource, LogTableDataSource, LogType} from "../../../../model/LogTableDataSource";
@@ -9,11 +9,11 @@ import {LogService} from "../../../../services/log.service";
   templateUrl: './logs.component.html',
   styleUrls: ['./logs.component.css']
 })
-export class LogsComponent {
+export class LogsComponent implements OnInit{
   @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort!: MatSort;
 
-  @Input() deviceId: string = '';
+  @Input() deviceId!: string;
 
   displayedColumns = ["message", "type", "time"];
   dataSource: LogTableDataSource;
@@ -30,6 +30,10 @@ export class LogsComponent {
 
   constructor(private logsService: LogService) {
     this.dataSource = new LogTableDataSource(logsService);
+  }
+
+  ngOnInit(): void {
+    this.applyFilter()
   }
 
   applyFilter() {
