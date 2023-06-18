@@ -64,16 +64,14 @@ public class DeviceManagementController {
         return deviceManagementService.getDevice(deviceId);
     }
 
-    @PutMapping("/{deviceId}")
-    @PreAuthorize("hasRole('PROPERTY_OWNER')")
+    @PostMapping("/{deviceId}")
     public ResponseOk changeAlarms(@RequestBody @Valid DeviceChangeAlarmsRequest alarmsRequest, @PathVariable UUID deviceId, Authentication authentication) {
         PropertyOwner propertyOwner = (PropertyOwner) authentication.getPrincipal();
         deviceManagementService.changeAlarms(deviceId, propertyOwner, alarmsRequest);
         return new ResponseOk("Alarms updated.");
     }
 
-    @PutMapping("/{deviceId}/alarms")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/{deviceId}/alarms")
     public AlarmItem getAlarms(@PathVariable UUID deviceId, Authentication authentication) {
         return deviceManagementService.getAlarms(deviceId);
     }

@@ -6,6 +6,19 @@ import {environment} from "../environment.development";
 import {AuthService} from "./auth.service";
 import {AlarmListItem} from "../model/AlarmsTableDataSource";
 
+export class DeviceChangeAlarmsRequest {
+  alarms: String[][];
+
+  constructor(a: String[][]) {
+    this.alarms = a;
+    for (let x of this.alarms) {
+      if (x.length != 4) {
+        x.push("");
+      }
+    }
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -43,6 +56,10 @@ export class DeviceManagementService {
       queryParams = queryParams.append("end", end.toString());
     }
     return this.http.get<Blob>(`${this.devicesUrl}/report`, AuthService.getHttpOptions(queryParams));
+  }
+
+  public changeAlarms(deviceId: string, body: String[][]): Observable<void> {
+    return this.http.post<void>(`${this.devicesUrl}/` + deviceId, new DeviceChangeAlarmsRequest(body), AuthService.getHttpOptions());
   }
 
   public getAlarms(deviceId: string): Observable<AlarmListItem[]> {

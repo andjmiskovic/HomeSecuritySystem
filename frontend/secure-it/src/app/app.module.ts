@@ -27,6 +27,7 @@ import {TokensModule} from "./views/tokens/tokens.module";
 import {DeviceModule} from "./views/device/device.module";
 import {HandshakeWebSocketAPI} from "./services/handshake/handshake-socket.service";
 import {HandshakeWebsocketShareService} from "./services/handshake/handshake-websocketshare.service";
+import {LogsModule} from "./views/logs/logs.module";
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import {HandshakeWebsocketShareService} from "./services/handshake/handshake-web
     ReactiveFormsModule,
     PropertiesModule,
     TokensModule,
-    DeviceModule
+    DeviceModule,
+    LogsModule
   ],
   providers: [HandshakeWebSocketAPI, HandshakeWebsocketShareService],
   bootstrap: [AppComponent]

@@ -21,10 +21,12 @@ export class EditAlarmsDialogComponent implements OnInit {
   }
 
   addNewAlarm() {
-    this.device.alarms.push(["", "", ""]);
+    this.device.alarms.push(["", "", "", ""]);
   }
 
   saveChanges() {
-    // call endpoint
+    this.deviceService.changeAlarms(this.device.id, this.device.alarms).subscribe({
+      next: (value) => console.log("OK")
+    })
   }
 }

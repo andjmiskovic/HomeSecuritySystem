@@ -20,6 +20,7 @@ import {
 } from "./views/verification-screen/container/tenant-invitation-container/tenant-invitation-container.component";
 import {TokensContainerComponent} from "./views/tokens/container/tokens/tokens-container.component";
 import {DeviceContainerComponent} from "./views/device/container/device-container/device-container.component";
+import {LogsContainerComponent} from "./views/logs/container/logs-container/logs-container.component";
 
 const routes: Routes = [
   {path: '', component: HomepageContainerComponent},
@@ -30,6 +31,7 @@ const routes: Routes = [
   {path: 'registration/verification', component: VerificationScreenContainerComponent},
   {path: 'invitation', component: TenantInvitationContainerComponent},
   {path: 'tokens', component: TokensContainerComponent, canActivate: [AuthGuard], data: {roles: ['ROLE_ADMIN']}},
+  {path: 'logs', component: LogsContainerComponent, canActivate: [AuthGuard], data: {roles: ['ROLE_ADMIN']}},
   {path: 'device/:id', component: DeviceContainerComponent},
   {path: '403', component: NotAuthorizedPageComponent},
   {path: '**', component: NotFoundPageComponent}
