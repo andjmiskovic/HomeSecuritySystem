@@ -156,6 +156,10 @@ public class DeviceManagementService {
         System.out.println(drl);
 
         KieSession kieSession = DroolsUtils.createKieSessionFromDRL(drl);
+        kieSession.setGlobal("logService", logService);
+        kieSession.setGlobal("device", pairedDevice);
+        kieSession.setGlobal("user", propertyOwner);
+
         DroolsUtils.setKieSession(pairedDevice, kieSession);
 
         deviceRepository.save(pairedDevice);
@@ -191,6 +195,10 @@ public class DeviceManagementService {
         String drl = DroolsUtils.renderDRL("basic.drt", dataProvider);
 
         KieSession kieSession = DroolsUtils.createKieSessionFromDRL(drl);
+        kieSession.setGlobal("logService", logService);
+        kieSession.setGlobal("device", device);
+        kieSession.setGlobal("user", propertyOwner);
+
         DroolsUtils.getKieSession(device).dispose();
         DroolsUtils.setKieSession(device, kieSession);
 
