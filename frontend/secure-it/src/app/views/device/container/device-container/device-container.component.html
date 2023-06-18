@@ -67,7 +67,7 @@
 <p style="margin-left: 100px">
   <mat-form-field appearance="outline" style="width: 300px">
     <mat-icon matPrefix>search</mat-icon>
-    <input matInput [(ngModel)]="search" (keyup)="applyFilter()" placeholder="Search log messages...">
+    <input matInput [(ngModel)]="regex" (keyup)="applyFilter()" placeholder="Search log messages...">
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-select disableRipple [(ngModel)]="logType" (selectionChange)="applyFilter()">
