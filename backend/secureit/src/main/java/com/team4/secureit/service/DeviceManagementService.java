@@ -18,16 +18,11 @@ import com.team4.secureit.repository.PropertyRepository;
 import com.team4.secureit.util.DroolsUtils;
 import com.team4.secureit.util.MappingUtils;
 import com.team4.secureit.util.TimeUtils;
-import org.apache.commons.io.FilenameUtils;
-import lombok.extern.java.Log;
 import org.drools.template.DataProvider;
 import org.drools.template.objects.ArrayDataProvider;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -43,6 +38,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
+
 import static com.team4.secureit.util.DroolsUtils.serializeAlarmsData;
 import static com.team4.secureit.util.MappingUtils.toDeviceDetailsResponse;
 
