@@ -12,13 +12,6 @@
         <mat-option value="error">Error</mat-option>
       </mat-select>
     </mat-form-field>
-<!--    <mat-form-field appearance="outline" style="width: 300px; margin-left: 10px">-->
-<!--      <mat-select [(ngModel)]="source" (selectionChange)="applyFilter()">-->
-<!--        <mat-option *ngFor="let s of logSources" [value]="s.value">-->
-<!--          {{s.description}}-->
-<!--        </mat-option>-->
-<!--      </mat-select>-->
-<!--    </mat-form-field>-->
   </p>
 
   <mat-table [dataSource]="dataSource" matSort matSortActive="start" matSortDirection="desc" matSortDisableClear>

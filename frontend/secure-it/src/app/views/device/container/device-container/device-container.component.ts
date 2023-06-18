@@ -31,15 +31,23 @@ export class DeviceContainerComponent implements OnInit {
   }
 
   downloadReport() {
+    const renderPdf = (content: any) => {
+      console.log(content)
+      const element = document.createElement('a');
+      const file = new Blob([content], {type: 'application/pdf'});
+      element.href = URL.createObjectURL(file);
+      element.download = "report.pdf";
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    }
+
     this.deviceService.getReport(this.campaignOne.value.start, this.campaignOne.value.end, this.deviceId).subscribe({
       next: (content) => {
-        const element = document.createElement('a');
-        const file = new Blob([content], {type: 'application/pdf'});
-        element.href = URL.createObjectURL(file);
-        element.download = "report.pdf";
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
+        renderPdf(content)
+      }, error: err => {
+        console.log(err)
+        renderPdf(err)
       }
     })
   }

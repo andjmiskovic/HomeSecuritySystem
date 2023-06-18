@@ -7,15 +7,22 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.team4.secureit.model.LogEntry;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Service
 public class PDFService {
 
-    public ByteArrayInputStream createPDF(List<LogEntry> warningLogs, List<LogEntry> errorLogs) throws IOException {
+    public ResponseEntity<Resource> createPDF(List<LogEntry> infoLogs, List<LogEntry> warningLogs, List<LogEntry> errorLogs) throws IOException {
         Document document = new Document(PageSize.A4);
         FileOutputStream file = new FileOutputStream("src/main/resources/report.pdf");
         try {
@@ -28,6 +35,13 @@ public class PDFService {
 
             Paragraph title = new Paragraph("Report");
             document.add(title);
+
+            Paragraph infos = new Paragraph("Info");
+            document.add(infos);
+            for (LogEntry logEntry : infoLogs) {
+                Paragraph info = new Paragraph(logEntry.getType() + " :: " + logEntry.getTimestamp() + " :: " + logEntry.getMessage());
+                document.add(info);
+            }
 
             Paragraph warnings = new Paragraph("Warnings");
             document.add(warnings);
@@ -46,9 +60,34 @@ public class PDFService {
         } finally {
             document.close();
         }
-        File readFile = new File("src/main/resources/report.pdf");
-        String data = FileUtils.readFileToString(readFile, "UTF-8");
-        System.out.println(data);
-        return new ByteArrayInputStream(FileUtils.readFileToByteArray(readFile));
+        return getPdf("src/main/resources/report.pdf");
+    }
+
+    public ResponseEntity<Resource> getPdf(String filename) throws IOException {
+        Path storedFilePath = Paths.get("").resolve(filename);
+
+        Resource resource = new UrlResource(storedFilePath.toUri());
+        if (!resource.exists() || !resource.isReadable())
+            throw new FileNotFoundException("File not found.");
+
+        String extension = FilenameUtils.getExtension(filename); // dot not included (i.e. "png")
+
+        return ResponseEntity.ok()
+                .contentType(extensionToMediaType(extension))
+                .body(resource);
+    }
+
+    private MediaType extensionToMediaType(String extension) {
+        switch (extension) {
+            case "png":
+                return MediaType.IMAGE_PNG;
+            case "jpg":
+            case "jpeg":
+                return MediaType.IMAGE_JPEG;
+            case "pdf":
+                return MediaType.APPLICATION_PDF;
+            default:
+                return MediaType.APPLICATION_OCTET_STREAM;
+        }
     }
 }

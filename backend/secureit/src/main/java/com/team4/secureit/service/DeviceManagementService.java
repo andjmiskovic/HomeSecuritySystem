@@ -19,12 +19,15 @@ import com.team4.secureit.repository.PropertyRepository;
 import com.team4.secureit.util.DroolsUtils;
 import com.team4.secureit.util.MappingUtils;
 import com.team4.secureit.util.TimeUtils;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.drools.template.DataProvider;
 import org.drools.template.objects.ArrayDataProvider;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,8 +35,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -41,6 +46,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
+import java.nio.file.Path;
 
 import static com.team4.secureit.util.DroolsUtils.serializeAlarmsData;
 import static com.team4.secureit.util.MappingUtils.toDeviceDetailsResponse;
@@ -283,12 +289,13 @@ public class DeviceManagementService {
         return true;
     }
 
-    public ByteArrayInputStream generateReport(String start, String end, String deviceId) throws IOException {
+    public ResponseEntity<Resource> generateReport(String start, String end, String deviceId) throws IOException {
         Date startDate = TimeUtils.convertToDate(start);
         Date endDate = TimeUtils.convertToDate(end);
+        List<LogEntry> infoLogs = logService.findAllForDeviceInTimeRange(startDate, endDate, LogType.INFO, UUID.fromString(deviceId));
         List<LogEntry> warningLogs = logService.findAllForDeviceInTimeRange(startDate, endDate, LogType.WARNING, UUID.fromString(deviceId));
         List<LogEntry> errorLogs = logService.findAllForDeviceInTimeRange(startDate, endDate, LogType.ERROR, UUID.fromString(deviceId));
-        return pdfService.createPDF(warningLogs, errorLogs);
+        return pdfService.createPDF(infoLogs, warningLogs, errorLogs);
     }
 
     public AlarmItem getAlarms(UUID deviceId) {

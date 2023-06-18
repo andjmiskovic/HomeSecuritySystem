@@ -9,6 +9,9 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -68,9 +71,32 @@ public class CustomLogRepositoryImpl implements CustomLogRepository {
         if (deviceId != null)
             query.addCriteria(Criteria.where("sourceId").is(deviceId));
         if (startDate != null && endDate != null)
-            query.addCriteria(Criteria.where("timestamp").gte(startDate).lte(endDate));
+            if (startDate.equals(endDate))
+                query.addCriteria(Criteria.where("timestamp").gte(atStartOfDay(startDate)).lte(atEndOfDay(endDate)));
+            else
+                query.addCriteria(Criteria.where("timestamp").gte(startDate).lte(endDate));
         if (type != null)
             query.addCriteria(Criteria.where("type").is(type));
         return mongoTemplate.find(query, LogEntry.class);
+    }
+
+    private static Date atStartOfDay(Date date) {
+        LocalDateTime localDateTime = dateToLocalDateTime(date);
+        LocalDateTime startOfDay = localDateTime.with(LocalTime.MIN);
+        return localDateTimeToDate(startOfDay);
+    }
+
+    private static Date atEndOfDay(Date date) {
+        LocalDateTime localDateTime = dateToLocalDateTime(date);
+        LocalDateTime endOfDay = localDateTime.with(LocalTime.MAX);
+        return localDateTimeToDate(endOfDay);
+    }
+
+    private static LocalDateTime dateToLocalDateTime(Date date) {
+        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+    }
+
+    private static Date localDateTimeToDate(LocalDateTime localDateTime) {
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

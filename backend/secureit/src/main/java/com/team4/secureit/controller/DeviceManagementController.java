@@ -11,6 +11,8 @@ import com.team4.secureit.model.PropertyOwner;
 import com.team4.secureit.service.DeviceManagementService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -74,8 +76,13 @@ public class DeviceManagementController {
         return deviceManagementService.getAlarms(deviceId);
     }
 
-    @GetMapping("/report")
-    public ByteArrayInputStream getReport(@RequestParam String start, @RequestParam String end, @RequestParam String deviceId) throws IOException {
+    @GetMapping(value="/report", produces = MediaType.ALL_VALUE)
+    public  ResponseEntity<Resource> getReport(@RequestParam String start, @RequestParam String end, @RequestParam String deviceId) throws IOException {
         return deviceManagementService.generateReport(start, end, deviceId);
     }
+
+//    @GetMapping(value = "/{filename}")
+//    public ResponseEntity<Resource> serve(@PathVariable String filename) throws IOException {
+//        return deviceManagementService.generateReport2(filename);
+//    }
 }
