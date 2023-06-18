@@ -16,4 +16,15 @@ export class EditAlarmsDialogComponent implements OnInit {
   ngOnInit() {
   }
 
+  removeAlarm(index: number) {
+    this.device.alarms.splice(index);
+  }
+
+  addNewAlarm() {
+    this.device.alarms.push(["", "", ""]);
+  }
+
+  saveChanges() {
+    // call endpoint
+  }
 }

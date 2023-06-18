@@ -28,6 +28,8 @@ export class AlarmsContainerComponent {
   }
 
   editAlarms() {
+    console.log("this.device.alarms");
+    console.log(this.device.alarms);
     const dialogRef = this.dialog.open(EditAlarmsDialogComponent, {
       height: '600px',
       width: '1000px'
