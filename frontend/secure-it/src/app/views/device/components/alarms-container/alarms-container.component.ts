@@ -29,10 +29,7 @@ export class AlarmsContainerComponent {
   }
 
   loadAlarms(device: DeviceDetailsResponse) {
-    console.log("OPAA")
-    console.log(device)
     if (device.id) {
-      console.log("stigao sam")
       this.dataSource.loadAlarms(device.id);
     }
   }

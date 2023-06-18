@@ -13,6 +13,7 @@ import {ApproveCsrComponent} from "../../../csr/components/approve-csr/approve-c
 import {NotificationComponent} from "../../components/notification/notification.component";
 import {PropertyDetailsComponent} from "../../components/property-details/property-details.component";
 import {DeviceCodeInfoComponent} from "../../components/device-code-info/device-code-info.component";
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-properties-container',
@@ -26,6 +27,7 @@ export class PropertiesContainerComponent implements OnInit {
   public fileTypes = Object.values(PropertyType);
   userRole: string;
   code: string = ""
+  socketSubscription: Subscription | undefined;
 
   constructor(private propertiesService: PropertyService, private dialog: MatDialog, private authService: AuthService,
               private websocketService: HandshakeWebsocketShareService,
@@ -72,8 +74,13 @@ export class PropertiesContainerComponent implements OnInit {
     this.subscribeToNewNotifications();
   }
 
+  ngOnDestroy(): void {
+    this.socketSubscription?.unsubscribe();
+    this.websocketService.onNewValueReceive('');
+  }
+
   private subscribeToNewNotifications(): void {
-    this.websocketService.getNewValue().subscribe({
+    this.socketSubscription = this.websocketService.getNewValue().subscribe({
       next: (res: any) => {
         if (res) {
           let body = JSON.parse(res);
