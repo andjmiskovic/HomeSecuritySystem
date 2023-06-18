@@ -275,5 +275,6 @@ public class DeviceManagementService {
     }
 
     public AlarmItem getAlarms(UUID deviceId) {
+        return null;
     }
 }
