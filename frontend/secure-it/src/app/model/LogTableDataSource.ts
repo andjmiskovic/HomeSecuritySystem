@@ -10,6 +10,12 @@ export class LogListItem {
   source!: LogSource;
 }
 
+export enum LogType {
+  INFO,
+  WARNING,
+  ERROR
+}
+
 export enum LogSource {
   DEVICE_MONITORING = "Device monitoring",
   DEVICE_MANAGEMENT = "Device management",
@@ -39,9 +45,9 @@ export class LogTableDataSource implements DataSource<LogListItem> {
     this.loadingSubject.complete();
   }
 
-  loadLogs(source: string, search: string, type: string) {
+  loadLogs(regex: string, source: LogSource | null, sourceId: string, type: LogType | null) {
     this.loadingSubject.next(true);
-    this.logService.getLogs(search, type, source).subscribe({
+    this.logService.getLogs(regex, source, sourceId, type).subscribe({
       next: (logItems) => {
         this.behaviorSubject.next(logItems);
         this.loadingSubject.next(false)

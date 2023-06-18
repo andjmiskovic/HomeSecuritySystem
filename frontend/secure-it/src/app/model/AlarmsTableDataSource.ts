@@ -1,6 +1,5 @@
 import {CollectionViewer, DataSource} from "@angular/cdk/collections";
 import {BehaviorSubject, Observable} from "rxjs";
-import {LogService} from "../services/log.service";
 import {DeviceManagementService} from "../services/device.service";
 
 export class AlarmListItem {

@@ -4,6 +4,7 @@ import com.team4.secureit.api.ResponseError;
 import com.team4.secureit.dto.request.DeviceChangeAlarmsRequest;
 import com.team4.secureit.dto.request.DeviceHandshakeData;
 import com.team4.secureit.dto.request.DeviceSensorInfo;
+import com.team4.secureit.dto.request.ReportRequest;
 import com.team4.secureit.dto.response.AlarmItem;
 import com.team4.secureit.dto.response.CodeResponse;
 import com.team4.secureit.dto.response.DeviceDetailsResponse;
@@ -60,6 +61,9 @@ public class DeviceManagementService {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+
+    @Autowired
+    private PDFService pdfService;
 
     private final SecureRandom random = new SecureRandom();
 
@@ -273,10 +277,13 @@ public class DeviceManagementService {
         return true;
     }
 
-    public ByteArrayInputStream generateReport(String start, String end) throws IOException {
+    public ByteArrayInputStream generateReport(ReportRequest reportRequest) throws IOException {
         File pdfFile = new File("src/main/resources/gen/report.pdf");
+
+//        List<LogEntry> logs =
+
         // PDF Service
-        return new ByteArrayInputStream(FileUtils.readFileToByteArray(pdfFile));
+        return pdfService.createPDF(reportRequest);
     }
 
     public AlarmItem getAlarms(UUID deviceId) {

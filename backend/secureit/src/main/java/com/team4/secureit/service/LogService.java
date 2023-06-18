@@ -6,6 +6,7 @@ import com.team4.secureit.repository.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,5 +45,10 @@ public class LogService {
             return logRepository.findAllByCriteria(pattern, source, sourceId, userId, type);
 
         return logRepository.findUserLogsByCriteria(pattern, sourceId, userId, type);
+    }
+
+    public List<LogEntry> findAllForDeviceInTimeRange(Date startDate, Date endDate, UUID deviceId) {
+        return logRepository.findAllForDeviceInTimeRange(startDate, endDate, deviceId);
+
     }
 }
