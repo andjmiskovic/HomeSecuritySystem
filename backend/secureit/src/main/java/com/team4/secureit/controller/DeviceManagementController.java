@@ -12,7 +12,9 @@ import com.team4.secureit.model.User;
 import com.team4.secureit.service.DeviceManagementService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -77,13 +79,12 @@ public class DeviceManagementController {
         return deviceManagementService.getAlarms(deviceId, user);
     }
 
-    @GetMapping(value="/report", produces = MediaType.ALL_VALUE)
-    public  ResponseEntity<Resource> getReport(@RequestParam String start, @RequestParam String end, @RequestParam String deviceId) throws IOException {
-        return deviceManagementService.generateReport(start, end, deviceId);
-    }
+    @GetMapping(value = "/report", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<InputStreamResource> getReport(@RequestParam String start, @RequestParam String end, @RequestParam String deviceId) throws IOException {
+        ByteArrayInputStream byteFile = deviceManagementService.generateReport(start, end, deviceId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename=report.pdf");
 
-//    @GetMapping(value = "/{filename}")
-//    public ResponseEntity<Resource> serve(@PathVariable String filename) throws IOException {
-//        return deviceManagementService.generateReport2(filename);
-//    }
+        return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(new InputStreamResource(byteFile));
+    }
 }
