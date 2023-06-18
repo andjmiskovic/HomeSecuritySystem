@@ -49,11 +49,14 @@ export class DeviceManagementService {
     return this.http.get<DeviceDetailsResponse>(`${this.devicesUrl}/` + id, AuthService.getHttpOptions());
   }
 
-  public getReport(start: Date | null | undefined, end: Date | null | undefined): Observable<Blob> {
+  public getReport(start: Date | null | undefined, end: Date | null | undefined, deviceId: string | null | undefined): Observable<Blob> {
     let queryParams = new HttpParams();
     if (start && end) {
       queryParams = queryParams.append("start", start.toString());
       queryParams = queryParams.append("end", end.toString());
+    }
+    if (deviceId) {
+      queryParams = queryParams.append("deviceId", deviceId.toString());
     }
     return this.http.get<Blob>(`${this.devicesUrl}/report`, AuthService.getHttpOptions(queryParams));
   }

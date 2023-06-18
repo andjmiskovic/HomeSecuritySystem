@@ -4,7 +4,6 @@ import com.team4.secureit.api.ResponseOk;
 import com.team4.secureit.dto.request.DeviceChangeAlarmsRequest;
 import com.team4.secureit.dto.request.DeviceHandshakeData;
 import com.team4.secureit.dto.request.DevicePairingInitRequest;
-import com.team4.secureit.dto.request.ReportRequest;
 import com.team4.secureit.dto.response.AlarmItem;
 import com.team4.secureit.dto.response.CodeResponse;
 import com.team4.secureit.dto.response.DeviceDetailsResponse;
@@ -77,7 +76,7 @@ public class DeviceManagementController {
     }
 
     @GetMapping("/report")
-    public ByteArrayInputStream getReport(@RequestBody ReportRequest reportRequest) throws IOException {
-        return deviceManagementService.generateReport(reportRequest);
+    public ByteArrayInputStream getReport(@RequestParam String start, @RequestParam String end, @RequestParam String deviceId) throws IOException {
+        return deviceManagementService.generateReport(start, end, deviceId);
     }
 }

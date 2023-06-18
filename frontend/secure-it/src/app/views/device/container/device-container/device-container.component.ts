@@ -5,6 +5,7 @@ import {DeviceManagementService} from "../../../../services/device.service";
 import {EditAlarmsDialogComponent} from "../../components/edit-alarms-dialog/edit-alarms-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {FormControl, FormGroup} from "@angular/forms";
+import {ReportRequest} from "../../../../model/ReportRequest";
 
 @Component({
   selector: 'app-device-container',
@@ -30,7 +31,7 @@ export class DeviceContainerComponent implements OnInit {
   }
 
   downloadReport() {
-    this.deviceService.getReport(this.campaignOne.value.start, this.campaignOne.value.end).subscribe({
+    this.deviceService.getReport(this.campaignOne.value.start, this.campaignOne.value.end, this.deviceId).subscribe({
       next: (content) => {
         const element = document.createElement('a');
         const file = new Blob([content], {type: 'application/pdf'});

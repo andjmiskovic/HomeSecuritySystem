@@ -62,5 +62,7 @@ public class MappingUtils {
                 device.getSensorInfo(),
                 deserializeAlarmsData(device.getAlarms())
         );
+
+
     }
 }
