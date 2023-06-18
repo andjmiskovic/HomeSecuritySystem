@@ -1,7 +1,7 @@
-<app-sidebar currentPage="certificates"></app-sidebar>
+<app-sidebar currentPage="properties"></app-sidebar>
 <img src="../../../../../assets/images/background-line.jpg" class="dashboard-background" alt="dashboard-background"/>
 
-<div>
+<div style="margin-left: 100px; margin-top:20px">
   <div class="row">
     <div class="label">Id:</div>
     <div class="value">{{device.id}}</div>
@@ -41,18 +41,18 @@
   <div class="row">
     <div class="label">Generate a report:</div>
     <div class="value">
-      <mat-form-field>
-        <mat-label>First campaign</mat-label>
-        <mat-date-range-input
-          [formGroup]="campaignOne"
-          [rangePicker]="campaignOnePicker">
-          <input matStartDate placeholder="Start date" formControlName="start">
-          <input matEndDate placeholder="End date" formControlName="end">
-        </mat-date-range-input>
-        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-        <mat-datepicker-toggle matIconSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
-        <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
-      </mat-form-field>
+<!--      <mat-form-field>-->
+<!--        <mat-label>First campaign</mat-label>-->
+<!--        <mat-date-range-input-->
+<!--          [formGroup]="campaignOne"-->
+<!--          [rangePicker]="campaignOnePicker">-->
+<!--          <input matStartDate placeholder="Start date" formControlName="start">-->
+<!--          <input matEndDate placeholder="End date" formControlName="end">-->
+<!--        </mat-date-range-input>-->
+<!--        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>-->
+<!--        <mat-datepicker-toggle matIconSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>-->
+<!--        <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>-->
+<!--      </mat-form-field>-->
 
       <button style="font-size: 12px; margin-left: 5px" mat-stroked-button (click)="downloadReport()">
         <mat-icon style="color: var(--blue)">download</mat-icon>
@@ -64,7 +64,7 @@
 
 <hr style="width: 100%">
 
-<p>
+<p style="margin-left: 100px">
   <mat-form-field appearance="outline" style="width: 300px">
     <mat-icon matPrefix>search</mat-icon>
     <input matInput [(ngModel)]="search" (keyup)="applyFilter()" placeholder="Search log messages...">
