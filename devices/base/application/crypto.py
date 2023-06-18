@@ -7,7 +7,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa, padding
 class CryptographyManager:
     PRIVATE_KEY_PATH = "memory/private_key.pem"
     PUBLIC_KEY_PATH = "memory/public_key.pem"
-    SSL_CERT_PATH = "memory/ssl_certificate.pem"
+    SSL_CERT_PATH = "memory/chain.pem"
     KEYS_KEY = 'CRYPTO'
 
     def __init__(self, app):

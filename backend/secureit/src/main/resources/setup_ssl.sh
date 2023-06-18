@@ -8,6 +8,7 @@ CERTIFICATE="localhost_cert.pem"
 
 CA_KEYSTORE="../../../keystore/main.keystore"
 CA_ALIAS="secure it general purpose ca (secure it root ca)"
+CA_ROOT_ALIAS="secure it root ca"
 CA_STOREPASS="example"
 CA_KEYPASS="privatekeypassword"
 
@@ -46,11 +47,10 @@ echo "Importing the CA cert to the keystore"
 keytool -importcert -trustcacerts -noprompt -file localhost.crt -alias $ALIAS -keystore $KEYSTORE -storepass $PASSWORD
 
 echo "Cleaning up"
-mv localhost.crt localhost_cert.cer
-rm localhost.csr
+rm localhost.crt localhost.csr
 
 echo "Exporting CA certificate (so you can import it into your web browser / device)"
-keytool -exportcert -alias "$CA_ALIAS" -keystore $CA_KEYSTORE -file secureit_root_ca.cer -storepass $CA_STOREPASS
+keytool -exportcert -alias "$CA_ROOT_ALIAS" -keystore $CA_KEYSTORE -file secureit_root_ca.cer -storepass $CA_STOREPASS
 
 if [ ! -f $KEYSTORE ]; then
   echo "Exiting: Keystore was not generated."
