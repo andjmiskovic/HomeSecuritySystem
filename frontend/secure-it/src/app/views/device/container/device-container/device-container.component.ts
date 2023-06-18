@@ -5,7 +5,6 @@ import {DeviceManagementService} from "../../../../services/device.service";
 import {EditAlarmsDialogComponent} from "../../components/edit-alarms-dialog/edit-alarms-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {FormControl, FormGroup} from "@angular/forms";
-import {ReportRequest} from "../../../../model/ReportRequest";
 
 @Component({
   selector: 'app-device-container',
@@ -26,7 +25,9 @@ export class DeviceContainerComponent implements OnInit {
   ngOnInit(): void {
     this.deviceId = this.router.snapshot.paramMap.get('id');
     this.deviceService.getDevice(this.deviceId).subscribe({
-      next: value => this.device = value
+      next: value => {
+        this.device = value;
+      }
     })
   }
 

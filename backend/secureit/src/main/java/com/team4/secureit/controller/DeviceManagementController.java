@@ -8,6 +8,7 @@ import com.team4.secureit.dto.response.AlarmItem;
 import com.team4.secureit.dto.response.CodeResponse;
 import com.team4.secureit.dto.response.DeviceDetailsResponse;
 import com.team4.secureit.model.PropertyOwner;
+import com.team4.secureit.model.User;
 import com.team4.secureit.service.DeviceManagementService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.sql.Blob;
 import java.util.List;
 import java.util.UUID;
 
@@ -71,8 +71,9 @@ public class DeviceManagementController {
     }
 
     @PostMapping("/{deviceId}/alarms")
-    public AlarmItem getAlarms(@PathVariable UUID deviceId, Authentication authentication) {
-        return deviceManagementService.getAlarms(deviceId);
+    public List<AlarmItem> getAlarms(@PathVariable UUID deviceId, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return deviceManagementService.getAlarms(deviceId, user);
     }
 
     @GetMapping("/report")

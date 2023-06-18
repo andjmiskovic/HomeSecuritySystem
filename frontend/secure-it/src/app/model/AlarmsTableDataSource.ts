@@ -29,9 +29,9 @@ export class AlarmsTableDataSource implements DataSource<AlarmListItem> {
     this.loadingSubject.complete();
   }
 
-  loadAlarms() {
+  loadAlarms(deviceId: string) {
     this.loadingSubject.next(true);
-    this.deviceService.getAlarms("").subscribe({
+    this.deviceService.getAlarms(deviceId).subscribe({
       next: (alarms) => {
         this.behaviorSubject.next(alarms);
         this.loadingSubject.next(false)
