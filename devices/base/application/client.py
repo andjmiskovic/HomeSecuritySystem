@@ -8,6 +8,7 @@ from application.config import device_config
 from application.crypto import cryptography_manager
 
 alarm_simulation = False
+display_data = {}
 
 headers = {
     'Content-Type': 'application/json'
@@ -48,13 +49,17 @@ def request_pairing(code):
 
 
 def send_message():
+    global display_data
+    sensor_data = { sensor['name']: generate_measurement(sensor) for sensor in device_details['SENSORS']}
+    display_data = { sensor['name']: f"{round(sensor_data[sensor['name']], 2)} {sensor['unit']}" for sensor in device_details['SENSORS']}
+
     if not device_config['DEVICE_ID']:
         current_app.logger.info(
             f'Device is not connected to SecureIT. Sending message skipped.')
         return
 
     message = {
-        'measures': { sensor['name']: generate_measurement(sensor) for sensor in device_details['SENSORS']},
+        'measures': sensor_data,
         'timestamp': str(datetime.now(timezone.utc)),
         'deviceId': device_config.device_id
     }

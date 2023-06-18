@@ -23,4 +23,4 @@ def login():
 @web.route('/')
 @web_login_required
 def dashboard():
-    return render_template('dashboard.html', label=device_config['LABEL'])
+    return render_template('dashboard.html', label=device_config['LABEL'], is_paired='DEVICE_ID' in device_config.get_config())
