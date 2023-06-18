@@ -21,43 +21,44 @@ public class CustomLogRepositoryImpl implements CustomLogRepository {
 
     @Override
     public List<LogEntry> findAllByCriteria(String pattern, LogSource source, UUID sourceId, UUID userId, LogType type) {
-        Query query = new Query();
+        Criteria criteria = new Criteria();
 
         if (pattern != null)
-            query.addCriteria(Criteria.where("message").regex(pattern, "i"));
+            criteria = criteria.and("message").regex(pattern, "i");
 
         if (source != null)
-            query.addCriteria(Criteria.where("source").is(source));
+            criteria = criteria.and("source").is(source);
 
         if (sourceId != null)
-            query.addCriteria(Criteria.where("sourceId").is(sourceId));
+            criteria = criteria.and("sourceId").is(sourceId);
 
         if (userId != null)
-            query.addCriteria(Criteria.where("userId").is(userId));
+            criteria = criteria.and("userId").is(userId);
 
         if (type != null)
-            query.addCriteria(Criteria.where("type").is(type));
+            criteria = criteria.and("type").is(type);
 
+        Query query = new Query(criteria);
         return mongoTemplate.find(query, LogEntry.class);
     }
 
     @Override
     public List<LogEntry> findUserLogsByCriteria(String pattern, UUID deviceId, UUID userId, LogType type) {
-        Query query = new Query();
+        Criteria criteria = new Criteria();
 
         if (pattern != null)
-            query.addCriteria(Criteria.where("message").regex(pattern, "i"));
+            criteria = criteria.and("message").regex(pattern, "i");
 
         if (deviceId != null)
-            query.addCriteria(Criteria.where("sourceId").is(deviceId));
-        else
-            query.addCriteria(Criteria.where("userId").is(userId));
+            criteria = criteria.and("sourceId").is(deviceId);
 
         if (type != null)
-            query.addCriteria(Criteria.where("type").is(type));
+            criteria = criteria.and("type").is(type);
 
-        query.addCriteria(Criteria.where("source").in(LogSource.DEVICE_MANAGEMENT, LogSource.DEVICE_MONITORING));
+        criteria = criteria.and("userId").is(userId);
+        criteria = criteria.and("source").in(LogSource.DEVICE_MANAGEMENT, LogSource.DEVICE_MONITORING);
 
+        Query query = new Query(criteria);
         return mongoTemplate.find(query, LogEntry.class);
     }
 

@@ -3,18 +3,17 @@ package com.team4.secureit.util;
 import com.team4.secureit.model.Device;
 import org.drools.template.DataProvider;
 import org.drools.template.DataProviderCompiler;
-import org.kie.api.builder.Message;
-import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
 import java.io.InputStream;
 import java.nio.file.Paths;
-import java.util.List;
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 public class DroolsUtils {
 
@@ -72,5 +71,17 @@ public class DroolsUtils {
 
     public static KieSession setKieSession(UUID deviceId, KieSession kieSession) {
         return deviceKieSessions.put(deviceId, kieSession);
+    }
+
+    public static String serializeAlarmsData(String[][] array) {
+        return Arrays.stream(array)
+                .map(row -> String.join(",", Arrays.copyOfRange(row, 0, 3)))
+                .collect(Collectors.joining(";"));
+    }
+
+    public static String[][] deserializeAlarmsData(String string) {
+        return Arrays.stream(string.split(";"))
+                .map(sub -> Arrays.copyOfRange(sub.split(","), 0, 3))
+                .toArray(String[][]::new);
     }
 }

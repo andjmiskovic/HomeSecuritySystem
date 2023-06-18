@@ -44,7 +44,7 @@ public class LogService {
         if (user.getRole().equals(Role.ROLE_ADMIN))
             return logRepository.findAllByCriteria(pattern, source, sourceId, userId, type);
 
-        return logRepository.findUserLogsByCriteria(pattern, sourceId, userId, type);
+        return logRepository.findUserLogsByCriteria(pattern, sourceId, user.getId(), type);
     }
 
     public List<LogEntry> findAllForDeviceInTimeRange(Date startDate, Date endDate, LogType type, UUID deviceId) {

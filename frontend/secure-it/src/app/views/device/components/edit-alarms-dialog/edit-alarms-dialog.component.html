@@ -1,0 +1,27 @@
+<h1>Alarms</h1>
+
+<div *ngFor="let alarm of device.alarms, let i = index">
+  <mat-form-field appearance="outline" style="width: 300px; margin-left: 10px">
+    <mat-label>Sensor</mat-label>
+    <input matInput [(ngModel)]="alarm[0]">
+  </mat-form-field>
+  <mat-form-field appearance="outline" style="width: 150px; margin-left: 10px">
+    <mat-label>Operator</mat-label>
+    <input matInput [(ngModel)]="alarm[1]">
+  </mat-form-field>
+  <mat-form-field appearance="outline" style="width: 200px; margin-left: 10px">
+    <mat-label>Value</mat-label>
+    <input matInput [(ngModel)]="alarm[2]">
+  </mat-form-field>
+  <button style="font-size: 12px" mat-stroked-button (click)="removeAlarm(i)">
+    <mat-icon>delete</mat-icon>
+  </button>
+</div>
+
+<button style="font-size: 12px" mat-stroked-button (click)="addNewAlarm()">
+  Add new alarm
+</button>
+
+<button style="font-size: 12px" mat-stroked-button (click)="saveChanges()">
+  Save changes
+</button>

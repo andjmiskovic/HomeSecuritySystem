@@ -1,11 +1,9 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {DeviceDetailsResponse} from "../../../../model/Device";
 import {ActivatedRoute} from "@angular/router";
 import {DeviceManagementService} from "../../../../services/device.service";
-import {LogSource, LogTableDataSource, LogType} from "../../../../model/LogTableDataSource";
-import {LogService} from "../../../../services/log.service";
-import {MatPaginator} from "@angular/material/paginator";
-import {MatSort} from "@angular/material/sort";
+import {EditAlarmsDialogComponent} from "../../components/edit-alarms-dialog/edit-alarms-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 import {FormControl, FormGroup} from "@angular/forms";
 import {ReportRequest} from "../../../../model/ReportRequest";
 
@@ -17,29 +15,12 @@ import {ReportRequest} from "../../../../model/ReportRequest";
 export class DeviceContainerComponent implements OnInit {
   device = new DeviceDetailsResponse();
   deviceId: string | null = "";
-  @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
-  @ViewChild(MatSort, {static: false}) sort!: MatSort;
-
-  displayedColumns = ["message", "type", "time"];
-  logType: LogType | null = null;
-  logSources = [
-    {value: LogSource.DEVICE_MONITORING, description: LogSource.DEVICE_MONITORING.valueOf()},
-    {value: LogSource.DEVICE_MANAGEMENT, description: LogSource.DEVICE_MANAGEMENT.valueOf()},
-    {value: LogSource.AUTHENTICATION, description: LogSource.AUTHENTICATION.valueOf()},
-    {value: LogSource.AUTHORIZATION, description: LogSource.AUTHORIZATION.valueOf()},
-    {value: LogSource.CERTIFICATE_MANAGEMENT, description: LogSource.CERTIFICATE_MANAGEMENT.valueOf()},
-  ];
-  dataSource: LogTableDataSource;
-  source: LogSource = LogSource.DEVICE_MONITORING;
-  regex = "";
-
   campaignOne = new FormGroup({
     start: new FormControl(new Date),
     end: new FormControl(new Date),
   });
 
-  constructor(private router: ActivatedRoute, private deviceService: DeviceManagementService, private logsService: LogService) {
-    this.dataSource = new LogTableDataSource(logsService);
+  constructor(private router: ActivatedRoute, private deviceService: DeviceManagementService, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -47,15 +28,6 @@ export class DeviceContainerComponent implements OnInit {
     this.deviceService.getDevice(this.deviceId).subscribe({
       next: value => this.device = value
     })
-  }
-
-  applyFilter() {
-    this.dataSource.loadLogs(
-      this.regex,
-      this.source,
-      "",
-      this.logType
-    );
   }
 
   downloadReport() {
